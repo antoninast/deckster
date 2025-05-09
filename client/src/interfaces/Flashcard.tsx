@@ -1,19 +1,19 @@
 export interface Flashcard {
-    id?: number;
+    id: number;
     question: string;
     answer: string;
     difficulty: number | null;
     attempts: number | null;
     correct: number | null;
-    incorrect: number | null;
+    // incorrect: number | null;
     lastReview: Date | null;
     image_url: string | null;
-    Deck: {
+    deck: {
         id: number | null;
-        deckName: string | null;
+        name: string | null;
     };
-    Category: {
+    category: {
         id: number | null;
-        category: string | null;
+        name: string | null;
     };
 }

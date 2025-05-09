@@ -18,11 +18,42 @@ const typeDefs = `
     password: String!
   }
 
-  type Query {
+  type CardDeck {
+    _id: ID
+    deckName: String
+    lastReview: string
+    image_url: String
+    category: Category
+    user: Profile;
+}
+
+type Flashcard {
+    _id: ID
+    question: String
+    answer: String
+    difficulty: Int
+    attempts: Int
+    correct: Int
+    incorrect: Int  
+    lastReview: String
+    image_url: String
+    deck: CardDeck
+}
+
+type Query {
     profiles: [Profile]!
     profile(profileId: ID!): Profile
     me: Profile
-  }
+    
+    cardDecks: [CardDeck]!
+    cardDecksByUser(userId: ID!): [CardDeck]!
+    myCardDecks: [CardDeck]!
+    cardDeck(deckId: ID!): CardDeck
+    
+    flashcards: [Flashcard]!
+    flashcardsByDeck(deckId: ID!): [Flashcard]!
+    flashcard(flashcardId: ID!): Flashcard
+}
 
   type Mutation {
     addProfile(input: ProfileInput!): Auth
