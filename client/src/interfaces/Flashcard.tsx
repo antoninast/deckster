@@ -5,7 +5,6 @@ export interface Flashcard {
     difficulty: number | null;
     attempts: number | null;
     correct: number | null;
-    // incorrect: number | null;
     lastReview: Date | null;
     image_url: string | null;
     deck: {

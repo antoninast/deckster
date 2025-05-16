@@ -1,5 +1,4 @@
-import React from 'react';
-export default Flashcard() {
+export default function Flashcard() {
     return (
         <div>
             <h2>Flashcard Here</h2>

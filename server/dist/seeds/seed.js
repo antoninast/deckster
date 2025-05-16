@@ -1,12 +1,16 @@
 import db from '../config/connection.js';
 import { Profile } from '../models/index.js';
 import profileSeeds from './profileData.json' with { type: "json" };
+import cardDeckSeeds from './cardDeckData.json' with { type: "json" };
+import flashcardDataSeeds from './flashcardData.json' with { type: "json" };
 import cleanDB from './cleanDB.js';
 const seedDatabase = async () => {
     try {
         await db();
         await cleanDB();
         await Profile.insertMany(profileSeeds);
+        await Profile.insertMany(cardDeckSeeds);
+        await Profile.insertMany(flashcardDataSeeds);
         console.log('Seeding completed successfully!');
         process.exit(0);
     }

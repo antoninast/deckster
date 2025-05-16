@@ -7,7 +7,6 @@ interface IFlashcard extends Document {
   difficulty: number;
   attempts: number;
   correct: number;
-  // incorrect: number;
   lastReview: Date;
   image_url: string;
   deck_id: Types.ObjectId;
@@ -42,10 +41,6 @@ const flashcardSchema = new Schema<IFlashcard>(
       type: Number,
       default: 0,
     },
-    // incorrect: {
-    //   type: Number,
-    //   default: 0,
-    // },
     lastReview: {
       type: Date,
       default: null,

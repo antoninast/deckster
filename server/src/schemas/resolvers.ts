@@ -1,5 +1,5 @@
 import { Profile } from "../models/index.js";
-import { CardDeck } from 
+// import { CardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 
 interface Profile {

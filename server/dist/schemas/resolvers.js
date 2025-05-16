@@ -1,5 +1,6 @@
-import { Profile } from '../models/index.js';
-import { signToken, AuthenticationError } from '../utils/auth.js';
+import { Profile } from "../models/index.js";
+// import { CardDeck } from "../models/CardDeck.js";
+import { signToken, AuthenticationError } from "../utils/auth.js";
 const resolvers = {
     Query: {
         profiles: async () => {
