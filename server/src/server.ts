@@ -6,11 +6,11 @@ import { ApolloServer } from '@apollo/server';// Note: Import from @apollo/serve
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
 import { authenticateToken } from './utils/auth.js';
-import multer from 'multer';
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
-import csvParser from 'csv-parser';
-import fs from 'fs';
-import { MongoClient } from 'mongodb';
+// import multer from 'multer';
+// import { GraphQLUpload, FileUpload } from 'graphql-upload';
+// import csvParser from 'csv-parser';
+// import fs from 'fs';
+// import { MongoClient } from 'mongodb';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -18,10 +18,10 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const uri = 'mongodb://localhost:27017'; // Replace with your MongoDB connection string
-const client = new MongoClient(uri);
-const dbName = 'your_database_name'; // Replace with your database name
-const collectionName = 'your_collection_name'; // Replace with your collection name
+// const uri = 'mongodb://localhost:27017'; // Replace with your MongoDB connection string
+// const client = new MongoClient(uri);
+// const dbName = 'your_database_name'; // Replace with your database name
+// const collectionName = 'your_collection_name'; // Replace with your collection name
 
 
 
