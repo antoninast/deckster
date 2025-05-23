@@ -12,11 +12,11 @@ import { authenticateToken } from "./utils/auth.js";
 // import fs from 'fs';
 // import { MongoClient } from 'mongodb';
 
-// import { fileURLToPath } from "url";
-// import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // const uri = 'mongodb://localhost:27017'; // Replace with your MongoDB connection string
 // const client = new MongoClient(uri);
@@ -46,10 +46,10 @@ const startApolloServer = async () => {
   );
 
   if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "../client/dist")));
+    app.use(express.static(path.join(__dirname, "../../client/dist")));
 
     app.get("*", (_req: Request, res: Response) => {
-      res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+      res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
     });
   }
 
