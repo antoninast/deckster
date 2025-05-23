@@ -1,6 +1,8 @@
 import { Profile } from "../models/index.js";
 // import { CardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
+// import { parse } from 'csv-parse/sync'
+// import { insertMany } from './db'
 
 interface Profile {
   _id: string;
@@ -72,16 +74,21 @@ const resolvers = {
       const token = signToken(profile.name, profile.email, profile._id);
       return { token, profile };
     },
-    removeProfile: async (
-      _parent: any,
-      _args: any,
-      context: Context
-    ): Promise<Profile | null> => {
-      if (context.user) {
-        return await Profile.findOneAndDelete({ _id: context.user._id });
-      }
-      throw AuthenticationError;
-    },
+    //JH: Add import_csv resolver
+    // import_csv: async (_: any, { csvData}: { csvData: string}) => {
+    //   try {
+    //     const records = parse(csvData, {
+    //       columns: true,
+    //       skip_empty_lines: true,
+    //     });
+    //     await insertMany(records);
+        
+    //     return true;
+    //   } catch (error) {
+    //     console.error('Eeks! Error importing CSV:', error);
+    //     return false;
+    //   }
+    // },
   },
 };
 

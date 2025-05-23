@@ -29,6 +29,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^22.15.18",
     "nodemon": "^3.1.0",
+    "csv-parser": "^3.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
