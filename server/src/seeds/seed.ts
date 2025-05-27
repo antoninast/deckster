@@ -1,4 +1,4 @@
-import db from '../config/connection';
+import db from '../config/connection.js';
 import { CardDeck, Flashcard, Profile } from '../models/index.js';
 import profileSeeds from './profileData.json' with { type: "json" };
 import cardDeckSeeds from './cardDeckData.json' with { type: "json" };

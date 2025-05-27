@@ -1,18 +1,24 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import dotenv from "dotenv";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 
-import mongoose from 'mongoose';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/project-3';
+// Configure dotenv with explicit path to server/.env
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+
+const MONGODB_URI = process.env.MONGODB_URI || "";
 
 const db = async (): Promise<typeof mongoose.connection> => {
   try {
     await mongoose.connect(MONGODB_URI);
-    console.log('Database connected.');
+    console.log("Database connected.");
     return mongoose.connection;
   } catch (error) {
-    console.error('Database connection error:', error);
-    throw new Error('Database connection failed.');
+    console.error("Database connection error:", error);
+    throw new Error("Database connection failed.");
   }
 };
 
