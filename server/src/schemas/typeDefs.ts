@@ -23,9 +23,11 @@ const typeDefs = `
     deckName: String
     lastReview: String
     image_url: String
-    category: String
-    user: Profile
-}
+    categoryId: ID
+    userId: ID
+    flashcardIds: [ID]
+    numberOfCards: Int
+  }
 
   type Flashcard {
     _id: ID

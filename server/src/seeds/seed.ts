@@ -3,8 +3,10 @@ import { CardDeck, Flashcard, Profile } from '../models/index.js';
 import profileSeeds from './profileData.json' with { type: "json" };
 import cardDeckSeeds from './cardDeckData.json' with { type: "json" };
 import flashcardDataSeeds from './flashcardData.json' with { type: "json" };
+import profileData from './profileData.json' with { type: "json" };
 import cleanDB from './cleanDB.js';
 import { Types } from 'mongoose';
+import { hashPassword } from '../utils/auth.js';
 
 const seedDatabase = async (): Promise<void> => {
   try {
@@ -21,6 +23,20 @@ const seedDatabase = async (): Promise<void> => {
     }));
 
     await Flashcard.insertMany(flashcardsWithDates);
+
+    // Clear existing users
+    await Profile.deleteMany({});
+
+    // Hash passwords and create users
+    const hashedProfiles = await Promise.all(
+      profileData.map(async (user) => ({
+        ...user,
+        password: await hashPassword(user.password)
+      }))
+    );
+
+    // Insert users with hashed passwords
+    await Profile.insertMany(hashedProfiles);
 
     console.log('Seeding completed successfully!');
     process.exit(0);
