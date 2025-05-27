@@ -5,7 +5,7 @@
     "difficulty": 1,
     "attempts": 0,
     "correct": 0,
-    "lastReview": "new Date()",
+    "lastReview": null,
     "image_url": "",
     "deck_id": "649f3a2b4f1e8c001c4e5d7a"
   },
@@ -15,7 +15,7 @@
     "difficulty": 2,
     "attempts": 0,
     "correct": 0,
-    "lastReview": "new Date()",
+    "lastReview": null,
     "image_url": "",
     "deck_id": "649f3a2b4f1e8c001c4e5d7a"
   },
@@ -25,7 +25,7 @@
     "difficulty": 3,
     "attempts": 0,
     "correct": 0,
-    "lastReview": "new Date()",
+    "lastReview": null,
     "image_url": "",
     "deck_id": "649f3a2b4f1e8c001c4e5d7a"
   },
@@ -35,7 +35,7 @@
     "difficulty": 4,
     "attempts": 0,
     "correct": 0,
-    "lastReview": "new Date()",
+    "lastReview": null,
     "image_url": "",
     "deck_id": "649f3a2b4f1e8c001c4e5d7a"
   },
@@ -45,7 +45,7 @@
     "difficulty": 1,
     "attempts": 0,
     "correct": 0,
-    "lastReview": "new Date()",
+    "lastReview": null,
     "image_url": "",
     "deck_id": "649f3a2b4f1e8c001c4e5d7a"
   },
@@ -55,7 +55,7 @@
     "difficulty": 2,
     "attempts": 0,
     "correct": 0,
-    "lastReview": "new Date()",
+    "lastReview": null,
     "image_url": "",
     "deck_id": "649f3a2b4f1e8c001c4e5d7a"
   },
@@ -65,7 +65,7 @@
     "difficulty": 3,
     "attempts": 0,
     "correct": 0,
-    "lastReview": "new Date()",
+    "lastReview": null,
     "image_url": "",
     "deck_id": "649f3a2b4f1e8c001c4e5d7a"
   }

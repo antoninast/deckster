@@ -1,9 +1,10 @@
-import db from '../config/connection.js';
-import { Profile } from '../models/index.js';
+import db from '../config/connection';
+import { CardDeck, Flashcard, Profile } from '../models/index.js';
 import profileSeeds from './profileData.json' with { type: "json" };
 import cardDeckSeeds from './cardDeckData.json' with { type: "json" };
 import flashcardDataSeeds from './flashcardData.json' with { type: "json" };
 import cleanDB from './cleanDB.js';
+import { Types } from 'mongoose';
 
 const seedDatabase = async (): Promise<void> => {
   try {
@@ -11,8 +12,15 @@ const seedDatabase = async (): Promise<void> => {
     await cleanDB();
 
     await Profile.insertMany(profileSeeds);
-    await Profile.insertMany(cardDeckSeeds);
-    await Profile.insertMany(flashcardDataSeeds);
+    await CardDeck.insertMany(cardDeckSeeds);
+
+    const flashcardsWithDates = flashcardDataSeeds.map(card => ({
+      ...card,
+      lastReview: new Date(),
+      _id: new Types.ObjectId()
+    }));
+
+    await Flashcard.insertMany(flashcardsWithDates);
 
     console.log('Seeding completed successfully!');
     process.exit(0);
