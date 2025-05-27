@@ -38,7 +38,7 @@ const typeDefs = `
     correct: Int
     lastReview: String
     image_url: String
-    deck: CardDeck
+    deckId: ID
 }
 
   input CardDeckInput {

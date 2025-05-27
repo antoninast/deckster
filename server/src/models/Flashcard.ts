@@ -1,6 +1,6 @@
 import { Schema, model, Document, Types } from "mongoose";
 
-interface IFlashcard extends Document {
+export interface IFlashcard extends Document {
   _id: Types.ObjectId;
   question: string;
   answer: string;
@@ -9,7 +9,8 @@ interface IFlashcard extends Document {
   correct: number;
   lastReview: Date;
   image_url: string;
-  deck_id: Types.ObjectId;
+  // only planning to have one deck per flash card?
+  deckId: Types.ObjectId;
 }
 
 const flashcardSchema = new Schema<IFlashcard>(
@@ -49,7 +50,7 @@ const flashcardSchema = new Schema<IFlashcard>(
       type: String,
       default: null,
     },
-    deck_id: {
+    deckId: {
       type: Schema.Types.ObjectId,
       ref: "CardDeck",
       required: true,

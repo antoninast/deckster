@@ -1,4 +1,6 @@
-import { Profile, CardDeck } from "../models/index.js";
+import { Profile, CardDeck, Flashcard } from "../models/index.js";
+import { IFlashcard } from "../models/Flashcard.js";
+import { ICardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 // import { parse } from 'csv-parse/sync'
 // import { insertMany } from './db'
@@ -21,17 +23,6 @@ interface AddProfileArgs {
     email: string;
     password: string;
   };
-}
-
-interface CardDeck {
-  _id: string;
-  deckName: string;
-  lastReview: Date | null;
-  image_url: string | null;
-  categoryId?: string;
-  userId: string;
-  flashcardIds: string[];
-  numberOfCards?: number;
 }
 
 interface Context {
@@ -63,21 +54,19 @@ const resolvers = {
     cardDecks: async (): Promise<any[]> => {
       return await CardDeck.find();
     },
-
     // cardDecksByUser(userId: ID!): [CardDeck]!
     cardDecksByUser: async (
       _parent: any,
       { userId }: { userId: string }
-    ): Promise<CardDeck[]> => {
+    ): Promise<ICardDeck[]> => {
       return await CardDeck.find({ userId });
     },
-
     // myCardDecks: [CardDeck]!
     myCardDecks: async (
       _parent: any,
       _args: any,
       context: Context
-    ): Promise<CardDeck[]> => {
+    ): Promise<ICardDeck[]> => {
       if (context.user) {
         return await CardDeck.find({ userId: context.user._id });
       }
@@ -87,13 +76,27 @@ const resolvers = {
     cardDeck: async (
       _parent: any,
       { deckId }: { deckId: string }
-    ): Promise<CardDeck | null> => {
+    ): Promise<ICardDeck | null> => {
       return await CardDeck.findOne({ _id: deckId });
     },
-
     // flashcards: [Flashcard]!
+    flashcards: async (): Promise<IFlashcard[]> => {
+      return await Flashcard.find();
+    },
     // flashcardsByDeck(deckId: ID!): [Flashcard]!
+    flashcardsByDeck: async (
+      _parent: any,
+      { deckId }: { deckId: string }
+    ): Promise<IFlashcard[]> => {
+      return await Flashcard.find({ deckId });
+    },
     // flashcard(flashcardId: ID!): Flashcard
+    flashcard: async (
+      _parent: any,
+      { flashcardId }: { flashcardId: string }
+    ): Promise<IFlashcard | null> => {
+      return await Flashcard.findOne({ _id: flashcardId });
+    },
   },
   Mutation: {
     addProfile: async (

@@ -1,6 +1,6 @@
 import { Schema, model, Document, Types } from "mongoose";
 
-interface ICardDeck extends Document {
+export interface ICardDeck extends Document {
   deckName: string;
   lastReview: Date | null;
   image_url: string | null;
