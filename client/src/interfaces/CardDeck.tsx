@@ -1,10 +1,10 @@
 export interface CardDeck {
-    id?: number;
+    id: number;
     deckName: string;
     lastReview: Date | null;
     image_url: string | null;
-    Category: {
+    category: {
         id: number | null;
-        category: string | null;
+        name: string | null;
     };
 }

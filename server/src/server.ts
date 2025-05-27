@@ -32,18 +32,61 @@ const startApolloServer = async () => {
   await server.start();
   await db();
 
-  const PORT = process.env.PORT || 3001;
   const app = express();
+  const PORT = process.env.PORT || 3001;
 
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  app.use(
-    "/graphql",
-    expressMiddleware(server as any, {
-      context: authenticateToken as any,
-    })
-  );
+  app.use('/graphql', expressMiddleware(server as any,
+    {
+      context: authenticateToken as any
+    }
+  ));
+
+  // // Endpoint to upload CSV and import to MongoDB
+  // app.post('/upload-csv', upload.single('file'), async (req, res) => {
+  //   if (!req.file) {
+  //     return res.status(400).send('No file uploaded.');
+  //   }
+
+  //   const filePath = path.resolve(req.file.path);
+  //   try {
+  //     await client.connect();
+  //     const db = client.db('your_database_name');
+  //     const collection = db.collection('your_collection_name');
+  //     const records: any[] = [];
+
+  //     // Crerate a read stream and pipe it to csv-parser
+  //     fs.createReadStream(filePath)
+  //       .pipe(csvParser())
+  //       .on('data', (row) => {
+  //         records.push(row);
+  //       })
+  //       .on('end', async () => {
+  //         try {
+  //           // Insert records into MongoDB if there are any
+  //           if (records.length > 0) {
+  //             await collection.insertMany(records);
+  //             res.status(200).send(`Successfully imported ${records.length} records.`);
+  //             console.log('You did it, B! Data successfully inserted into MongoDB');  
+  //           }
+            
+  //           // Delete the uploaded file
+  //           fs.unlinkSync(filePath);
+  //           console.log('File deleted successfully');
+
+  //         } catch (err) {
+  //           console.error('Error inserting data into MongoDB:', err);
+  //           res.status(500).send('Error inserting data into MongoDB');
+  //         }
+  //       })
+  //   } catch (err) {
+  //     console.error('Error connecting to MongoDB:', err);
+  //     res.status(500).send('Error connecting to MongoDB');
+  //   }
+
+  // });
 
   if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../../client/dist")));
