@@ -1,17 +1,10 @@
 import { Profile, CardDeck, Flashcard } from "../models/index.js";
+import { IProfile } from "../models/Profile.js";
 import { IFlashcard } from "../models/Flashcard.js";
 import { ICardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 // import { parse } from 'csv-parse/sync'
 // import { insertMany } from './db'
-
-interface Profile {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  skills: string[];
-}
 
 interface ProfileArgs {
   profileId: string;
@@ -26,25 +19,25 @@ interface AddProfileArgs {
 }
 
 interface Context {
-  user?: Profile;
+  user?: IProfile;
 }
 
 const resolvers = {
   Query: {
-    profiles: async (): Promise<Profile[]> => {
+    profiles: async (): Promise<IProfile[]> => {
       return await Profile.find();
     },
     profile: async (
       _parent: any,
       { profileId }: ProfileArgs
-    ): Promise<Profile | null> => {
+    ): Promise<IProfile | null> => {
       return await Profile.findOne({ _id: profileId });
     },
     me: async (
       _parent: any,
       _args: any,
       context: Context
-    ): Promise<Profile | null> => {
+    ): Promise<IProfile | null> => {
       if (context.user) {
         return await Profile.findOne({ _id: context.user._id });
       }
@@ -102,7 +95,7 @@ const resolvers = {
     addProfile: async (
       _parent: any,
       { input }: AddProfileArgs
-    ): Promise<{ token: string; profile: Profile }> => {
+    ): Promise<{ token: string; profile: IProfile }> => {
       const profile = await Profile.create({ ...input });
       const token = signToken(profile.name, profile.email, profile._id);
       return { token, profile };
@@ -110,7 +103,7 @@ const resolvers = {
     login: async (
       _parent: any,
       { email, password }: { email: string; password: string }
-    ): Promise<{ token: string; profile: Profile }> => {
+    ): Promise<{ token: string; profile: IProfile }> => {
       const profile = await Profile.findOne({ email });
       if (!profile) {
         throw AuthenticationError;
@@ -122,6 +115,36 @@ const resolvers = {
       const token = signToken(profile.name, profile.email, profile._id);
       return { token, profile };
     },
+    // addCardDeck(input: CardDeckInput!): CardDeck
+    addCardDeck: async (
+      _parent: any,
+      { input }: { input: ICardDeck }
+    ): Promise<ICardDeck> => {
+      const cardDeck = await CardDeck.create(input);
+      return cardDeck;
+    },
+    // updateCardDeck(deckId: ID!, input: CardDeckInput!): CardDeck
+    updateCardDeck: async (
+      _parent: any,
+      { deckId, input }: { deckId: string; input: ICardDeck }
+    ): Promise<ICardDeck | null> => {
+      return await CardDeck.findByIdAndUpdate(deckId, input, {
+        new: true,
+        runValidators: true,
+      });
+    },
+    // removeCardDeck(deckId: ID!): CardDeck
+    removeCardDeck: async (
+      _parent: any,
+      { deckId }: { deckId: string }
+    ): Promise<ICardDeck | null> => {
+      return await CardDeck.findByIdAndDelete(deckId);
+    },
+    // addFlashcard(input: FlashcardInput!): Flashcard
+    // updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
+    // removeFlashcard(flashcardId: ID!): Flashcard
+    // reviewFlashcard(flashcardId: ID!, correct: Boolean!): Flashcard
+
     //JH: Add import_csv resolver
     // import_csv: async (_: any, { csvData}: { csvData: string}) => {
     //   try {

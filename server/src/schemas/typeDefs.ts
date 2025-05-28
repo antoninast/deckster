@@ -4,7 +4,6 @@ const typeDefs = `
     name: String
     email: String
     password: String
-    skills: [String]!
   }
 
   type Auth {
@@ -45,6 +44,8 @@ const typeDefs = `
     deckName: String!
     image_url: String
     categoryId: ID
+    userId: ID!
+    flashcardIds: [ID]
   }
 
   input FlashcardInput {
@@ -73,9 +74,6 @@ const typeDefs = `
   type Mutation {
     addProfile(input: ProfileInput!): Auth
     login(email: String!, password: String!): Auth
-    addSkill(profileId: ID!, skill: String!): Profile
-    removeProfile: Profile
-    removeSkill(skill: String!): Profile
 
     addCardDeck(input: CardDeckInput!): CardDeck
     updateCardDeck(deckId: ID!, input: CardDeckInput!): CardDeck
