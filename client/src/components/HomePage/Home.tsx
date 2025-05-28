@@ -14,7 +14,6 @@ const Home = () => {
         {loading ? (<div>If you want to browse card decks, please, login or signup</div>) : (
           <div>
             <h3>There are {profiles.length} users.</h3>
-            <Navbar />
           </div>
         )}
       </div>

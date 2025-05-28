@@ -26,3 +26,25 @@ export const QUERY_ME = gql`
     }
   }
 `;
+
+export const QUERY_USER_DECKS = gql`
+  query cardDecksByUser($userId: ID!) {
+    cardDecksByUser(userId: $userId) {
+      _id
+      deckName
+      categoryId
+      image_url
+    }
+  }
+`;
+
+export const QUERY_MY_DECKS = gql`
+  query myCardDecks {
+    myCardDecks {
+      _id
+      deckName
+      categoryId
+      image_url
+    }
+  }
+`;
