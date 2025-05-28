@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 
-import { QUERY_PROFILES } from '../utils/queries';
+import { QUERY_PROFILES } from '../../utils/queries';
+import Navbar from '../Navbar/Navbar';
 
 const Home = () => {
   const { loading, data } = useQuery(QUERY_PROFILES);
@@ -9,13 +10,13 @@ const Home = () => {
   return (
     <main>
       <div>
-        <div>
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
+        <h3>Home Page</h3>
+        {loading ? (<div>If you want to browse card decks, please, login or signup</div>) : (
+          <div>
             <h3>There are {profiles.length} users.</h3>
-          )}
-        </div>
+            <Navbar />
+          </div>
+        )}
       </div>
     </main>
   );

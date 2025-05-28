@@ -1,0 +1,10 @@
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    background-color: rgba(117, 165, 117, 0.517);
+}
+
+.navbar a {
+    margin-left: 2em;
+}

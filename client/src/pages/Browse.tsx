@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+// import Button from 'react-bootstrap/Button';
+// import Modal from 'react-bootstrap/Modal';
 import type { CardDeck } from '../interfaces/CardDeck';
 import auth from '../utils/auth';
 import '../styles/index.css';
@@ -11,19 +11,17 @@ import '../styles/browse.css';
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const BrowsePage = () => {
-    const [deck, setDeck] = useState< CardDeck | null>(null);
+    const [deck, setDeck] = useState<CardDeck | null>(null);
     const [loading, setLoading] = useState(true);
-    const [show, setShow] = useState(false);
-    const [modalText, setModalText] = useState('');
+    // const [show, setShow] = useState(false);
+    // const [modalText, setModalText] = useState('');
 
-    const handleClose = () => setShow(false);
-    const handleShow = (data: string) => {
-        setModalText(data);
-        setShow(true)
-    };
+    // const handleShow = (data: string) => {
+        // setModalText(data);
+        // setShow(true);
+    // };
 
     const params = useParams(); // useParams is a hook that returns an object of key/value pairs of URL parameters -JH
-    console.log(params.id)
 
     const { username } = jwtDecode(auth.getToken()) as { username: string };
 
@@ -34,7 +32,7 @@ const BrowsePage = () => {
         return data.id;
     }
 
-    const fetchDeckstchProduct = async () => {
+    const fetchDecks = async () => {
         try {
             const response = await fetch(`${BASE_URL}/api/decks/` + params.id);
             if (!response.ok) {
@@ -63,7 +61,7 @@ const BrowsePage = () => {
             })
         });
         const data = await response.json();
-        handleShow(data.message);
+        // handleShow(data.message);
     }
 
     useEffect(() => {
@@ -86,7 +84,7 @@ const BrowsePage = () => {
                     <Button variant="primary" onClick={handleClose}>Ok</Button>
                 </Modal.Footer>
             </Modal> */}
-            <div className="deck-title">
+            {/* <div className="deck-title">
                 <h1 className="deck-name">{deck.name}</h1>
                 <p><i>Category: {deck.category}</i></p>
             </div>
@@ -99,7 +97,7 @@ const BrowsePage = () => {
                     <p className="deck-user-count">Price: ${deck.usercount}</p>
                     <button className="btn-primary add" onClick={() => handleAddToPersonalLibrary()}>Add to Personal Library</button>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

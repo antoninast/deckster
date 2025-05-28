@@ -1,4 +1,3 @@
-// import './App.css';
 import {
   ApolloClient,
   InMemoryCache,
@@ -8,8 +7,10 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { Outlet } from 'react-router-dom';
 
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+import Navbar from './components/Navbar/Navbar';
+import './App.css';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -37,9 +38,10 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <div className="flex-column justify-flex-start min-100-vh">
+      <div className="viewport">
         <Header />
         <div className="container">
+          <Navbar />
           <Outlet />
         </div>
         <Footer />
