@@ -1,13 +1,17 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
+import { IStudyAttempt } from "./StudyAttempt";
 import bcrypt from "bcrypt";
 
 // Define an interface for the Profile document
 export interface IProfile extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   name: string;
   email: string;
   password: string;
   isCorrectPassword(password: string): Promise<boolean>;
+  studyAttempts: IStudyAttempt[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Define the schema for the Profile document
@@ -37,6 +41,15 @@ const profileSchema = new Schema<IProfile>(
     toObject: { getters: true },
   }
 );
+
+profileSchema.virtual("studyAttempts", {
+  ref: "StudyAttempt",
+  localField: "_id",
+  foreignField: "userId",
+  justOne: false,
+  // Sort by most recent attempts first
+  options: { sort: { createdAt: -1 } },
+});
 
 // set up pre-save middleware to create password
 profileSchema.pre<IProfile>("save", async function (next) {

@@ -2,15 +2,10 @@ import { Schema, model, Document, Types } from "mongoose";
 
 export interface IFlashcard extends Document {
   _id: Types.ObjectId;
-  question: string;
-  answer: string;
-  difficulty: number;
-  attempts: number;
-  correct: number;
-  lastReview: Date;
+  question: string; // front of the flashcard
+  answer: string; // back of the flashcard
   image_url: string;
-  // only planning to have one deck per flash card?
-  deckId: Types.ObjectId;
+  deckId: Types.ObjectId; // flashcard can only belong ton one deck
 }
 
 const flashcardSchema = new Schema<IFlashcard>(
@@ -30,22 +25,6 @@ const flashcardSchema = new Schema<IFlashcard>(
       required: true,
       trim: true,
     },
-    difficulty: {
-      type: Number,
-      default: 1,
-    },
-    attempts: {
-      type: Number,
-      default: 0,
-    },
-    correct: {
-      type: Number,
-      default: 0,
-    },
-    lastReview: {
-      type: Date,
-      default: null,
-    },
     image_url: {
       type: String,
       default: null,
@@ -60,11 +39,6 @@ const flashcardSchema = new Schema<IFlashcard>(
     timestamps: true,
   }
 );
-
-// Define a virtual property 'fullName' with a getter
-flashcardSchema.virtual("percentCorrect").get(function () {
-  return (this.correct / this.attempts) * 100;
-});
 
 const Flashcard = model<IFlashcard>("Flashcard", flashcardSchema);
 export default Flashcard;

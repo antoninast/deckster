@@ -4,6 +4,7 @@ const typeDefs = `
     name: String
     email: String
     password: String
+    studyAttempts: [StudyAttempt]
   }
 
   type Auth {
@@ -17,28 +18,42 @@ const typeDefs = `
     password: String!
   }
 
+  type StudyAttempt {
+    _id: ID
+    userId: ID
+    flashcardId: ID
+    deckId: ID
+    isCorrect: Boolean
+    timestamp: String
+    studySessionId: String
+  }
+
+  type StudyAttemptStats {
+    totalAttempts: Int!
+    correctAttempts: Int!
+    attemptAccuracy: Float!
+    proficiency: String!
+  }
+
   type CardDeck {
     _id: ID
     deckName: String
-    lastReview: String
     image_url: String
     categoryId: ID
     userId: ID
     flashcardIds: [ID]
     numberOfCards: Int
+    userStudyAttemptStats: StudyAttemptStats
   }
 
   type Flashcard {
     _id: ID
     question: String
     answer: String
-    difficulty: Int
-    attempts: Int
-    correct: Int
-    lastReview: String
     image_url: String
     deckId: ID
-}
+    userStudyAttemptStats: StudyAttemptStats
+  }
 
   input CardDeckInput {
     deckName: String!
@@ -51,7 +66,6 @@ const typeDefs = `
   input FlashcardInput {
     question: String!
     answer: String!
-    difficulty: Int
     image_url: String
     deckId: ID!
   }
@@ -65,6 +79,7 @@ const typeDefs = `
     cardDecksByUser(userId: ID!): [CardDeck]!
     myCardDecks: [CardDeck]!
     cardDeck(deckId: ID!): CardDeck
+    
     
     flashcards: [Flashcard]!
     flashcardsByDeck(deckId: ID!): [Flashcard]!

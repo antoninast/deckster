@@ -1,8 +1,9 @@
-import { Profile, CardDeck, Flashcard } from "../models/index.js";
+import { Profile, CardDeck, Flashcard, StudyAttempt } from "../models/index.js";
 import { IProfile } from "../models/Profile.js";
 import { IFlashcard } from "../models/Flashcard.js";
 import { ICardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
+import mongoose from "mongoose";
 // import { parse } from 'csv-parse/sync'
 // import { insertMany } from './db'
 
@@ -141,9 +142,59 @@ const resolvers = {
       return await CardDeck.findByIdAndDelete(deckId);
     },
     // addFlashcard(input: FlashcardInput!): Flashcard
+    addFlashcard: async (
+      _parent: any,
+      { input }: { input: IFlashcard }
+    ): Promise<IFlashcard> => {
+      const flashcard = await Flashcard.create(input);
+      return flashcard;
+    },
     // updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
+    updateFlashcard: async (
+      _parent: any,
+      { flashcardId, input }: { flashcardId: string; input: IFlashcard }
+    ): Promise<IFlashcard | null> => {
+      return await Flashcard.findByIdAndUpdate(flashcardId, input, {
+        new: true,
+        runValidators: true,
+      });
+    },
     // removeFlashcard(flashcardId: ID!): Flashcard
+    removeFlashcard: async (
+      _parent: any,
+      { flashcardId }: { flashcardId: string }
+    ): Promise<IFlashcard | null> => {
+      return await Flashcard.findByIdAndDelete(flashcardId);
+    },
     // reviewFlashcard(flashcardId: ID!, correct: Boolean!): Flashcard
+    reviewFlashcard: async (
+      _parent: any,
+      { flashcardId, correct }: { flashcardId: string; correct: boolean },
+      context: Context
+    ): Promise<IFlashcard | null> => {
+      if (!context.user) {
+        throw AuthenticationError;
+      }
+
+      const userId = new mongoose.Types.ObjectId(context.user._id);
+      const deckId = (await Flashcard.findById(flashcardId))?.deckId;
+
+      if (!deckId) {
+        throw new Error("Deck not found for the provided flashcard.");
+      }
+
+      // Create a new study attempt
+      await StudyAttempt.create({
+        userId,
+        flashcardId: new mongoose.Types.ObjectId(flashcardId),
+        deckId: new mongoose.Types.ObjectId(deckId),
+        isCorrect: correct,
+        timestamp: new Date(),
+      });
+
+      // Return the updated flashcard
+      return await Flashcard.findById(flashcardId);
+    },
 
     //JH: Add import_csv resolver
     // import_csv: async (_: any, { csvData}: { csvData: string}) => {
@@ -160,6 +211,184 @@ const resolvers = {
     //     return false;
     //   }
     // },
+  },
+
+  CardDeck: {
+    userStudyAttemptStats: async (
+      parent: ICardDeck,
+      _args: any,
+      context: Context
+    ) => {
+      if (!context.user) {
+        return {
+          totalAttempts: 0,
+          correctAttempts: 0,
+          attemptAccuracy: 0,
+          proficiency: "No Data",
+        };
+      }
+
+      const userId = new mongoose.Types.ObjectId(context.user._id);
+      const deckId = new mongoose.Types.ObjectId(parent._id as string);
+
+      const results = await StudyAttempt.aggregate([
+        { $match: { userId: userId, deckId: deckId } },
+        {
+          $group: {
+            _id: null,
+            totalAttempts: { $sum: 1 },
+            correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
+          },
+        },
+        {
+          // add attemptAccuracy as a new field based on the grouped data
+          $addFields: {
+            attemptAccuracy: {
+              $cond: [
+                { $eq: ["$totalAttempts", 0] },
+                0,
+                {
+                  $multiply: [
+                    { $divide: ["$correctAttempts", "$totalAttempts"] },
+                    100,
+                  ],
+                },
+              ],
+            },
+          },
+        },
+        {
+          // project the final fields using attemptAccuracy
+          $project: {
+            _id: 0, // dont include _id in the output
+            totalAttempts: 1,
+            correctAttempts: 1,
+            attemptAccuracy: 1,
+            proficiency: {
+              $switch: {
+                branches: [
+                  {
+                    case: { $gte: ["$attemptAccuracy", 95] },
+                    then: "Mastered",
+                  },
+                  {
+                    case: { $gte: ["$attemptAccuracy", 85] },
+                    then: "Advanced",
+                  },
+                  {
+                    case: { $gte: ["$attemptAccuracy", 75] },
+                    then: "Proficient",
+                  },
+                  {
+                    case: { $gte: ["$attemptAccuracy", 65] },
+                    then: "Developing",
+                  },
+                  { case: { $gte: ["$attemptAccuracy", 0] }, then: "Beginner" },
+                ],
+                default: "No Data",
+              },
+            },
+          },
+        },
+      ]);
+
+      return (
+        results[0] || {
+          totalAttempts: 0,
+          correctAttempts: 0,
+          attemptAccuracy: 0,
+          proficiency: "No Data",
+        }
+      );
+    },
+  },
+
+  Flashcard: {
+    userStudyAttemptStats: async (
+      parent: IFlashcard, // Ensure this parent type is correct
+      _args: any,
+      context: Context
+    ) => {
+      if (!context.user) {
+        return {
+          totalAttempts: 0,
+          correctAttempts: 0,
+          attemptAccuracy: 0,
+          proficiency: "No Data",
+        };
+      }
+
+      const userId = new mongoose.Types.ObjectId(context.user._id);
+      const flashcardId = new mongoose.Types.ObjectId(parent._id.toString()); // Robust conversion
+
+      const results = await StudyAttempt.aggregate([
+        { $match: { userId: userId, flashcardId: flashcardId } }, // <-- Match on flashcardId
+        {
+          $group: {
+            _id: null,
+            totalAttempts: { $sum: 1 },
+            correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
+          },
+        },
+        {
+          $addFields: {
+            attemptAccuracy: {
+              $cond: [
+                { $eq: ["$totalAttempts", 0] },
+                0,
+                {
+                  $multiply: [
+                    { $divide: ["$correctAttempts", "$totalAttempts"] },
+                    100,
+                  ],
+                },
+              ],
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            totalAttempts: 1,
+            correctAttempts: 1,
+            attemptAccuracy: 1,
+            proficiency: {
+              $switch: {
+                branches: [
+                  {
+                    case: { $gte: ["$attemptAccuracy", 95] },
+                    then: "Mastered",
+                  },
+                  {
+                    case: { $gte: ["$attemptAccuracy", 85] },
+                    then: "Advanced",
+                  },
+                  {
+                    case: { $gte: ["$attemptAccuracy", 75] },
+                    then: "Proficient",
+                  },
+                  {
+                    case: { $gte: ["$attemptAccuracy", 65] },
+                    then: "Developing",
+                  },
+                  { case: { $gte: ["$attemptAccuracy", 0] }, then: "Beginner" },
+                ],
+                default: "No Data",
+              },
+            },
+          },
+        },
+      ]);
+
+      return (
+        results[0] || {
+          totalAttempts: 0,
+          correctAttempts: 0,
+          attemptAccuracy: 0,
+          proficiency: "No Data",
+        }
+      );
+    },
   },
 };
 
