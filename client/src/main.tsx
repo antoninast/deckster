@@ -7,6 +7,7 @@ import Profile from './components/Profile/Profile.js';
 import Signup from './components/Signup/Signup.js';
 import Login from './components/Login/Login.js';
 import Error from './components/Error/Error.js';
+import BrowseDecks from './components/BrowseDecks/BrowseDecks.js';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/me',
         element: <Profile />
+      },
+      {
+        path: '/browse-decks',
+        element: <BrowseDecks />
       }
     ]
   },

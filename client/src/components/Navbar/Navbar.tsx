@@ -13,6 +13,9 @@ const Navbar = () => {
         <div className='navbar'>
           {Auth.loggedIn() ? (
             <>
+              <div>
+                <Link to="/browse-decks">Browse Decks</Link>
+              </div>
               <Link to="/me">
                 View My Profile
               </Link>
