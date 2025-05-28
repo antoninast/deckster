@@ -11,6 +11,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+    '/api/security-questions': {
+      target: 'http://localhost:3001',
+      changeOrigin: true,
+      secure: false,
+      },
     },
   },
 });

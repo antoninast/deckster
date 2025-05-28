@@ -4,20 +4,28 @@ import bcrypt from "bcrypt";
 // Define an interface for the Profile document
 export interface IProfile extends Document {
   _id: string;
-  name: string;
+  login: string;
   email: string;
   password: string;
+  fullName?: string;
+  profilePicture?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  lastLogin?: Date;
+  securityQuestion?: string;
+  securityAnswer?: string;
   isCorrectPassword(password: string): Promise<boolean>;
 }
 
 // Define the schema for the Profile document
 const profileSchema = new Schema<IProfile>(
   {
-    name: {
+    login: {
       type: String,
       required: true,
       unique: true,
       trim: true,
+      index: true,
     },
     email: {
       type: String,

@@ -61,6 +61,7 @@ const BrowsePage = () => {
             })
         });
         const data = await response.json();
+        console.log(data);
         // handleShow(data.message);
     }
 
@@ -84,20 +85,20 @@ const BrowsePage = () => {
                     <Button variant="primary" onClick={handleClose}>Ok</Button>
                 </Modal.Footer>
             </Modal> */}
-            {/* <div className="deck-title">
-                <h1 className="deck-name">{deck.name}</h1>
-                <p><i>Category: {deck.category}</i></p>
+            <div className="deck-title">
+                {/* <h1 className="deck-name">{deck.name}</h1>
+                <p><i>Category: {deck.category}</i></p> */}
             </div>
             <div className="deck-details">
                 <div className="deck-image-container">
-                    <img className="deck-image" src={deck.image_url} alt={deck.name} />
+                    {/* <img className="deck-image" src={deck.image_url} alt={deck.name} /> */}
                 </div>
                 <div className="deck-buttons">
-                    <p className="deck-description">{deck.description}</p>
-                    <p className="deck-user-count">Price: ${deck.usercount}</p>
+                    {/* <p className="deck-description">{deck.description}</p>
+                    <p className="deck-user-count">Price: ${deck.usercount}</p> */}
                     <button className="btn-primary add" onClick={() => handleAddToPersonalLibrary()}>Add to Personal Library</button>
                 </div>
-            </div> */}
+            </div>
         </div>
     );
 };
