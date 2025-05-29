@@ -15,7 +15,6 @@ const BrowseDecks = () => {
   );
   console.log("$$$$$$$$$$$$$$$$$$$$$$$");
   console.log("data", data);
- 
 
   const decks = !user ? data?.cardDecks || [] : data?.myCardDecks || [];
 
@@ -36,7 +35,15 @@ const BrowseDecks = () => {
             <p>Deck id:{deck._id}</p>
             <p>Deck name: {deck.name}</p>
             <p>Deck category: {deck.categoryName}</p>
-            <img src={deck.image_url}></img>
+            <p>
+              Accuracy:{" "}
+              {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1)}%
+            </p>
+            <p>
+              Proficiency:{" "}
+              {deck.userStudyAttemptStats?.proficiency || "No Data"}
+            </p>
+            <img src={deck.image_url} alt={deck.name}></img>
           </div>
         );
       })}

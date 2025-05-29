@@ -5,4 +5,8 @@ export interface CardDeck {
     image_url: string;
     categoryName: string;
     isPublic: boolean
+    userStudyAttemptStats?: {
+        attemptAccuracy?: number;
+        proficiency?: string;
+    };
 }

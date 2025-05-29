@@ -46,18 +46,26 @@ export const QUERY_MY_DECKS = gql`
       categoryName
       image_url
       isPublic
+      userStudyAttemptStats {
+        attemptAccuracy
+        proficiency
+      }
     }
   }
 `;
 
 export const QUERY_CARD_DECKS = gql`
-  query cardDecks($isPublic: Boolean!) {
+  query GetCardDecks($isPublic: Boolean!) {
     cardDecks(isPublic: $isPublic) {
       _id
       name
       categoryName
       image_url
       isPublic
+      userStudyAttemptStats {
+        attemptAccuracy
+        proficiency
+      }
     }
   }
 `;
