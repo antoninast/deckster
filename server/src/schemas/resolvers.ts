@@ -13,9 +13,11 @@ interface ProfileArgs {
 
 interface AddProfileArgs {
   input: {
-    name: string;
+    login: string;
     email: string;
     password: string;
+    securityQuestion: string;
+    securityAnswer: string;
   };
 }
 
@@ -93,12 +95,13 @@ const resolvers = {
     },
   },
   Mutation: {
+    //TODO: Hash the profile password before saving
     addProfile: async (
       _parent: any,
       { input }: AddProfileArgs
     ): Promise<{ token: string; profile: IProfile }> => {
       const profile = await Profile.create({ ...input });
-      const token = signToken(profile.name, profile.email, profile._id);
+      const token = signToken(profile.login, profile.email, profile._id);
       return { token, profile };
     },
     login: async (
@@ -113,7 +116,7 @@ const resolvers = {
       if (!correctPw) {
         throw AuthenticationError;
       }
-      const token = signToken(profile.name, profile.email, profile._id);
+      const token = signToken(profile.login, profile.email, profile._id);
       return { token, profile };
     },
     // addCardDeck(input: CardDeckInput!): CardDeck

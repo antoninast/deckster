@@ -1,9 +1,15 @@
 export interface UserProfile {
     id?: number;
-    username: string;
+    login: string;
     email: string;
     password: string;
+    fullName?: string;
+    profilePicture?: string;
     createdAt: Date;
-    lastLogin: Date | null;
     updatedAt: Date | null;
-}
+    lastLogin: Date | null;
+    securityQuestion?: string;
+    securityAnswer?: string;
+}   
+
+

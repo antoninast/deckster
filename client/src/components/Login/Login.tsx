@@ -1,11 +1,17 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
+import { useDispatch } from 'react-redux';
 import { LOGIN_USER } from '../../utils/mutations';
 import Auth from '../../utils/auth';
 import './Login.css';
+import { setLogin } from '../../user/userState';
+
+//TODO: Add option for "I forgot my password" to reset with security question
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({ email: '', password: '' });
   const [login, { error, data }] = useMutation(LOGIN_USER);
 
@@ -22,17 +28,24 @@ const Login = () => {
   // submit form
   const handleFormSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(formState);
+
     try {
       const { data } = await login({
         variables: { ...formState },
       });
 
+      console.log('name here:', data.login.profile);
+      dispatch(setLogin({
+        name: data.login.profile.name,
+        _id: data.login.profile._id
+      }));
+
       Auth.login(data.login.token);
+
+      navigate('/browse-decks');
     } catch (e) {
       console.error(e);
     }
-
     // clear form values
     setFormState({
       email: '',
@@ -45,12 +58,11 @@ const Login = () => {
       <div>
         <div>
           <h4>Login</h4>
-          <div>
-            {data ? (
-              <p>
-                Success! You may now head{' '}
-                <Link to="/">back to the homepage.</Link>
-              </p>
+          <div>{data ? (
+            <p>
+              Success! You may now head{' '}
+              <Link to="/">back to the homepage.</Link>
+            </p>
             ) : (
               <form onSubmit={handleFormSubmit}>
                 <input
@@ -75,7 +87,6 @@ const Login = () => {
                 </button>
               </form>
             )}
-
             {error && (
               <div>
                 {error.message}

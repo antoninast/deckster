@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import path from "node:path";
 import type { Request, Response } from "express";
 import db from "./config/connection.js";
@@ -6,6 +7,7 @@ import { ApolloServer } from "@apollo/server"; // Note: Import from @apollo/serv
 import { expressMiddleware } from "@apollo/server/express4";
 import { typeDefs, resolvers } from "./schemas/index.js";
 import { authenticateToken } from "./utils/auth.js";
+import { SecurityQuestion } from "./models/index.js";
 // import multer from 'multer';
 // import { GraphQLUpload, FileUpload } from 'graphql-upload';
 // import csvParser from 'csv-parser';
@@ -17,6 +19,8 @@ import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+
 
 // const uri = 'mongodb://localhost:27017'; // Replace with your MongoDB connection string
 // const client = new MongoClient(uri);
@@ -35,6 +39,23 @@ const startApolloServer = async () => {
   const app = express();
   const PORT = process.env.PORT || 3001;
 
+  app.use(cors());
+
+  app.get("/api/security-questions", async (_req: Request, res: Response) => {
+      // Example security questions
+      // const securityQuestions = [
+      //   "What is your mother's maiden name?",
+      //   "What was the name of your first pet?",
+      //   "What is the name of the city where you were born?",
+      //   "What is your favorite book?",
+      //   "What is your favorite movie?"
+      // ];
+      const securityQuestions = await SecurityQuestion.find({})
+      
+      // res.json(securityQuestions);
+      return res.send(securityQuestions);
+    });
+
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
@@ -43,6 +64,8 @@ const startApolloServer = async () => {
       context: authenticateToken as any
     }
   ));
+
+  
 
   // // Endpoint to upload CSV and import to MongoDB
   // app.post('/upload-csv', upload.single('file'), async (req, res) => {

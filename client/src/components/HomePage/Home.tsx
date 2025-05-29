@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
 
 import { QUERY_PROFILES } from '../../utils/queries';
-import Navbar from '../Navbar/Navbar';
 
 const Home = () => {
   const { loading, data } = useQuery(QUERY_PROFILES);

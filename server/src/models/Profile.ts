@@ -5,9 +5,14 @@ import bcrypt from "bcrypt";
 // Define an interface for the Profile document
 export interface IProfile extends Document {
   _id: Types.ObjectId;
-  name: string;
+  login: string;
   email: string;
   password: string;
+  fullName?: string;
+  profilePicture?: string;
+  lastLogin?: Date;
+  securityQuestion?: string;
+  securityAnswer?: string;
   isCorrectPassword(password: string): Promise<boolean>;
   studyAttempts: IStudyAttempt[];
   createdAt: Date;
@@ -17,11 +22,12 @@ export interface IProfile extends Document {
 // Define the schema for the Profile document
 const profileSchema = new Schema<IProfile>(
   {
-    name: {
+    login: {
       type: String,
       required: true,
       unique: true,
       trim: true,
+      index: true,
     },
     email: {
       type: String,
