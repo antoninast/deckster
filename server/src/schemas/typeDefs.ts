@@ -78,7 +78,7 @@ const typeDefs = `
     profile(profileId: ID!): Profile
     me: Profile
     
-    cardDecks: [CardDeck]!
+    cardDecks(isPublic: Boolean): [CardDeck]!
     cardDecksByUser(userId: ID!): [CardDeck]!
     myCardDecks: [CardDeck]!
     cardDeck(deckId: ID!): CardDeck

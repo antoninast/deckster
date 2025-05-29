@@ -47,8 +47,15 @@ const resolvers = {
       throw AuthenticationError;
     },
     // cardDecks: [CardDeck]!
-    cardDecks: async (): Promise<any[]> => {
-      return await CardDeck.find();
+    cardDecks: async (
+      _parent: any,
+      { isPublic }: { isPublic?: boolean }
+    ): Promise<ICardDeck[]> => {
+      console.log("isPublic:", isPublic);
+      // If isPublic is true, only return public decks
+      const query = isPublic === true ? { isPublic: true } : {};
+      console.log("Query filter:", query);
+      return await CardDeck.find(query);
     },
     // cardDecksByUser(userId: ID!): [CardDeck]!
     cardDecksByUser: async (

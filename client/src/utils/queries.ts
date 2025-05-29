@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const QUERY_PROFILES = gql`
   query allProfiles {
@@ -45,6 +45,19 @@ export const QUERY_MY_DECKS = gql`
       name
       categoryName
       image_url
+      isPublic
+    }
+  }
+`;
+
+export const QUERY_CARD_DECKS = gql`
+  query cardDecks($isPublic: Boolean!) {
+    cardDecks(isPublic: $isPublic) {
+      _id
+      name
+      categoryName
+      image_url
+      isPublic
     }
   }
 `;
