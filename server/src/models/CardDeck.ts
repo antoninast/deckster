@@ -1,20 +1,18 @@
 import { Schema, model, Document, Types } from "mongoose";
 
 export interface ICardDeck extends Document {
-  deckName: string;
+  name: string;
+  lastReview: Date | null;
   image_url: string | null;
-  categoryId: Types.ObjectId; // doesn't this require a Category model?
+  categoryName: string;
   userId: Types.ObjectId;
   flashcardIds: Types.ObjectId[];
-  // adding as optional so user can see difficulty of deck
-  numberOfCards: number;
-  createdAt: Date;
-  updatedAt: Date;
+  isPublic: boolean;
 }
 
 const cardDeckSchema = new Schema<ICardDeck>(
   {
-    deckName: {
+    name: {
       type: String,
       required: true,
       trim: true,
@@ -23,9 +21,9 @@ const cardDeckSchema = new Schema<ICardDeck>(
       type: String,
       default: null,
     },
-    categoryId: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
+    categoryName: {
+      type: String,
+      required: true
     },
     userId: {
       type: Schema.Types.ObjectId,
@@ -39,6 +37,10 @@ const cardDeckSchema = new Schema<ICardDeck>(
         required: true,
       },
     ],
+    isPublic: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,
