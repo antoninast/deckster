@@ -23,3 +23,21 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const REVIEW_FLASHCARD = gql`
+  mutation ReviewFlashcard(
+    $flashcardId: ID!
+    $correct: Boolean!
+    $studySessionId: String!
+  ) {
+    reviewFlashcard(
+      flashcardId: $flashcardId
+      correct: $correct
+      studySessionId: $studySessionId
+    ) {
+      _id
+      isCorrect
+      studySessionId
+    }
+  }
+`;

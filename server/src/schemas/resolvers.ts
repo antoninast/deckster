@@ -181,7 +181,15 @@ const resolvers = {
     // reviewFlashcard(flashcardId: ID!, correct: Boolean!): Flashcard
     reviewFlashcard: async (
       _parent: any,
-      { flashcardId, correct }: { flashcardId: string; correct: boolean },
+      {
+        flashcardId,
+        correct,
+        studySessionId,
+      }: {
+        flashcardId: string;
+        correct: boolean;
+        studySessionId: string;
+      },
       context: Context
     ): Promise<IFlashcard | null> => {
       if (!context.user) {
@@ -195,16 +203,16 @@ const resolvers = {
         throw new Error("Deck not found for the provided flashcard.");
       }
 
-      // Create a new study attempt
+      // create a new study attempt with studySessionId
       await StudyAttempt.create({
         userId,
         flashcardId: new mongoose.Types.ObjectId(flashcardId),
         deckId: new mongoose.Types.ObjectId(deckId),
         isCorrect: correct,
-        timestamp: new Date(),
+        studySessionId, // studySessionId from the client
       });
 
-      // Return the updated flashcard
+      // return updated flashcard
       return await Flashcard.findById(flashcardId);
     },
 

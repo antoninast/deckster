@@ -69,3 +69,14 @@ export const QUERY_CARD_DECKS = gql`
     }
   }
 `;
+
+export const QUERY_FLASHCARDS_BY_DECK = gql`
+  query FlashcardsByDeck($deckId: ID!) {
+    flashcardsByDeck(deckId: $deckId) {
+      _id
+      question
+      answer
+      image_url
+    }
+  }
+`;

@@ -101,7 +101,7 @@ const typeDefs = `
     addFlashcard(input: FlashcardInput!): Flashcard
     updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
     removeFlashcard(flashcardId: ID!): Flashcard
-    reviewFlashcard(flashcardId: ID!, correct: Boolean!): Flashcard
+    reviewFlashcard(flashcardId: ID!, correct: Boolean!, studySessionId: String!): Flashcard
 
     addMultipleFlashcards(flashcards: [FlashcardInput!]!): [Flashcard]
   }
