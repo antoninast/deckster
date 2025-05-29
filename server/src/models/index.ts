@@ -4,6 +4,4 @@ import CardDeck from "./CardDeck.js";
 import StudyAttempt from "./StudyAttempt.js";
 import SecurityQuestion from "./SecurityQuestions.js";
 
-export { Profile, Flashcard, CardDeck, SecurityQuestion };
-
-export { Profile, Flashcard, CardDeck, StudyAttempt };
+export { Profile, Flashcard, CardDeck, SecurityQuestion, StudyAttempt };
