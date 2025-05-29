@@ -11,6 +11,7 @@ import { hashPassword } from '../utils/auth.js';
 
 const seedDatabase = async (): Promise<void> => {
   console.log('Seeding database...');
+  // This was just here for testing purposes -JH
   // await Profile.collection.dropIndexes();
   // await Profile.collection.drop()
   // return;
@@ -31,7 +32,6 @@ const seedDatabase = async (): Promise<void> => {
 
     // Clear existing users
     await Profile.deleteMany({});
-    
 
     // Hash passwords and create users
     const hashedProfiles = await Promise.all(
