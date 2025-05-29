@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { QUERY_USER_DECKS } from '../../utils/queries';
+import { CardDeck } from '../../interfaces/CardDeck';
 
 const BrowseDecks = () => {
     const user = useSelector((state: any) => {
@@ -25,12 +26,12 @@ const BrowseDecks = () => {
     return (
         <div className="browse-page">
             <h2>Browse decks page</h2>
-            {decks.map((deck: { _id: string, deckName: string, categoryId: string, image_url: string }) => {
+            {decks.map((deck: CardDeck) => {
                 return (
                 <div key={deck._id}>
                    <p>Deck id:{deck._id}</p>
-                   <p>Deck name: {deck.deckName}</p>
-                   <p>Deck category: {deck.categoryId}</p>
+                   <p>Deck name: {deck.name}</p>
+                   <p>Deck category: {deck.categoryName}</p>
                    <img src={deck.image_url}></img>
                 </div>)
             })}

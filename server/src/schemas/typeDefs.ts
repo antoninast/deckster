@@ -19,13 +19,14 @@ const typeDefs = `
 
   type CardDeck {
     _id: ID
-    deckName: String
+    name: String
     lastReview: String
     image_url: String
-    categoryId: ID
+    categoryName: String
     userId: ID
     flashcardIds: [ID]
     numberOfCards: Int
+    isPublic: Boolean
   }
 
   type Flashcard {
@@ -41,11 +42,12 @@ const typeDefs = `
 }
 
   input CardDeckInput {
-    deckName: String!
+    name: String!
     image_url: String
-    categoryId: ID
+    categoryName: String
     userId: ID!
     flashcardIds: [ID]
+    isPublic: Boolean
   }
 
   input FlashcardInput {
