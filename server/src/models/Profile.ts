@@ -1,26 +1,29 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
+import { IStudyAttempt } from "./StudyAttempt";
 import bcrypt from "bcrypt";
 
 // Define an interface for the Profile document
 export interface IProfile extends Document {
-  _id: string;
-  login: string;
+  _id: Types.ObjectId;
+  username: string;
   email: string;
   password: string;
   fullName?: string;
   profilePicture?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
   lastLogin?: Date;
   securityQuestion?: string;
   securityAnswer?: string;
   isCorrectPassword(password: string): Promise<boolean>;
+  studyAttempts: IStudyAttempt[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Define the schema for the Profile document
 const profileSchema = new Schema<IProfile>(
   {
-    login: {
+    username: {
+      // Changed from 'login'
       type: String,
       required: true,
       unique: true,
@@ -38,6 +41,12 @@ const profileSchema = new Schema<IProfile>(
       required: true,
       minlength: 5,
     },
+    securityQuestion: {
+      type: String,
+    },
+    securityAnswer: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -52,7 +61,6 @@ profileSchema.pre<IProfile>("save", async function (next) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
-
   next();
 });
 

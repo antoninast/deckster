@@ -1,49 +1,54 @@
-import type { CardDeck } from '../../interfaces/CardDeck';
-import { useQuery } from '@apollo/client';
-import { QUERY_USER_DECKS } from '../../utils/queries';
-
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+import { useQuery } from "@apollo/client";
+import { useSelector } from "react-redux";
+import { QUERY_MY_DECKS, QUERY_CARD_DECKS } from "../../utils/queries";
+import { CardDeck } from "../../interfaces/CardDeck";
 
 const BrowseDecks = () => {
-    const { loading, data } = useQuery(QUERY_USER_DECKS,
-        // userId is hardcoded value, must change it later 
-        { variables: { userId: '6542b3b0a8e9b2b4d7b6c8e0' } }
-    );
+  const user = useSelector((state: any) => {
+    console.log("user here", state.user.value);
+    return state.user.value;
+  });
 
-    const decks = data?.cardDecksByUser || [];
-    console.log(decks);
+  const { loading, data } = useQuery(
+    !user ? QUERY_CARD_DECKS : QUERY_MY_DECKS,
+    !user ? { variables: { isPublic: true } } : {}
+  );
+  console.log("$$$$$$$$$$$$$$$$$$$$$$$");
+  console.log("data", data);
 
-    // const { username } = jwtDecode(auth.getToken()) as { username: string };
+  const decks = !user ? data?.cardDecks || [] : data?.myCardDecks || [];
 
-    //TODO User does not need to be logged in to be able to browse, but if they are logged in, they will see the ability to add a deck to their Personal Library
-    // const getUserIdByUsername = async () => {
-    //     const response = await fetch(`${BASE_URL}/api/users/username/${username}`);
-    //     const data = await response.json();
-    //     return data.id;
-    // }
+  if (loading) {
+    return <div>Loading available decks...</div>;
+  }
 
-    if (loading) {
-        return <div>Loading available decks...</div>;
-    }
+  if (!decks.length) {
+    return <div>You don't have decks.</div>;
+  }
 
-    if (!decks.length) {
-        return <div>No item found</div>;
-    }
-
-    return (
-        <div className="browse-page">
-            <h2>Browse decks page</h2>
-            {decks.map((deck: { _id: string, deckName: string, categoryId: string, image_url: string }) => {
-                return (
-                <div>
-                   <p>Deck id:{deck._id}</p>
-                   <p>Deck name: {deck.deckName}</p>
-                   <p>Deck category: {deck.categoryId}</p>
-                   <img src={deck.image_url}></img>
-                </div>)
-            })}
-        </div>
-    );
+  return (
+    <div className="browse-page">
+      <h2>Browse decks page</h2>
+      {decks.map((deck: CardDeck) => {
+        return (
+          <div key={deck._id}>
+            <p>Deck id:{deck._id}</p>
+            <p>Deck name: {deck.name}</p>
+            <p>Deck category: {deck.categoryName}</p>
+            <p>
+              Accuracy:{" "}
+              {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1)}%
+            </p>
+            <p>
+              Proficiency:{" "}
+              {deck.userStudyAttemptStats?.proficiency || "No Data"}
+            </p>
+            <img src={deck.image_url} alt={deck.name}></img>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 export default BrowseDecks;

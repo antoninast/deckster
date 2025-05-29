@@ -6,7 +6,7 @@ export const ADD_PROFILE = gql`
       token
       profile {
         _id
-        name
+        username
       }
     }
   }
@@ -18,8 +18,26 @@ export const LOGIN_USER = gql`
       token
       profile {
         _id
-        name
+        username
       }
+    }
+  }
+`;
+
+export const REVIEW_FLASHCARD = gql`
+  mutation ReviewFlashcard(
+    $flashcardId: ID!
+    $correct: Boolean!
+    $studySessionId: String!
+  ) {
+    reviewFlashcard(
+      flashcardId: $flashcardId
+      correct: $correct
+      studySessionId: $studySessionId
+    ) {
+      _id
+      isCorrect
+      studySessionId
     }
   }
 `;

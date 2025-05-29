@@ -1,14 +1,18 @@
-import { useState, type FormEvent, type ChangeEvent } from 'react';
-import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { LOGIN_USER } from '../../utils/mutations';
-import Auth from '../../utils/auth';
-import './Login.css';
+import { useState, type FormEvent, type ChangeEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { useDispatch } from "react-redux";
+import { LOGIN_USER } from "../../utils/mutations";
+import Auth from "../../utils/auth";
+import "./Login.css";
+import { setLogin } from "../../user/userState";
 
 //TODO: Add option for "I forgot my password" to reset with security question
 
 const Login = () => {
-  const [formState, setFormState] = useState({ email: '', password: '' });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [formState, setFormState] = useState({ email: "", password: "" });
   const [login, { error, data }] = useMutation(LOGIN_USER);
 
   // update state based on form input changes
@@ -24,21 +28,30 @@ const Login = () => {
   // submit form
   const handleFormSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(formState);
+
     try {
       const { data } = await login({
         variables: { ...formState },
       });
 
+      console.log("username here:", data.login.profile.username); // Changed
+      dispatch(
+        setLogin({
+          username: data.login.profile.username, // Changed from 'name'
+          _id: data.login.profile._id,
+        })
+      );
+
       Auth.login(data.login.token);
+      navigate("/browse-decks");
     } catch (e) {
       console.error(e);
     }
 
     // clear form values
     setFormState({
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     });
   };
 
@@ -50,7 +63,7 @@ const Login = () => {
           <div>
             {data ? (
               <p>
-                Success! You may now head{' '}
+                Success! You may now head{" "}
                 <Link to="/">back to the homepage.</Link>
               </p>
             ) : (
@@ -69,20 +82,12 @@ const Login = () => {
                   value={formState.password}
                   onChange={handleChange}
                 />
-                <button
-                  style={{ cursor: 'pointer' }}
-                  type="submit"
-                >
+                <button className="submit-button" type="submit">
                   Submit
                 </button>
               </form>
             )}
-
-            {error && (
-              <div>
-                {error.message}
-              </div>
-            )}
+            {error && <div>{error.message}</div>}
           </div>
         </div>
       </div>
