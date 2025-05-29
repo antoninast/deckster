@@ -13,5 +13,6 @@ form button {
 }
 
 .submit-button {
-      cursor: pointer;  /* Migrated from inline style */
+    cursor: pointer;
+    /* Migrated from inline style */
 }
