@@ -85,8 +85,6 @@ const typeDefs = `
     myCardDecks: [CardDeck]!
     cardDeck(deckId: ID!): CardDeck
 
-
-
     flashcards: [Flashcard]!
     flashcardsByDeck(deckId: ID!): [Flashcard]!
     flashcard(flashcardId: ID!): Flashcard

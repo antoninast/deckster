@@ -13,7 +13,7 @@ interface ProfileArgs {
 
 interface AddProfileArgs {
   input: {
-    username: string;  // Changed from 'login'
+    username: string; // Changed from 'login'
     email: string;
     password: string;
     securityQuestion: string;
@@ -145,7 +145,7 @@ const resolvers = {
       { deckId }: { deckId: string }
     ): Promise<ICardDeck | null> => {
       return await CardDeck.findByIdAndDelete(deckId);
-    }
+    },
     // addFlashcard(input: FlashcardInput!): Flashcard
     addFlashcard: async (
       _parent: any,

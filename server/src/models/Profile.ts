@@ -22,7 +22,8 @@ export interface IProfile extends Document {
 // Define the schema for the Profile document
 const profileSchema = new Schema<IProfile>(
   {
-    username: {  // Changed from 'login'
+    username: {
+      // Changed from 'login'
       type: String,
       required: true,
       unique: true,
