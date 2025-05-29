@@ -1,18 +1,18 @@
-import { useState, type FormEvent, type ChangeEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { useDispatch } from 'react-redux';
-import { LOGIN_USER } from '../../utils/mutations';
-import Auth from '../../utils/auth';
-import './Login.css';
-import { setLogin } from '../../user/userState';
+import { useState, type FormEvent, type ChangeEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { useDispatch } from "react-redux";
+import { LOGIN_USER } from "../../utils/mutations";
+import Auth from "../../utils/auth";
+import "./Login.css";
+import { setLogin } from "../../user/userState";
 
 //TODO: Add option for "I forgot my password" to reset with security question
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [formState, setFormState] = useState({ email: '', password: '' });
+  const [formState, setFormState] = useState({ email: "", password: "" });
   const [login, { error, data }] = useMutation(LOGIN_USER);
 
   // update state based on form input changes
@@ -34,22 +34,24 @@ const Login = () => {
         variables: { ...formState },
       });
 
-      console.log('name here:', data.login.profile);
-      dispatch(setLogin({
-        name: data.login.profile.name,
-        _id: data.login.profile._id
-      }));
+      console.log("username here:", data.login.profile.username); // Changed
+      dispatch(
+        setLogin({
+          username: data.login.profile.username, // Changed from 'name'
+          _id: data.login.profile._id,
+        })
+      );
 
       Auth.login(data.login.token);
-
-      navigate('/browse-decks');
+      navigate("/browse-decks");
     } catch (e) {
       console.error(e);
     }
+
     // clear form values
     setFormState({
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     });
   };
 
@@ -58,11 +60,12 @@ const Login = () => {
       <div>
         <div>
           <h4>Login</h4>
-          <div>{data ? (
-            <p>
-              Success! You may now head{' '}
-              <Link to="/">back to the homepage.</Link>
-            </p>
+          <div>
+            {data ? (
+              <p>
+                Success! You may now head{" "}
+                <Link to="/">back to the homepage.</Link>
+              </p>
             ) : (
               <form onSubmit={handleFormSubmit}>
                 <input
@@ -79,19 +82,12 @@ const Login = () => {
                   value={formState.password}
                   onChange={handleChange}
                 />
-                <button
-                  style={{ cursor: 'pointer' }}
-                  type="submit"
-                >
+                <button className="submit-button" type="submit">
                   Submit
                 </button>
               </form>
             )}
-            {error && (
-              <div>
-                {error.message}
-              </div>
-            )}
+            {error && <div>{error.message}</div>}
           </div>
         </div>
       </div>

@@ -1,13 +1,16 @@
-import { Profile, SecurityQuestion } from '../models/index.js';
+import { Profile, SecurityQuestion } from "../models/index.js";
 
 const cleanDB = async (): Promise<void> => {
   try {
-    await Profile.deleteMany({});
-    await SecurityQuestion.deleteMany({});
-    console.log('Profile collection cleaned.');
+    // Drop the entire collection (removes indexes too)
+    await Profile.collection.drop().catch(() => {
+      console.log("Profile collection does not exist, creating new one.");
+    });
 
+    await SecurityQuestion.deleteMany({});
+    console.log("Collections cleaned.");
   } catch (err) {
-    console.error('Error cleaning collections:', err);
+    console.error("Error cleaning collections:", err);
     process.exit(1);
   }
 };

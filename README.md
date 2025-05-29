@@ -1,4 +1,4 @@
-FEATURES:
+# FEATURES
 
 User Authentication: Secure user registration and login using JWT.
 
@@ -19,4 +19,3 @@ Performance Tracking: statistics on correct/incorrect answers at the individual 
 Visual Analytics: Graphical representation of learning progress and performance i.e. widget that displays the percentage answered correctly for flashcards and decks?
 
 Responsive UI: optimize the application for browsers and for mobile divices
-
