@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 // Define an interface for the Profile document
 export interface IProfile extends Document {
   _id: Types.ObjectId;
-  login: string;
+  username: string;
   email: string;
   password: string;
   fullName?: string;
@@ -22,7 +22,7 @@ export interface IProfile extends Document {
 // Define the schema for the Profile document
 const profileSchema = new Schema<IProfile>(
   {
-    login: {
+    username: {  // Changed from 'login'
       type: String,
       required: true,
       unique: true,
@@ -40,6 +40,12 @@ const profileSchema = new Schema<IProfile>(
       required: true,
       minlength: 5,
     },
+    securityQuestion: {
+      type: String,
+    },
+    securityAnswer: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -48,22 +54,12 @@ const profileSchema = new Schema<IProfile>(
   }
 );
 
-profileSchema.virtual("studyAttempts", {
-  ref: "StudyAttempt",
-  localField: "_id",
-  foreignField: "userId",
-  justOne: false,
-  // Sort by most recent attempts first
-  options: { sort: { createdAt: -1 } },
-});
-
 // set up pre-save middleware to create password
 profileSchema.pre<IProfile>("save", async function (next) {
   if (this.isNew || this.isModified("password")) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
-
   next();
 });
 

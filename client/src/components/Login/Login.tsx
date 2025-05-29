@@ -26,32 +26,32 @@ const Login = () => {
   };
 
   // submit form
-  const handleFormSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+const handleFormSubmit = async (event: FormEvent) => {
+  event.preventDefault();
 
-    try {
-      const { data } = await login({
-        variables: { ...formState },
-      });
-
-      console.log('name here:', data.login.profile);
-      dispatch(setLogin({
-        name: data.login.profile.name,
-        _id: data.login.profile._id
-      }));
-
-      Auth.login(data.login.token);
-
-      navigate('/browse-decks');
-    } catch (e) {
-      console.error(e);
-    }
-    // clear form values
-    setFormState({
-      email: '',
-      password: '',
+  try {
+    const { data } = await login({
+      variables: { ...formState },
     });
-  };
+
+    console.log('username here:', data.login.profile.username);  // Changed
+    dispatch(setLogin({
+      username: data.login.profile.username,  // Changed from 'name'
+      _id: data.login.profile._id
+    }));
+
+    Auth.login(data.login.token);
+    navigate('/browse-decks');
+  } catch (e) {
+    console.error(e);
+  }
+
+  // clear form values
+  setFormState({
+    email: '',
+    password: '',
+  });
+};
 
   return (
     <main>
@@ -80,7 +80,7 @@ const Login = () => {
                   onChange={handleChange}
                 />
                 <button
-                  style={{ cursor: 'pointer' }}
+                  className="submit-button"
                   type="submit"
                 >
                   Submit

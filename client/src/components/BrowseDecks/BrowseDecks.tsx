@@ -9,7 +9,7 @@ const BrowseDecks = () => {
         return state.user.value
     });
     const { loading, data } = useQuery(QUERY_USER_DECKS,
-        // userId is hardcoded value, must change it later 
+        // userId is hardcoded value, must change it later
         { variables: { userId: user?._id } }
     );
 
@@ -32,7 +32,7 @@ const BrowseDecks = () => {
                    <p>Deck id:{deck._id}</p>
                    <p>Deck name: {deck.name}</p>
                    <p>Deck category: {deck.categoryName}</p>
-                   <img src={deck.image_url}></img>
+                   <img src={deck.image_url} alt={`Deck image for ${deck.name}`}></img>
                 </div>)
             })}
         </div>

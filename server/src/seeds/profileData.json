@@ -1,6 +1,6 @@
 [
   {
-    "login": "brianluvsyou",
+    "username": "brianluvsyou",
     "email": "bkernighan@techfriends.dev",
     "password": "password01",
     "fullName": "Brian Kernighan",
@@ -8,7 +8,7 @@
     "securityAnswer": "C"
   },
   {
-    "login": "dennis",
+    "username": "dennis",
     "email": "dennis@tennis.com",
     "password": "password02",
     "fullName": "Dennis Ritchie",
@@ -16,7 +16,7 @@
     "securityAnswer": "Smith"
   },
   {
-    "login": "gracehopper",
+    "username": "gracehopper",
     "email": "ghopper@megacorp.com",
     "password": "password03",
     "fullName": "Grace Hopper",

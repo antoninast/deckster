@@ -1,7 +1,7 @@
 const typeDefs = `
   type Profile {
     _id: ID
-    name: String
+    username: String  # Changed from 'name'
     email: String
     password: String
     studyAttempts: [StudyAttempt]
@@ -11,11 +11,13 @@ const typeDefs = `
     token: ID!
     profile: Profile
   }
-  
+
   input ProfileInput {
-    name: String!
+    username: String!  # Changed from 'name'
     email: String!
     password: String!
+    securityQuestion: String!
+    securityAnswer: String!
   }
 
   type StudyAttempt {
@@ -77,13 +79,14 @@ const typeDefs = `
     profiles: [Profile]!
     profile(profileId: ID!): Profile
     me: Profile
-    
+
     cardDecks: [CardDeck]!
     cardDecksByUser(userId: ID!): [CardDeck]!
     myCardDecks: [CardDeck]!
     cardDeck(deckId: ID!): CardDeck
-    
-    
+
+
+
     flashcards: [Flashcard]!
     flashcardsByDeck(deckId: ID!): [Flashcard]!
     flashcard(flashcardId: ID!): Flashcard
@@ -101,6 +104,8 @@ const typeDefs = `
     updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
     removeFlashcard(flashcardId: ID!): Flashcard
     reviewFlashcard(flashcardId: ID!, correct: Boolean!): Flashcard
+
+    addMultipleFlashcards(flashcards: [FlashcardInput!]!): [Flashcard]
   }
 `;
 

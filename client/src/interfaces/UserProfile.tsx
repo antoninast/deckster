@@ -1,6 +1,6 @@
 export interface UserProfile {
     id?: number;
-    login: string;
+    username: string;  // Changed from 'login'
     email: string;
     password: string;
     fullName?: string;
@@ -10,6 +10,4 @@ export interface UserProfile {
     lastLogin: Date | null;
     securityQuestion?: string;
     securityAnswer?: string;
-}   
-
-
+}

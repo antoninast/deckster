@@ -13,7 +13,7 @@ interface ProfileArgs {
 
 interface AddProfileArgs {
   input: {
-    login: string;
+    username: string;  // Changed from 'login'
     email: string;
     password: string;
     securityQuestion: string;
@@ -101,9 +101,10 @@ const resolvers = {
       { input }: AddProfileArgs
     ): Promise<{ token: string; profile: IProfile }> => {
       const profile = await Profile.create({ ...input });
-      const token = signToken(profile.login, profile.email, profile._id);
+      const token = signToken(profile.username, profile.email, profile._id);
       return { token, profile };
     },
+
     login: async (
       _parent: any,
       { email, password }: { email: string; password: string }
@@ -116,9 +117,10 @@ const resolvers = {
       if (!correctPw) {
         throw AuthenticationError;
       }
-      const token = signToken(profile.login, profile.email, profile._id);
+      const token = signToken(profile.username, profile.email, profile._id);
       return { token, profile };
     },
+
     // addCardDeck(input: CardDeckInput!): CardDeck
     addCardDeck: async (
       _parent: any,
@@ -143,7 +145,7 @@ const resolvers = {
       { deckId }: { deckId: string }
     ): Promise<ICardDeck | null> => {
       return await CardDeck.findByIdAndDelete(deckId);
-    },
+    }
     // addFlashcard(input: FlashcardInput!): Flashcard
     addFlashcard: async (
       _parent: any,
