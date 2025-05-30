@@ -7,6 +7,8 @@ export const ADD_PROFILE = gql`
       profile {
         _id
         username
+        email
+        password
       }
     }
   }

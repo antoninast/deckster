@@ -1,9 +1,24 @@
-// import { gql } from 'apollo-server'
+// import { gql } from 'apollo-server-express';
 
-// const typeDefs = gql`
+// export default gql`
+//     scalar Upload
+
+//     type User {
+//         id: ID!
+//         username: String!
+//         avatarUrl: String
+//     }
+
+//     type Mutation {
+//         createUser(username: String!, avatar: Upload): User
+//     }
+
 //     type Mutation {
 //         importCSV(csvData: string!): Boolean!
 //     }
-// `;
 
-// export default typeDefs
+//     type Query {
+//         users: [User]
+//     }
+
+// `;

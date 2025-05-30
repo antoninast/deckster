@@ -16,3 +16,9 @@ form button {
     cursor: pointer;
     /* Migrated from inline style */
 }
+
+.signup-link {
+    padding: 5em,5em,5em,5em;
+    text-decoration: none;
+    cursor: pointer;
+}
