@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const ADD_PROFILE = gql`
   mutation addProfile($input: ProfileInput!) {
@@ -6,12 +6,13 @@ export const ADD_PROFILE = gql`
       token
       profile {
         _id
-        name
+        username
+        email
+        password
       }
     }
   }
 `;
-
 
 export const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
@@ -19,18 +20,55 @@ export const LOGIN_USER = gql`
       token
       profile {
         _id
-        name
+        username
       }
     }
   }
 `;
 
-export const REMOVE_SKILL = gql`
-  mutation removeSkill($skill: String!) {
-    removeSkill(skill: $skill) {
+export const REVIEW_FLASHCARD = gql`
+  mutation reviewFlashcard(
+    $flashcardId: ID!
+    $correct: Boolean!
+    $studySessionId: String!
+  ) {
+    reviewFlashcard(
+      flashcardId: $flashcardId
+      correct: $correct
+      studySessionId: $studySessionId
+    ) {
       _id
-      name
-      skills
+      question
+      answer
+      image_url
+      deckId
     }
   }
 `;
+
+export const REMOVE_FLASHCARD = gql`
+  mutation removeFlashcard($flashcardId: ID!) {
+    removeFlashcard(flashcardId: $flashcardId) {
+      _id
+    }
+  }
+`;
+
+export const UPDATE_FLASHCARD = gql`
+  mutation updateFlashcard($flashcardId: ID!, $input: FlashcardInput!) {
+    updateFlashcard(flashcardId: $flashcardId, input: $input) {
+      _id
+      question
+      answer
+    }
+  }
+`;
+
+export const REMOVE_CARDDECK = gql`
+  mutation removeCardDeck($deckId: String!) {
+    removeCardDeck(deckId: $deckId) {
+      _id
+    }
+  }
+`;
+

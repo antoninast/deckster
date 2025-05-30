@@ -1,0 +1,19 @@
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: rgba(117, 165, 117, 0.517);
+    vertical-align: middle;
+}
+
+.navbar a {
+    margin-left: 2em;
+}
+
+.brand-logo {
+    margin: 2em,2em,2em,2em;
+    font-size: 2em;
+    text-decoration: none;
+    justify-content: left;
+    width: 200px;
+}

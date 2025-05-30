@@ -1,56 +1,76 @@
 const typeDefs = `
   type Profile {
     _id: ID
-    name: String
+    username: String  # Changed from 'name'
     email: String
     password: String
-    skills: [String]!
+    studyAttempts: [StudyAttempt]
   }
 
   type Auth {
     token: ID!
     profile: Profile
   }
-  
+
   input ProfileInput {
-    name: String!
+    username: String!  # Changed from 'name'
     email: String!
     password: String!
+    securityQuestion: String!
+    securityAnswer: String!
+  }
+
+  type StudyAttempt {
+    _id: ID
+    userId: ID
+    flashcardId: ID
+    deckId: ID
+    isCorrect: Boolean
+    timestamp: String
+    studySessionId: String
+  }
+
+  type StudyAttemptStats {
+    totalAttempts: Int!
+    correctAttempts: Int!
+    attemptAccuracy: Float!
+    proficiency: String!
   }
 
   type CardDeck {
     _id: ID
-    deckName: String
+    name: String
     lastReview: String
     image_url: String
-    category: String
-    user: Profile
-}
+    categoryName: String
+    userId: ID
+    flashcardIds: [ID]
+    numberOfCards: Int
+    userStudyAttemptStats: StudyAttemptStats
+    isPublic: Boolean
+  }
 
   type Flashcard {
     _id: ID
     question: String
     answer: String
-    difficulty: Int
-    attempts: Int
-    correct: Int
-    lastReview: String
     image_url: String
-    deck: CardDeck
-}
+    deckId: ID
+    userStudyAttemptStats: StudyAttemptStats
+  }
 
   input CardDeckInput {
-    deckName: String!
+    name: String!
     image_url: String
-    categoryId: ID
+    categoryName: String
+    userId: ID!
+    flashcardIds: [ID]
+    isPublic: Boolean
   }
 
   input FlashcardInput {
     question: String!
     answer: String!
-    difficulty: Int
-    image_url: String
-    deckId: ID!
   }
 
   type Query {
@@ -58,11 +78,11 @@ const typeDefs = `
     profile(profileId: ID!): Profile
     me: Profile
     
-    cardDecks: [CardDeck]!
+    cardDecks(isPublic: Boolean): [CardDeck]!
     cardDecksByUser(userId: ID!): [CardDeck]!
     myCardDecks: [CardDeck]!
     cardDeck(deckId: ID!): CardDeck
-    
+
     flashcards: [Flashcard]!
     flashcardsByDeck(deckId: ID!): [Flashcard]!
     flashcard(flashcardId: ID!): Flashcard
@@ -71,9 +91,6 @@ const typeDefs = `
   type Mutation {
     addProfile(input: ProfileInput!): Auth
     login(email: String!, password: String!): Auth
-    addSkill(profileId: ID!, skill: String!): Profile
-    removeProfile: Profile
-    removeSkill(skill: String!): Profile
 
     addCardDeck(input: CardDeckInput!): CardDeck
     updateCardDeck(deckId: ID!, input: CardDeckInput!): CardDeck
@@ -82,7 +99,9 @@ const typeDefs = `
     addFlashcard(input: FlashcardInput!): Flashcard
     updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
     removeFlashcard(flashcardId: ID!): Flashcard
-    reviewFlashcard(flashcardId: ID!, correct: Boolean!): Flashcard
+    reviewFlashcard(flashcardId: ID!, correct: Boolean!, studySessionId: String!): Flashcard
+
+    addMultipleFlashcards(flashcards: [FlashcardInput!]!): [Flashcard]
   }
 `;
 

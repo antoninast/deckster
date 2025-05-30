@@ -1,10 +1,14 @@
 export interface CardDeck {
-    id: number;
-    deckName: string;
-    lastReview: Date | null;
-    image_url: string | null;
-    category: {
-        id: number | null;
-        name: string | null;
-    };
+  _id: string;
+  name: string;
+  lastReview: Date;
+  image_url: string;
+  categoryName: string;
+  userId: number;
+  flashcardIds: number[];
+  isPublic: boolean;
+  userStudyAttemptStats?: {
+    attemptAccuracy?: number;
+    proficiency?: string;
+  };
 }

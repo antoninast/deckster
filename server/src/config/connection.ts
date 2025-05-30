@@ -8,8 +8,10 @@ const __dirname = dirname(__filename);
 
 // Configure dotenv with explicit path to server/.env
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+console.log("path:" + path.resolve(__dirname, "../../.env"));
 
 const MONGODB_URI = process.env.MONGODB_URI || "";
+console.log("MONGODB_URI:", MONGODB_URI);
 
 const db = async (): Promise<typeof mongoose.connection> => {
   try {
