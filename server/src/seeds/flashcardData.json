@@ -2,70 +2,42 @@
   {
     "question": "What is the capital of France?",
     "answer": "Paris",
-    "difficulty": 1,
-    "attempts": 0,
-    "correct": 0,
-    "lastReview": "new Date()",
     "image_url": "",
     "deckId": "649f3a2b4f1e8c001c4e5d7a"
   },
   {
     "question": "What is the largest planet in our solar system?",
     "answer": "Jupiter",
-    "difficulty": 2,
-    "attempts": 0,
-    "correct": 0,
-    "lastReview": "new Date()",
     "image_url": "",
     "deckId": "649f3a2b4f1e8c001c4e5d7a"
   },
   {
     "question": "What is the chemical symbol for gold?",
     "answer": "Au",
-    "difficulty": 3,
-    "attempts": 0,
-    "correct": 0,
-    "lastReview": "new Date()",
     "image_url": "",
     "deckId": "649f3a2b4f1e8c001c4e5d7a"
   },
   {
     "question": "What is the speed of light?",
     "answer": "299,792,458 m/s",
-    "difficulty": 4,
-    "attempts": 0,
-    "correct": 0,
-    "lastReview": "new Date()",
     "image_url": "",
     "deckId": "649f3a2b4f1e8c001c4e5d7a"
   },
   {
     "question": "What is the square root of 64?",
     "answer": "8",
-    "difficulty": 1,
-    "attempts": 0,
-    "correct": 0,
-    "lastReview": "new Date()",
     "image_url": "",
     "deckId": "649f3a2b4f1e8c001c4e5d7a"
   },
   {
     "question": "What is the capital of Japan?",
     "answer": "Tokyo",
-    "difficulty": 2,
-    "attempts": 0,
-    "correct": 0,
-    "lastReview": "new Date()",
     "image_url": "",
     "deckId": "649f3a2b4f1e8c001c4e5d7a"
   },
   {
     "question": "What is the largest ocean on Earth?",
     "answer": "Pacific Ocean",
-    "difficulty": 3,
-    "attempts": 0,
-    "correct": 0,
-    "lastReview": "new Date()",
     "image_url": "",
     "deckId": "649f3a2b4f1e8c001c4e5d7a"
   }
