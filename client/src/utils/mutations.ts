@@ -27,7 +27,7 @@ export const LOGIN_USER = gql`
 `;
 
 export const REVIEW_FLASHCARD = gql`
-  mutation ReviewFlashcard(
+  mutation reviewFlashcard(
     $flashcardId: ID!
     $correct: Boolean!
     $studySessionId: String!
@@ -38,8 +38,27 @@ export const REVIEW_FLASHCARD = gql`
       studySessionId: $studySessionId
     ) {
       _id
-      isCorrect
-      studySessionId
+      question
+      answer
+      image_url
+      deckId
     }
   }
 `;
+
+export const REMOVE_FLASHCARD = gql`
+  mutation removeFlashcard($flashcardId: ID!) {
+    removeFlashcard(flashcardId: $flashcardId) {
+      _id
+    }
+  }
+`;
+
+export const REMOVE_CARDDECK = gql`
+  mutation removeCardDeck($deckId: String!) {
+    removeCardDeck(deckId: $deckId) {
+      _id
+    }
+  }
+`;
+

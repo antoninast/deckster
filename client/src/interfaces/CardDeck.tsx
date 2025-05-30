@@ -1,5 +1,5 @@
 export interface CardDeck {
-  _id: number;
+  _id: string;
   name: string;
   lastReview: Date;
   image_url: string;

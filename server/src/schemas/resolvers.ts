@@ -4,8 +4,7 @@ import { IFlashcard } from "../models/Flashcard.js";
 import { ICardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 import mongoose from "mongoose";
-// import { parse } from 'csv-parse/sync'
-// import { insertMany } from './db'
+import { ObjectId } from "mongodb";
 
 interface ProfileArgs {
   profileId: string;
@@ -62,7 +61,8 @@ const resolvers = {
       _parent: any,
       { userId }: { userId: string }
     ): Promise<ICardDeck[]> => {
-      return await CardDeck.find({ userId });
+      const objectId = new ObjectId(userId);
+      return await CardDeck.find({ userId: objectId });
     },
     // myCardDecks: [CardDeck]!
     myCardDecks: async (
@@ -91,7 +91,8 @@ const resolvers = {
       _parent: any,
       { deckId }: { deckId: string }
     ): Promise<IFlashcard[]> => {
-      return await Flashcard.find({ deckId });
+      const objectId = new ObjectId(deckId);
+      return await Flashcard.find({ deckId: objectId });
     },
     // flashcard(flashcardId: ID!): Flashcard
     flashcard: async (
@@ -151,7 +152,8 @@ const resolvers = {
       _parent: any,
       { deckId }: { deckId: string }
     ): Promise<ICardDeck | null> => {
-      return await CardDeck.findByIdAndDelete(deckId);
+      const objectId = new ObjectId(deckId);
+      return await CardDeck.findByIdAndDelete(objectId);
     },
     // addFlashcard(input: FlashcardInput!): Flashcard
     addFlashcard: async (
@@ -192,6 +194,9 @@ const resolvers = {
       },
       context: Context
     ): Promise<IFlashcard | null> => {
+      console.log("Server - flashcardId:", flashcardId);
+      console.log("Server - correct:", correct);
+      console.log("Server - studySessionId:", studySessionId);
       if (!context.user) {
         throw AuthenticationError;
       }
