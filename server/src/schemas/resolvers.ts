@@ -192,6 +192,9 @@ const resolvers = {
       },
       context: Context
     ): Promise<IFlashcard | null> => {
+      console.log("Server - flashcardId:", flashcardId);
+      console.log("Server - correct:", correct);
+      console.log("Server - studySessionId:", studySessionId);
       if (!context.user) {
         throw AuthenticationError;
       }

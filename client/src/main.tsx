@@ -16,6 +16,7 @@ import Signup from './components/Signup/Signup.js';
 import Login from './components/Login/Login.js';
 import Error from './components/Error/Error.js';
 import BrowseDecks from './components/BrowseDecks/BrowseDecks.js';
+import Study from './pages/Study.js';
 import { store } from './app/store';
 
 const httpLink = createHttpLink({
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: '/browse-decks',
         element: <BrowseDecks />
+      },
+      {
+        path: '/study/:deckId',
+        element: <Study />
       }
     ]
   },

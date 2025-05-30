@@ -1,5 +1,5 @@
 export interface UserProfile {
-  id?: number;
+  id?: string;
   username: string; // Changed from 'login'
   email: string;
   password: string;
