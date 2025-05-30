@@ -20,23 +20,16 @@ export default function Study() {
   useEffect(() => {
     // Create a new study session when component mounts
     const newSessionId = createStudySession();
-    console.log("$$$$$$$ Creating new study session with ID:", newSessionId);
     setSessionId(newSessionId);
   }, []);
 
   if (loading) return <div>Loading...</div>;
 
   const flashcards = data?.flashcardsByDeck || [];
-  console.log("flashcards:", flashcards);
-  console.log("Current card index:", currentCardIndex);
 
   const handleResponse = async (correct: boolean) => {
-    console.log("Handling response for card:", flashcards[currentCardIndex]);
     if (!flashcards[currentCardIndex]) return;
-    console.log("Recording review for card:", flashcards[currentCardIndex]._id);
-    console.log("flashcardId:", flashcards[currentCardIndex]._id);
-    console.log("Correct response:", correct);
-    console.log("Session ID:", sessionId);
+
     try {
       await reviewFlashcard({
         variables: {
