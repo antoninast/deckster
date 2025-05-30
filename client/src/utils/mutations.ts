@@ -54,6 +54,16 @@ export const REMOVE_FLASHCARD = gql`
   }
 `;
 
+export const UPDATE_FLASHCARD = gql`
+  mutation updateFlashcard($flashcardId: ID!, $input: FlashcardInput!) {
+    updateFlashcard(flashcardId: $flashcardId, input: $input) {
+      _id
+      question
+      answer
+    }
+  }
+`;
+
 export const REMOVE_CARDDECK = gql`
   mutation removeCardDeck($deckId: String!) {
     removeCardDeck(deckId: $deckId) {
