@@ -71,8 +71,6 @@ const typeDefs = `
   input FlashcardInput {
     question: String!
     answer: String!
-    image_url: String
-    deckId: ID!
   }
 
   type Query {

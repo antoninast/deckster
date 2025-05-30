@@ -2,3 +2,9 @@
     border: 1px solid green;
     margin: 1em;
 }
+
+.flashcard .edit-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
