@@ -1,35 +1,35 @@
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
   createHttpLink,
-} from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 
-import App from './App.jsx';
-import Home from './components/HomePage/Home.js';
-import Profile from './components/Profile/Profile.js';
-import Signup from './components/Signup/Signup.js';
-import Login from './components/Login/Login.js';
-import Error from './components/Error/Error.js';
-import BrowseDecks from './components/BrowseDecks/BrowseDecks.js';
-import Study from './pages/Study.js';
-import { store } from './app/store';
-import ManageFlashcards from './components/ManageFlashcards/ManageFlashcards.js';
+import App from "./App.jsx";
+import Home from "./components/HomePage/Home.js";
+import Profile from "./components/Profile/Profile.js";
+import Signup from "./components/Signup/Signup.js";
+import Login from "./components/Login/Login.js";
+import Error from "./components/Error/Error.js";
+import BrowseDecks from "./components/BrowseDecks/BrowseDecks.js";
+import Study from "./components/Study/Study.js";
+import { store } from "./app/store";
+import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
 
 const httpLink = createHttpLink({
-  uri: '/graphql',
+  uri: "/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('id_token');
+  const token = localStorage.getItem("id_token");
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      authorization: token ? `Bearer ${token}` : "",
     },
   };
 });
@@ -43,37 +43,37 @@ const router = createBrowserRouter([
       {
         index: true,
         // path: '/home',
-        element: <Home />
+        element: <Home />,
       },
       {
-        path: '/login',
-        element: <Login />
+        path: "/login",
+        element: <Login />,
       },
       {
-        path: '/signup',
-        element: <Signup />
+        path: "/signup",
+        element: <Signup />,
       },
       {
-        path: '/profile/:profileId',
-        element: <Profile />
+        path: "/profile/:profileId",
+        element: <Profile />,
       },
       {
-        path: '/me',
-        element: <Profile />
+        path: "/me",
+        element: <Profile />,
       },
       {
-        path: '/browse-decks',
-        element: <BrowseDecks />
+        path: "/browse-decks",
+        element: <BrowseDecks />,
       },
       {
-        path: '/study/:deckId',
-        element: <Study />
+        path: "/study-deck/:deckId",
+        element: <Study />,
       },
       {
-        path: '/browse-decks/:deckId',
-        element: <ManageFlashcards />
-      }
-    ]
+        path: "/browse-decks/:deckId",
+        element: <ManageFlashcards />,
+      },
+    ],
   },
 ]);
 
@@ -83,7 +83,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <Provider store={store}>

@@ -101,7 +101,61 @@ const resolvers = {
     ): Promise<IFlashcard | null> => {
       return await Flashcard.findOne({ _id: flashcardId });
     },
+    sessionStats: async (
+      _parent: any,
+      { studySessionId }: { studySessionId: string },
+      context: Context
+    ) => {
+      if (!context.user) {
+        throw AuthenticationError;
+      }
+
+      const userId = new mongoose.Types.ObjectId(context.user._id);
+
+      const results = await StudyAttempt.aggregate([
+        {
+          $match: {
+            userId,
+            studySessionId,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalAttempts: { $sum: 1 },
+            correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
+          },
+        },
+        {
+          $addFields: {
+            attemptAccuracy: {
+              $multiply: [
+                { $divide: ["$correctAttempts", "$totalAttempts"] },
+                100,
+              ],
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            totalAttempts: 1,
+            correctAttempts: 1,
+            attemptAccuracy: 1,
+          },
+        },
+      ]);
+
+      return (
+        results[0] || {
+          totalAttempts: 0,
+          correctAttempts: 0,
+          attemptAccuracy: 0,
+        }
+      );
+    },
   },
+
   Mutation: {
     //TODO: Hash the profile password before saving
     addProfile: async (

@@ -59,6 +59,12 @@ const typeDefs = `
     userStudyAttemptStats: StudyAttemptStats
   }
 
+  type SessionStats {
+  totalAttempts: Int!
+  correctAttempts: Int!
+  attemptAccuracy: Float!
+  }
+
   input CardDeckInput {
     name: String!
     image_url: String
@@ -86,6 +92,8 @@ const typeDefs = `
     flashcards: [Flashcard]!
     flashcardsByDeck(deckId: ID!): [Flashcard]!
     flashcard(flashcardId: ID!): Flashcard
+
+    sessionStats(studySessionId: String!): SessionStats
   }
 
   type Mutation {

@@ -24,17 +24,21 @@ const BrowseDecks = () => {
   const handleRemoveCardDeck = async (deckId: string) => {
     try {
       const { data } = await removeCardDeck({
-        variables: { deckId } 
+        variables: { deckId },
       });
-      console.log('removed card deck', data, error);
+      console.log("removed card deck", data, error);
     } catch (error) {
       throw new Error(`Failed to remove the deck, ${error}`);
     }
-  }
+  };
 
   const handleOpenDeck = (deckId: string) => {
-    navigate(`/browse-decks/${deckId}`)
-  }
+    navigate(`/browse-decks/${deckId}`);
+  };
+
+  const handleStudyDeck = (deckId: string) => {
+    navigate(`/study-deck/${deckId}`);
+  };
 
   if (loading) {
     return <div>Loading available decks...</div>;
@@ -54,14 +58,21 @@ const BrowseDecks = () => {
             <p>Deck name: {deck.name}</p>
             <p>Deck category: {deck.categoryName}</p>
             <p>
-              Accuracy: {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1)}%
+              Accuracy:{" "}
+              {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1)}%
             </p>
             <p>
-              Proficiency: {deck.userStudyAttemptStats?.proficiency || "No Data"}
+              Proficiency:{" "}
+              {deck.userStudyAttemptStats?.proficiency || "No Data"}
             </p>
             <img src={deck.image_url} alt={deck.name}></img>
-            <button onClick={() => handleRemoveCardDeck(deck._id)}>Delete</button>
+            <button onClick={() => handleRemoveCardDeck(deck._id)}>
+              Delete
+            </button>
             <button onClick={() => handleOpenDeck(deck._id)}>Open deck</button>
+            <button onClick={() => handleStudyDeck(deck._id)}>
+              Study deck
+            </button>
           </div>
         );
       })}

@@ -12,6 +12,7 @@ export default function Flashcard({
   answer,
   onResponse,
 }: FlashcardProps) {
+  // set isFlipped to false to show question side first
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -25,22 +26,31 @@ export default function Flashcard({
   };
 
   return (
-    <div
-      className={`flashcard ${isFlipped ? "flipped" : ""}`}
-      onClick={() => setIsFlipped(!isFlipped)}
-      tabIndex={0}
-      onKeyDown={handleKeyPress}
-    >
-      <div className="flashcard-inner">
-        <div className="flashcard-front">
-          <p>{question}</p>
-        </div>
-        <div className="flashcard-back">
-          <p>{answer}</p>
+    <div className="flashcard-container">
+      <div
+        className={`flashcard ${isFlipped ? "flipped" : ""}`}
+        onClick={() => setIsFlipped(!isFlipped)}
+        tabIndex={0}
+        onKeyDown={handleKeyPress}
+      >
+        <div className="flashcard-inner">
+          <div className="flashcard-front">
+            <div className="card-content">
+              <h3>Question</h3>
+              <p>{question}</p>
+            </div>
+          </div>
+          <div className="flashcard-back">
+            <div className="card-content">
+              <h3>Answer</h3>
+              <p>{answer}</p>
+            </div>
+          </div>
         </div>
       </div>
       <div className="controls">
         <button
+          className="incorrect-btn"
           onClick={(e) => {
             e.stopPropagation();
             onResponse(false);
@@ -49,6 +59,7 @@ export default function Flashcard({
           ❌ Incorrect
         </button>
         <button
+          className="correct-btn"
           onClick={(e) => {
             e.stopPropagation();
             onResponse(true);
