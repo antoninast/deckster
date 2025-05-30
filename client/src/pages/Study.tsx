@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_FLASHCARDS_BY_DECK } from "../utils/queries";
 import { REVIEW_FLASHCARD } from "../utils/mutations";
 import { createStudySession } from "../utils/sessionUtils";
-import Flashcard from "../components/Flashcard/Flashcard";
+import Flashcard from "../components/StudyFlashCards/Flashcard";
 
 export default function Study() {
   const { deckId } = useParams();

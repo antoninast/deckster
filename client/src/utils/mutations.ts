@@ -43,3 +43,20 @@ export const REVIEW_FLASHCARD = gql`
     }
   }
 `;
+
+export const REMOVE_FLASHCARD = gql`
+  mutation removeFlashcard($flashcardId: ID!) {
+    removeFlashcard(flashcardId: $flashcardId) {
+      _id
+    }
+  }
+`;
+
+export const REMOVE_CARDDECK = gql`
+  mutation removeCardDeck($deckId: String!) {
+    removeCardDeck(deckId: $deckId) {
+      _id
+    }
+  }
+`;
+
