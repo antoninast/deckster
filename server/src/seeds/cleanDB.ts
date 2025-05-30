@@ -9,6 +9,7 @@ const cleanDB = async (): Promise<void> => {
 
     await SecurityQuestion.deleteMany({});
     console.log("Collections cleaned.");
+    
   } catch (err) {
     console.error("Error cleaning collections:", err);
     process.exit(1);

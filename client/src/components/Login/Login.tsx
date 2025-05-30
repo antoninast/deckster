@@ -60,6 +60,10 @@ const Login = () => {
       <div>
         <div>
           <h4>Login</h4>
+          <div className="signup-link">
+            New user? Sign up <Link to="/signup">here</Link>!
+          </div>
+          <br></br>
           <div>
             {data ? (
               <p>

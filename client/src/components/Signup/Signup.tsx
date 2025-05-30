@@ -67,6 +67,8 @@ const Signup = () => {
     if (name === "password" || name === "passwordConfirm") {
       setPasswordError("");
     }
+
+
   };
 
   // submit form
@@ -79,9 +81,13 @@ const Signup = () => {
       return;
     }
 
+    const {email, password, securityAnswer, securityQuestion, username} = formState;
+
+    const formStateCopy = { email, password, securityAnswer, securityQuestion, username };
+
     try {
       const { data } = await addProfile({
-        variables: { input: { ...formState } },
+        variables: { input: formStateCopy},
       });
 
       Auth.login(data.addProfile.token);
