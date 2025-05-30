@@ -1,5 +1,5 @@
 export interface Flashcard {
-  _id: number;
+  _id: string;
   question: string;
   answer: string;
   image_url: string | null;
