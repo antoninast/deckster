@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom"
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
 import type { Flashcard } from "../../interfaces/Flashcard";
-import "./Flashcards.css";
+import "./ManageFlashcards.css";
 
 export default function Flashcards() {
     const { deckId } = useParams();

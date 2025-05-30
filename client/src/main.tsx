@@ -17,7 +17,7 @@ import Login from './components/Login/Login.js';
 import Error from './components/Error/Error.js';
 import BrowseDecks from './components/BrowseDecks/BrowseDecks.js';
 import { store } from './app/store';
-import Flashcards from './components/Flashcards/Flashcards.js';
+import ManageFlashcards from './components/ManageFlashcards/ManageFlashcards.js';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -66,7 +66,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/browse-decks/:deckId',
-        element: <Flashcards />
+        element: <ManageFlashcards />
       }
     ]
   },
