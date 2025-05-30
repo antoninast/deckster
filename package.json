@@ -15,7 +15,8 @@
     "build": "concurrently \"cd server && npm run build\" \"cd client && npm run build\"",
     "render-build": "npm install && npm run build",
     "potato": "npm install && npm run build && npm run start:dev",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linting specified\" && exit 0"
   },
   "keywords": [],
   "author": "",
