@@ -1,10 +1,10 @@
 :root {
   /* Primary Colors */
-  --color-sage: #CCD5AE;
-  --color-cream: #E9EDC9;
-  --color-vanilla: #FEFAE0;
-  --color-peach: #FAEDCD;
-  --color-tan: #D4A373;
+  --color-sage: #ccd5ae;
+  --color-cream: #e9edc9;
+  --color-vanilla: #fefae0;
+  --color-peach: #faedcd;
+  --color-tan: #d4a373;
 
   /* Semantic Variables */
   --color-primary: var(--color-sage);
@@ -20,4 +20,8 @@
   --button-secondary: var(--color-cream);
   --text-dark: #333333;
   --text-light: #ffffff;
+
+  /* Layout dimensions */
+  --header-height: 64px; /* Adjust this to match your actual header height */
+  --footer-height: 64px; /* Adjust this to match your actual footer height */
 }
