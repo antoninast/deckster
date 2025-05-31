@@ -40,20 +40,26 @@
   justify-content: center;
   border-radius: 12px;
   padding: 20px;
+  background-image: url("../../../dist/assets/Index_Card_Template.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .flashcard-front {
-  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  background-color: #ffffff;
 }
 
 .flashcard-back {
-  background: linear-gradient(145deg, #f8f8f8, #e8e8e8);
+  background-color: #f8f8f8;
   transform: rotateY(180deg);
 }
 
 .card-content {
   width: 100%;
   padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.55);
+  border-radius: 8px;
 }
 
 .card-content h3 {
