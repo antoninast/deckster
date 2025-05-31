@@ -19,6 +19,7 @@ import BrowseDecks from "./components/BrowseDecks/BrowseDecks.js";
 import Study from "./components/Study/Study.js";
 import { store } from "./app/store";
 import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
+import "./styles/variables.css";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
