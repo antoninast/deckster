@@ -65,7 +65,7 @@ export const UPDATE_FLASHCARD = gql`
 `;
 
 export const REMOVE_CARDDECK = gql`
-  mutation removeCardDeck($deckId: String!) {
+  mutation removeCardDeck($deckId: ID!) {
     removeCardDeck(deckId: $deckId) {
       _id
     }

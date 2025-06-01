@@ -1,0 +1,46 @@
+.decks-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.deck.card {
+    margin: 0.8em;
+    height: 15em;
+    width: 25em;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-tan);
+    box-shadow: 8px 10px 8px rgba(0, 0, 0, 0.1)
+}
+
+.deck-details {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 78%;
+    margin: 0.4em;
+}
+
+.delete-button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.delete-icon {
+    transition: transform 0.3s ease, fill 0.3s ease;
+    margin: 0.1em 0.3em 0 0;
+}
+
+.delete-icon:hover {
+    fill: red;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    margin-right: 0.4em;
+}

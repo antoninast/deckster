@@ -80,3 +80,25 @@ export const QUERY_FLASHCARDS_BY_DECK = gql`
     }
   }
 `;
+
+export const GET_SESSION_STATS = gql`
+  query GetSessionStats($studySessionId: String!) {
+    sessionStats(studySessionId: $studySessionId) {
+      totalAttempts
+      correctAttempts
+      sessionAccuracy
+    }
+  }
+`;
+
+export const GET_RECENT_SESSION_STATS = gql`
+  query GetRecentSessionsStats($deckId: ID!, $limit: Int) {
+    recentSessionsStats(deckId: $deckId, limit: $limit) {
+      studySessionId
+      timestamp
+      totalAttempts
+      correctAttempts
+      sessionAccuracy
+    }
+  }
+`;

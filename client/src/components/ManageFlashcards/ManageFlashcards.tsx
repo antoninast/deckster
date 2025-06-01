@@ -2,9 +2,9 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useParams } from "react-router-dom"
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
+import { REMOVE_FLASHCARD, UPDATE_FLASHCARD } from "../../utils/mutations";
 import type { Flashcard } from "../../interfaces/Flashcard";
 import "./ManageFlashcards.css";
-import { REMOVE_FLASHCARD, UPDATE_FLASHCARD } from "../../utils/mutations";
 
 export default function Flashcards() {
     const { deckId } = useParams();
@@ -39,6 +39,11 @@ export default function Flashcards() {
     }
 
     const handleUpdateFlashcard = async (flashcardId: string, question: string, answer: string) => {
+        if (currentlyEditedCardId && flashcardId !== currentlyEditedCardId) {
+            alert('You are currently editing another card. Do you want to save the changes?');
+            return;
+        }
+
         if (!editMode) {
             setCurrentlyEditedCardId(flashcardId);
             setUpdatedFlashcard({ question, answer });
@@ -61,11 +66,11 @@ export default function Flashcards() {
         }
     }
 
-    const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setUpdatedFlashcard({ ...updatedFlashcard, question: e.target.value });
     };
 
-    const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setUpdatedFlashcard({ ...updatedFlashcard, answer: e.target.value });
     };
 
@@ -82,24 +87,46 @@ export default function Flashcards() {
     return (
         <div>
             <h2>Flashcards Here - DECK ID - {deckId}</h2>
-            {flashcards.flashcardsByDeck.map((flashcard: Flashcard) => 
-                <div key={flashcard._id} className="flashcard">
-                    {flashcard._id === currentlyEditedCardId ? 
-                        <div className="edit-mode">
-                            <input value={updatedFlashcard.question} onChange={handleQuestionChange} />
-                            <input value={updatedFlashcard.answer} onChange={handleAnswerChange} />
-                        </div> :
-                        <div className="view-mode">
-                            <div>Question: {flashcard.question}</div>
-                            <div>Answer: {flashcard.answer}</div>
+            <div className="flashcards-container">
+                {flashcards.flashcardsByDeck.map((flashcard: Flashcard) =>
+                    <div key={flashcard._id} className="card">
+                        <div className="delete-button-wrapper" onClick={() => handleRemoveFlashcard(flashcard._id)}>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                width="17" height="17" fill="gray" className="bi bi-x-square delete-icon" viewBox="0 0 16 16">
+                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
                         </div>
-                    }
-                    <button
-                        onClick={() => handleUpdateFlashcard(flashcard._id, flashcard.question, flashcard.answer)}
-                    >{flashcard._id === currentlyEditedCardId ? 'Save' : 'Edit'}</button>
-                    {flashcard._id === currentlyEditedCardId ? '' : <button onClick={() => handleRemoveFlashcard(flashcard._id)}>Delete</button>}
-                </div>
-            )}
+                        {flashcard._id === currentlyEditedCardId ? 
+                            <div className="edit-mode">
+                                <textarea
+                                    className="question form-control"
+                                    value={updatedFlashcard.question}
+                                    onChange={handleQuestionChange}
+                                />
+                                <textarea
+                                    className="answer form-control"
+                                    value={updatedFlashcard.answer}
+                                    onChange={handleAnswerChange}
+                                />
+                            </div> :
+                            <div className="view-mode">
+                                <p className="card-question">{flashcard.question}</p>
+                                <hr></hr>
+                                <p className="card-answer">{flashcard.answer}</p>
+                            </div>
+                        }
+                        <div className="action-buttons">
+                            <div onClick={() => handleUpdateFlashcard(flashcard._id, flashcard.question, flashcard.answer)}>
+                                {flashcard._id === currentlyEditedCardId ?
+                                    <button type="button" className="btn btn-outline-info btn-sm">💾 Save</button> :
+                                    <button type="button" className="btn btn-outline-secondary btn-sm">✏️ Edit</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

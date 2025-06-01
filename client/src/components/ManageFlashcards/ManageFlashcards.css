@@ -1,10 +1,71 @@
-.flashcard {
-    border: 1px solid green;
-    margin: 1em;
+.flashcards-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.flashcard .edit-mode {
+.card {
+    margin: 0.8em;
+    height: 20em;
+    width: 18em;
+    align-items: flex-end;
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-beige);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.delete-button-wrapper svg {
+    margin: 0.1em 0.5em 0 0;
+}
+
+.view-mode,
+.edit-mode {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 78%;
+}
+
+.card-question {
+    color: var(--black-text);
+}
+
+.card-answer {
+    color: var(--gray-text);
+}
+
+.edit-mode textarea {
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 0.5em;
+    max-height: 6em;
+    background-color: var(--tea-green-lighter);
+    width: 90%;
+    color: var(--black-text);
+}
+
+.view-mode p {
+    width: 70%;
+    text-align: center;
+    font-weight: 450;
+}
+
+hr {
+    border-top: 4px dotted #705a4ac8;
+    margin: 1rem 0;
+    width: 55%;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    margin-right: 0.4em;
+}
+
+.action-buttons button {
+    margin-right: 0.4em;
 }
