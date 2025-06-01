@@ -19,6 +19,7 @@ import BrowseDecks from "./components/BrowseDecks/BrowseDecks.js";
 import Study from "./components/Study/Study.js";
 import { store } from "./app/store";
 import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
+import ImportPage from "./pages/ImportPage.js";
 import "./styles/variables.css";
 
 const httpLink = createHttpLink({
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
       {
         path: "/browse-decks/:deckId",
         element: <ManageFlashcards />,
+      },
+      {
+        path: "/deck/:deckId/import",
+        element: <ImportPage />,
       },
     ],
   },
