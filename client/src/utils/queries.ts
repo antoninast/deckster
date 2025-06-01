@@ -86,7 +86,7 @@ export const GET_SESSION_STATS = gql`
     sessionStats(studySessionId: $studySessionId) {
       totalAttempts
       correctAttempts
-      attemptAccuracy
+      sessionAccuracy
     }
   }
 `;

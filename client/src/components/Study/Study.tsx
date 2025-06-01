@@ -154,7 +154,7 @@ export default function Study() {
           <p>Final Results:</p>
           <p>Cards Studied: {stats?.totalAttempts}</p>
           <p>Correct: {stats?.correctAttempts}</p>
-          <p>Accuracy: {stats?.attemptAccuracy.toFixed(1)}%</p>
+          <p>Accuracy: {stats?.sessionAccuracy.toFixed(1)}%</p>
         </div>
         <div className="session-controls">
           <button onClick={startNewSession}>Study Again</button>

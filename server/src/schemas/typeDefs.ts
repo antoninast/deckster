@@ -62,7 +62,7 @@ const typeDefs = `
   type SessionStats {
   totalAttempts: Int!
   correctAttempts: Int!
-  attemptAccuracy: Float!
+  sessionAccuracy: Float!
   }
 
   input CardDeckInput {

@@ -128,7 +128,7 @@ const resolvers = {
         },
         {
           $addFields: {
-            attemptAccuracy: {
+            sessionAccuracy: {
               $multiply: [
                 { $divide: ["$correctAttempts", "$totalAttempts"] },
                 100,
@@ -141,7 +141,7 @@ const resolvers = {
             _id: 0,
             totalAttempts: 1,
             correctAttempts: 1,
-            attemptAccuracy: 1,
+            sessionAccuracy: 1,
           },
         },
       ]);
@@ -150,7 +150,7 @@ const resolvers = {
         results[0] || {
           totalAttempts: 0,
           correctAttempts: 0,
-          attemptAccuracy: 0,
+          sessionAccuracy: 0,
         }
       );
     },
