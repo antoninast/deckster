@@ -1,7 +1,7 @@
 .viewport {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; 
+  min-height: 100vh;
 }
 
 .container {
@@ -11,8 +11,103 @@
 }
 
 footer {
-  flex-shrink: 0; 
+  flex-shrink: 0;
   padding: 1rem;
   text-align: center;
-  margin-top: auto; 
+  margin-top: auto;
+}
+
+/* client/src/styles/global.css or wherever your main styles are */
+:root {
+  /* Earth tone palette */
+  --color-sage: #ccd5ae;
+  --color-cream: #e9edc9;
+  --color-vanilla: #fefae0;
+  --color-peach: #faedcd;
+  --color-tan: #d4a373;
+
+  /* Semantic assignments */
+  --primary-bg: var(--color-vanilla);
+  --secondary-bg: var(--color-cream);
+  --accent: var(--color-tan);
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --border-color: var(--color-sage);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body {
+  background-color: var(--primary-bg);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+/* Card styling for decks */
+.deck-card {
+  background: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.deck-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Button styling */
+.btn-primary {
+  background-color: var(--color-tan);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #c4935c;
+  transform: translateY(-1px);
+}
+
+/* Form styling */
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background-color: white;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Navigation styling */
+.navbar {
+  background-color: var(--color-sage);
+  padding: 1rem 2rem;
+  box-shadow: var(--shadow);
+}
+
+.navbar a {
+  color: var(--text-primary);
+  text-decoration: none;
+  margin: 0 1rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar a:hover {
+  color: var(--accent);
 }
