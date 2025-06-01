@@ -1,10 +1,13 @@
 :root {
   /* Primary Colors */
-  --color-sage: #CCD5AE;
-  --color-cream: #E9EDC9;
-  --color-vanilla: #FEFAE0;
-  --color-peach: #FAEDCD;
-  --color-tan: #D4A373;
+  --color-sage: #ccd5ae;
+  --color-beige: #edeae879;
+  --color-cream: #e9edc9;
+  --color-vanilla: #fefae0;
+  --color-peach: #faedcd;
+  --color-tan: #ead5ae80;
+  --black-text: #100f0f;
+  --gray-text: #555050;
 
   /* Semantic Variables */
   --color-primary: var(--color-sage);

@@ -1,27 +1,27 @@
 [
   {
-    "name": "Geography",
+    "name": "Countries by continent",
     "lastReview": "2024-08-15T12:00:00.000Z",
     "image_url": "https://example.com/history_us.jpg",
-    "categoryName": "6542b3b0a8e9b2b4d7b6c8f0",
+    "categoryName": "Geography",
     "userId": "6542b3b0a8e9b2b4d7b6c8e0",
     "flashcardIds": ["6542b3b0a8e9b2b4d7b6c8d0", "6542b3b0a8e9b2b4d7b6c8d1"],
     "isPublic": true
   },
   {
-    "name": "Math - Algebra",
+    "name": "Algebra",
     "lastReview": "2024-08-10T18:30:00.000Z",
     "image_url": "https://example.com/math_algebra.jpg",
-    "categoryName": "6542b3b0a8e9b2b4d7b6c8f1",
+    "categoryName": "Math",
     "userId": "6542b3b0a8e9b2b4d7b6c8e1",
     "flashcardIds": ["6542b3b0a8e9b2b4d7b6c8d2", "6542b3b0a8e9b2b4d7b6c8d3"],
     "isPublic": true
   },
   {
-    "name": "Science - Biology",
+    "name": "Biology",
     "lastReview": "2024-08-05T09:45:00.000Z",
     "image_url": "https://example.com/science_biology.jpg",
-    "categoryName": "6542b3b0a8e9b2b4d7b6c8f2",
+    "categoryName": "Science",
     "userId": "6542b3b0a8e9b2b4d7b6c8e2",
     "flashcardIds": ["6542b3b0a8e9b2b4d7b6c8d4", "6542b3b0a8e9b2b4d7b6c8d5"],
     "isPublic": true
