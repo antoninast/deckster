@@ -9,6 +9,8 @@ import "./ManageFlashcards.css";
 export default function Flashcards() {
     const { deckId } = useParams();
     const [editMode, setEditMode] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [flashcardIdToRemove, setFlashcardIdToRemove] = useState('');
     const [updatedFlashcard, setUpdatedFlashcard] = useState({ question: '', answer: '' });
     const [currentlyEditedCardId, setCurrentlyEditedCardId] = useState('');
 
@@ -16,7 +18,7 @@ export default function Flashcards() {
         { variables: { deckId } }
     );
 
-    const [removeFlashcard, { loading: removeLoading }] = useMutation(REMOVE_FLASHCARD, {
+    const [removeFlashcardMutation, { loading: removeLoading }] = useMutation(REMOVE_FLASHCARD, {
         onCompleted: () => {
             refetch();
         }
@@ -28,14 +30,25 @@ export default function Flashcards() {
         }
     });
 
-    const handleRemoveFlashcard = async (flashcardId: string) => {
+    const removeFlashcard = async () => {
         try {
-            await removeFlashcard({
-              variables: { flashcardId } 
+            await removeFlashcardMutation({
+              variables: { flashcardId: flashcardIdToRemove } 
             });
+            setOpenModal(false);
         } catch (error) {
             throw new Error(`Failed to remove the flashcard, ${error}`);
         }
+    }
+
+    const cancelRemoveFlashcard = () => {
+        setFlashcardIdToRemove('');
+        setOpenModal(false);
+    }
+
+    const handleRemoveFlashcard = async (flashcardId: string) => {
+        setFlashcardIdToRemove(flashcardId);
+        setOpenModal(true);
     }
 
     const handleUpdateFlashcard = async (flashcardId: string, question: string, answer: string) => {
@@ -86,7 +99,20 @@ export default function Flashcards() {
 
     return (
         <div>
-            <h2>Flashcards Here - DECK ID - {deckId}</h2>
+            <div className={openModal ? "modal show" : "modal hide"}>
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-body">
+                    Do you want to delete permanently this flashcard?
+                  </div>
+                  <div className="modal-footer">
+                    <button onClick={cancelRemoveFlashcard} type="button" className="btn btn-secondary btn-sm">Cancel</button>
+                    <button onClick={removeFlashcard} type="button" className="btn btn-danger btn-sm">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h2>Flashcards with - DECK ID - {deckId}</h2>
             <div className="flashcards-container">
                 {flashcards.flashcardsByDeck.map((flashcard: Flashcard) =>
                     <div key={flashcard._id} className="card">

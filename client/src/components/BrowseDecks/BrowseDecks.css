@@ -12,7 +12,12 @@
     display: flex;
     flex-direction: column;
     background-color: var(--color-tan);
-    box-shadow: 8px 10px 8px rgba(0, 0, 0, 0.1)
+    box-shadow: 8px 10px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.deck.card:hover {
+    transform: scale(1.05);
 }
 
 .deck-details {
@@ -29,13 +34,11 @@
 }
 
 .delete-icon {
-    transition: transform 0.3s ease, fill 0.3s ease;
     margin: 0.1em 0.3em 0 0;
 }
 
 .delete-icon:hover {
     fill: red;
-    transform: scale(1.2);
     cursor: pointer;
 }
 
