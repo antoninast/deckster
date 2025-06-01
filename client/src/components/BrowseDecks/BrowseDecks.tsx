@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { QUERY_MY_DECKS, QUERY_CARD_DECKS } from "../../utils/queries";
@@ -12,6 +13,9 @@ const BrowseDecks = () => {
     return state.user.value;
   });
 
+  const [openModal, setOpenModal] = useState(false);
+  const [deckIdToRemove, setDeckIdToRemove] = useState('');
+
   const { loading, data, refetch } = useQuery(
     !user ? QUERY_CARD_DECKS : QUERY_MY_DECKS,
     !user ? { variables: { isPublic: true } } : {}
@@ -19,20 +23,31 @@ const BrowseDecks = () => {
 
   const decks = !user ? data?.cardDecks || [] : data?.myCardDecks || [];
 
-  const [removeCardDeck] = useMutation(REMOVE_CARDDECK, {
+  const [removeCardDeckMutation] = useMutation(REMOVE_CARDDECK, {
     onCompleted: () => {
       refetch();
     }
   });
 
-  const handleRemoveCardDeck = async (deckId: string) => {
+  const removeDeck = async () => {
     try {
-      await removeCardDeck({
-        variables: { deckId },
+      await removeCardDeckMutation({
+        variables: { deckId: deckIdToRemove },
       });
+      setOpenModal(false);
     } catch (error) {
       throw new Error(`Failed to remove the deck, ${error}`);
     }
+  }
+
+  const cancelRemoveDeck = () => {
+    setDeckIdToRemove('');
+    setOpenModal(false);
+  }
+
+  const handleRemoveCardDeck = async (deckId: string) => {
+    setDeckIdToRemove(deckId);
+    setOpenModal(true);
   };
 
   const handleManageDeck = (deckId: string) => {
@@ -53,6 +68,19 @@ const BrowseDecks = () => {
 
   return (
     <div className="browse-page">
+      <div className={openModal ? "modal show" : "modal hide"}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-body">
+              Do you want to permanently delete this card deck and the associated flashcards?
+            </div>
+            <div className="modal-footer">
+              <button onClick={cancelRemoveDeck} type="button" className="btn btn-secondary btn-sm">Cancel</button>
+              <button onClick={removeDeck} type="button" className="btn btn-danger btn-sm">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <h2>Browse decks</h2>
       <div className="decks-container">
         {decks.map((deck: CardDeck) =>

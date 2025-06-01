@@ -18,7 +18,7 @@ export default function Flashcards() {
         { variables: { deckId } }
     );
 
-    const [removeFlashcardQuery, { loading: removeLoading }] = useMutation(REMOVE_FLASHCARD, {
+    const [removeFlashcardMutation, { loading: removeLoading }] = useMutation(REMOVE_FLASHCARD, {
         onCompleted: () => {
             refetch();
         }
@@ -32,7 +32,7 @@ export default function Flashcards() {
 
     const removeFlashcard = async () => {
         try {
-            await removeFlashcardQuery({
+            await removeFlashcardMutation({
               variables: { flashcardId: flashcardIdToRemove } 
             });
             setOpenModal(false);
