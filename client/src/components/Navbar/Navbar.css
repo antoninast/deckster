@@ -1,40 +1,156 @@
-// client/src/components/Navbar/Navbar.css
+/* client/src/components/Navbar/Navbar.css */
+
+/* Base navbar styles - mobile first */
 .navbar {
   background-color: var(--color-sage);
-  padding: 1rem 2rem;
-  box-shadow: var(--shadow);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  height: 60px;
 }
 
+/* Fix Bootstrap container - CRITICAL */
+.navbar .container {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
+/* Logo - mobile optimized */
 .navbar-brand {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--text-primary);
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  height: 40px;
+  width: auto;
+  cursor: pointer;
+}
+
+/* Navigation container - CRITICAL FOR MOBILE */
+.navbar-collapse {
+  flex-grow: 1;
+  display: flex !important;
+  justify-content: flex-end;
 }
 
 .navbar-links {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
+  width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.navbar-links a {
+.navbar-links-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Mobile-first link styles */
+.nav-link-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
   color: var(--text-primary);
   text-decoration: none;
   font-weight: 500;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.6rem;
   border-radius: 6px;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  font-size: 0.85rem;
 }
 
-.navbar-links a:hover {
-  background-color: rgba(212, 163, 115, 0.2);
-  color: var(--accent);
+.nav-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
-.navbar-links a.active {
-  background-color: var(--color-tan);
-  color: white;
+/* Hide text on very small screens */
+@media (max-width: 480px) {
+  .nav-link-with-icon span {
+    display: none;
+  }
+
+  .nav-link-with-icon {
+    padding: 0.6rem;
+    border-radius: 50%;
+  }
+
+  .nav-icon {
+    font-size: 1.2rem;
+  }
+}
+
+/* Show abbreviated text on medium mobile */
+@media (min-width: 481px) and (max-width: 768px) {
+  .nav-link-with-icon {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  /* Abbreviate long text */
+  .nav-link-with-icon span {
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Tablet and up */
+@media (min-width: 769px) {
+  .navbar {
+    height: 70px;
+    padding: 0.5rem 2rem;
+  }
+
+  .brand-logo {
+    height: 50px;
+  }
+
+  .navbar-links-container {
+    gap: 1rem;
+  }
+
+  .nav-link-with-icon {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-icon {
+    font-size: 1.1rem;
+  }
+}
+
+/* Hover states - desktop only */
+@media (hover: hover) {
+  .nav-link-with-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+/* Fix logout link */
+.logout-link {
+  cursor: pointer;
+}
+
+/* Ensure no text decoration */
+.nav-link-with-icon:link,
+.nav-link-with-icon:visited,
+.nav-link-with-icon:hover,
+.nav-link-with-icon:active {
+  text-decoration: none !important;
 }
