@@ -1,40 +1,48 @@
+// client/src/components/Navbar/Navbar.tsx
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, MouseEvent } from "react";
 import auth from "../../utils/auth";
+
+// Add icon imports
+import {
+  FaLayerGroup,      // Browse Decks
+  FaFileImport,      // Import CSV
+  FaUserCircle,      // Profile
+  FaSignOutAlt,      // Logout
+  FaSignInAlt,       // Login
+  FaUserPlus         // Sign Up
+} from 'react-icons/fa';
 
 //Bootstrap Elements
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 
-
-// TODO: Import from the main CSS file prior to importing for the current component
-// import "../index.css"; 
 import "./Navbar.css";
-import logo from "../../../../resources/logo.png";
+import logo from "../../../../assets/deckster-logo-concept.png";
 
 const appNavbar = () => {
   const navigate = useNavigate();
   const [loginCheck, setLoginCheck] = useState(false);
-  
+
   const logout = (event: MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     auth.logout();
+    setLoginCheck(false);
+    navigate("/");
   };
 
   const checkLoginStatus = () => {
     if (auth.loggedIn()) {
       setLoginCheck(true);
-      navigate("/me");
     } else {
       setLoginCheck(false);
-      navigate("/login");
     }
   };
 
   useEffect(() => {
-    checkLoginStatus(); 
-  }, [loginCheck])
+    checkLoginStatus();
+  }, [])
 
   return (
     <Navbar className="navbar">
@@ -48,29 +56,48 @@ const appNavbar = () => {
       />
     </Navbar.Brand>
     <Container>
-    {/* <Navbar.Toggle/> */}
     <Navbar.Collapse id="basic-navbar-nav">
       <Nav className="navbar-links">
         <div className="navbar-links-container">
           {loginCheck ? (
             <>
               <div>
-                <Link to="/browse-decks">Browse Decks</Link>
+                <Link to="/browse-decks" className="nav-link-with-icon">
+                  <FaLayerGroup className="nav-icon" />
+                  <span>Browse Decks</span>
+                </Link>
               </div>
               <div>
-                <Link to="/import">Import CSV</Link>
+                <Link to="/import" className="nav-link-with-icon">
+                  <FaFileImport className="nav-icon" />
+                  <span>Import CSV</span>
+                </Link>
               </div>
               <div>
-                <Link to="/me">View My Profile</Link>
+                <Link to="/me" className="nav-link-with-icon">
+                  <FaUserCircle className="nav-icon" />
+                  <span>View My Profile</span>
+                </Link>
               </div>
-              <div onClick={(ev) => logout(ev)}>
-                Logout
+              <div onClick={(ev) => logout(ev)} className="nav-link-with-icon logout-link">
+                <FaSignOutAlt className="nav-icon" />
+                <span>Logout</span>
               </div>
             </>
           ) : (
             <>
-              <Link to="/login">Login</Link>
-              {/* <Link to="/signup">Signup</Link> I moved this to the Login page -JH*/}
+              <Link to="/browse-decks" className="nav-link-with-icon">
+                <FaLayerGroup className="nav-icon" />
+                <span>Browse Public Decks</span>
+              </Link>
+              <Link to="/login" className="nav-link-with-icon">
+                <FaSignInAlt className="nav-icon" />
+                <span>Login</span>
+              </Link>
+              <Link to="/signup" className="nav-link-with-icon">
+                <FaUserPlus className="nav-icon" />
+                <span>Sign Up</span>
+              </Link>
             </>
           )}
         </div>
