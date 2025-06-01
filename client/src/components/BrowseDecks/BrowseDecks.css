@@ -47,3 +47,28 @@
     flex-direction: row;
     margin-right: 0.4em;
 }
+
+.btn-outline-primary {
+  background-color: transparent;
+  color: var(--color-tan);
+  border: 1px solid var(--color-tan);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-tan);
+  color: white;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-right: 0.4em;
+  flex-wrap: wrap;
+  justify-content: center;
+}

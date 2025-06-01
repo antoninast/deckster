@@ -72,49 +72,90 @@ const BrowseDecks = () => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-body">
-              Do you want to permanently delete this card deck and the associated flashcards?
+              Do you want to permanently delete this card deck and the
+              associated flashcards?
             </div>
             <div className="modal-footer">
-              <button onClick={cancelRemoveDeck} type="button" className="btn btn-secondary btn-sm">Cancel</button>
-              <button onClick={removeDeck} type="button" className="btn btn-danger btn-sm">Delete</button>
+              <button
+                onClick={cancelRemoveDeck}
+                type="button"
+                className="btn btn-secondary btn-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={removeDeck}
+                type="button"
+                className="btn btn-danger btn-sm"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
       </div>
       <h2>Browse decks</h2>
       <div className="decks-container">
-        {decks.map((deck: CardDeck) =>
+        {decks.map((deck: CardDeck) => (
           <div key={deck._id} className="deck card">
             <div className="deck-details">
-              <div className="delete-button-wrapper" onClick={() => handleRemoveCardDeck(deck._id)}>
-                <svg xmlns="http://www.w3.org/2000/svg"
-                  width="17" height="17" fill="gray" className="bi bi-x-square delete-icon" viewBox="0 0 16 16">
-                  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+              <div
+                className="delete-button-wrapper"
+                onClick={() => handleRemoveCardDeck(deck._id)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="17"
+                  height="17"
+                  fill="gray"
+                  className="bi bi-x-square delete-icon"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
                 </svg>
               </div>
-              <p><b>Name:</b> {deck.name}</p>
-              <p><b>Category:</b> {deck.categoryName}</p>
               <p>
-                <b>Accuracy:</b> {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1)}%
+                <b>Name:</b> {deck.name}
               </p>
               <p>
-                <b>Proficiency:</b> {deck.userStudyAttemptStats?.proficiency || "No Data"}
+                <b>Category:</b> {deck.categoryName}
+              </p>
+              <p>
+                <b>Accuracy:</b>{" "}
+                {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1)}%
+              </p>
+              <p>
+                <b>Proficiency:</b>{" "}
+                {deck.userStudyAttemptStats?.proficiency || "No Data"}
               </p>
             </div>
             {/* <img src={deck.image_url} alt={deck.name}></img> */}
             <div className="action-buttons">
               <button
                 onClick={() => handleManageDeck(deck._id)}
-                type="button" className="btn btn-outline-warning btn-sm"
-              >⚙️ Manage</button>
+                type="button"
+                className="btn btn-outline-warning btn-sm"
+              >
+                ⚙️ Manage
+              </button>
               <button
                 onClick={() => handleStudyDeck(deck._id)}
-                type="button" className="btn btn-outline-success btn-sm"
-              >📗 Study</button>
+                type="button"
+                className="btn btn-outline-success btn-sm"
+              >
+                📗 Study
+              </button>
+              <button
+                onClick={() => navigate(`/deck/${deck._id}/import`)}
+                type="button"
+                className="btn btn-outline-primary btn-sm"
+              >
+                📥 Import CSV
+              </button>
             </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
