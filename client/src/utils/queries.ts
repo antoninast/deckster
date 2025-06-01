@@ -90,3 +90,15 @@ export const GET_SESSION_STATS = gql`
     }
   }
 `;
+
+export const GET_RECENT_SESSION_STATS = gql`
+  query GetRecentSessionsStats($deckId: ID!, $limit: Int) {
+    recentSessionsStats(deckId: $deckId, limit: $limit) {
+      studySessionId
+      timestamp
+      totalAttempts
+      correctAttempts
+      sessionAccuracy
+    }
+  }
+`;

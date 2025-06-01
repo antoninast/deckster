@@ -4,9 +4,13 @@ import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
 import { REVIEW_FLASHCARD } from "../../utils/mutations";
 import { createStudySession } from "../../utils/sessionUtils";
-import { GET_SESSION_STATS } from "../../utils/queries";
+import {
+  GET_SESSION_STATS,
+  GET_RECENT_SESSION_STATS,
+} from "../../utils/queries";
 import Flashcard from "../Flashcard/Flashcard";
 import { HelpModal } from "../HelpModal/HelpModal";
+import RecentSessionsChart from "../RecentSessionsChart/RecentSessionsChart";
 import "./Study.css";
 
 export default function Study() {
@@ -32,6 +36,17 @@ export default function Study() {
     {
       variables: { studySessionId: sessionId },
       skip: !sessionId, // only query once sessionId is set to a valid value
+    }
+  );
+
+  const { refetch: recentSessionsStatsRefetch } = useQuery(
+    GET_RECENT_SESSION_STATS,
+    {
+      variables: {
+        deckId: deckId || "",
+        limit: 5,
+      },
+      skip: !deckId,
     }
   );
 
@@ -71,6 +86,7 @@ export default function Study() {
       // check if this was the last card
       if (currentCardIndex === flashcards.length - 1) {
         setIsSessionComplete(true);
+        await recentSessionsStatsRefetch(); // Refresh chart data when session completes
       } else {
         setCurrentCardIndex((previousIndex) => previousIndex + 1);
         // reset flip state when moving to next card
@@ -218,6 +234,8 @@ export default function Study() {
           End Session
         </button>
       </div>
+
+      <RecentSessionsChart deckId={deckId || ""} />
 
       <button className="help-button" onClick={() => setHelpStep(1)}>
         ?

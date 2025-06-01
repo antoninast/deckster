@@ -154,8 +154,74 @@ const resolvers = {
         }
       );
     },
-  },
+    recentSessionsStats: async (
+      _parent: any,
+      { deckId, limit = 10 }: { deckId: string; limit?: number },
+      context: Context
+    ) => {
+      if (!context.user) {
+        throw AuthenticationError;
+      }
 
+      const userId = new mongoose.Types.ObjectId(context.user._id);
+      const deckObjectId = new mongoose.Types.ObjectId(deckId);
+
+      // get unique session IDs first, sorted by most recent
+      const sessions = await StudyAttempt.aggregate([
+        {
+          $match: {
+            userId,
+            deckId: deckObjectId,
+            studySessionId: { $ne: null },
+          },
+        },
+        {
+          $sort: { createdAt: -1 },
+        },
+        {
+          $group: {
+            _id: "$studySessionId",
+            timestamp: { $first: "$createdAt" },
+          },
+        },
+        {
+          $limit: limit,
+        },
+      ]);
+      const sessionStats = await Promise.all(
+        sessions.map(async (session) => {
+          const stats = await StudyAttempt.aggregate([
+            {
+              $match: {
+                userId,
+                deckId: deckObjectId,
+                studySessionId: session._id,
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalAttempts: { $sum: 1 },
+                correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
+              },
+            },
+          ]);
+
+          return {
+            studySessionId: session._id,
+            timestamp: session.timestamp,
+            totalAttempts: stats[0]?.totalAttempts || 0,
+            correctAttempts: stats[0]?.correctAttempts || 0,
+            sessionAccuracy: stats[0]
+              ? (stats[0].correctAttempts / stats[0].totalAttempts) * 100
+              : 0,
+          };
+        })
+      );
+
+      return sessionStats;
+    },
+  },
   Mutation: {
     //TODO: Hash the profile password before saving
     addProfile: async (
