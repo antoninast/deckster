@@ -21,6 +21,7 @@ import { store } from "./app/store";
 import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
 import ImportPage from "./pages/ImportPage.js";
 import "./styles/variables.css";
+import "./styles/animations.css"
 
 const httpLink = createHttpLink({
   uri: "/graphql",
