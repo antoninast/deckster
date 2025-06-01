@@ -1,19 +1,40 @@
+// client/src/components/Navbar/Navbar.css
 .navbar {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    background-color: rgba(117, 165, 117, 0.517);
-    vertical-align: middle;
+  background-color: var(--color-sage);
+  padding: 1rem 2rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.navbar a {
-    margin-left: 2em;
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-primary);
 }
 
-.brand-logo {
-    margin: 2em,2em,2em,2em;
-    font-size: 2em;
-    text-decoration: none;
-    justify-content: left;
-    width: 200px;
+.navbar-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navbar-links a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.navbar-links a:hover {
+  background-color: rgba(212, 163, 115, 0.2);
+  color: var(--accent);
+}
+
+.navbar-links a.active {
+  background-color: var(--color-tan);
+  color: white;
 }
