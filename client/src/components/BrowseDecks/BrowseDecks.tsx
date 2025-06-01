@@ -76,10 +76,6 @@ const BrowseDecks = () => {
             </div>
             {/* <img src={deck.image_url} alt={deck.name}></img> */}
             <div className="action-buttons">
-              {/* <button
-                onClick={() => handleRemoveCardDeck(deck._id)}
-                type="button" className="btn btn-outline-danger btn-sm"
-              >❌ Delete</button> */}
               <button
                 onClick={() => handleManageDeck(deck._id)}
                 type="button" className="btn btn-outline-warning btn-sm"
