@@ -72,3 +72,12 @@ export const REMOVE_CARDDECK = gql`
   }
 `;
 
+export const ADD_MULTIPLE_FLASHCARDS = gql`
+  mutation AddMultipleFlashcards($deckId: ID!, $flashcards: [FlashcardInput!]!) {
+    addMultipleFlashcards(deckId: $deckId, flashcards: $flashcards) {
+      _id
+      question
+      answer
+    }
+  }
+`;
