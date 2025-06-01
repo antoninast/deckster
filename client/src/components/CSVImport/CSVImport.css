@@ -1,0 +1,51 @@
+.csv-import-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.csv-import-instructions {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.csv-import-dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 3rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.csv-import-dropzone:hover {
+  border-color: var(--accent);
+  background-color: rgba(212, 163, 115, 0.05);
+}
+
+.csv-import-dropzone.active {
+  border-color: var(--accent);
+  background-color: rgba(212, 163, 115, 0.1);
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.alert-error {
+  background-color: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.alert-success {
+  background-color: #efe;
+  color: #3c3;
+  border: 1px solid #cfc;
+}
