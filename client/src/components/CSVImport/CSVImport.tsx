@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
-import Papa from 'papaparse';
-import './CSVImport.css';
+import React, { useState, useRef } from "react";
+import Papa from "papaparse";
+import "./CSVImport.css";
 
 interface CSVRow {
   Question: string;
@@ -19,6 +19,15 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
   const [success, setSuccess] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const validateCSVStructure = (headers: string[]) => {
+    const requiredHeaders = ['Question', 'Answer'];
+    const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+
+    if (missingHeaders.length > 0) {
+      throw new Error(`Missing required columns: ${missingHeaders.join(', ')}`);
+    }
+  };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -51,8 +60,8 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
     setError(null);
     setSuccess(false);
 
-    if (!file.name.endsWith('.csv')) {
-      setError('Please upload a CSV file');
+    if (!file.name.endsWith(".csv")) {
+      setError("Please upload a CSV file");
       return;
     }
 
@@ -62,12 +71,18 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
       header: true,
       complete: (results) => {
         try {
-          const validData = results.data.filter((row: any) =>
-            row.Question && row.Answer
+          if (results.meta.fields) {
+            validateCSVStructure(results.meta.fields);
+          }
+
+          const validData = results.data.filter(
+            (row: any) => row.Question && row.Answer
           ) as CSVRow[];
 
           if (validData.length === 0) {
-            setError('No valid flashcards found. Ensure your CSV has Question and Answer columns.');
+            setError(
+              "No valid flashcards found. Ensure your CSV has Question and Answer columns."
+            );
             setIsUploading(false);
             return;
           }
@@ -76,15 +91,20 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
           onImportComplete(validData);
           setSuccess(true);
           setIsUploading(false);
+
+          // Clear success message after 3 seconds
+          setTimeout(() => setSuccess(false), 3000);
         } catch (err) {
-          setError('Failed to parse CSV file');
+          setError(
+            err instanceof Error ? err.message : "Failed to parse CSV file"
+          );
           setIsUploading(false);
         }
       },
       error: (error) => {
         setError(`Parse error: ${error.message}`);
         setIsUploading(false);
-      }
+      },
     });
   };
 
@@ -109,7 +129,7 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
       />
 
       <div
-        className={`csv-import-dropzone ${dragActive ? 'active' : ''}`}
+        className={`csv-import-dropzone ${dragActive ? "active" : ""}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -123,9 +143,7 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
         )}
       </div>
 
-      {error && (
-        <div className="alert alert-error">{error}</div>
-      )}
+      {error && <div className="alert alert-error">{error}</div>}
 
       {success && (
         <div className="alert alert-success">
