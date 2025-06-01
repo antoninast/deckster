@@ -537,4 +537,46 @@ const resolvers = {
   },
 };
 
+addMultipleFlashcards: async (
+  _parent: any,
+  { deckId, flashcards }: { deckId: string; flashcards: Array<{ question: string; answer: string }> },
+  context: Context
+) => {
+  if (!context.user) {
+    throw new AuthenticationError('You must be logged in to import flashcards');
+  }
+
+  try {
+    // Verify deck ownership
+    const deck = await CardDeck.findById(deckId);
+    if (!deck || deck.userId.toString() !== context.user._id.toString()) {
+      throw new Error('Deck not found or unauthorized');
+    }
+
+    // Create flashcards with auto-generated IDs
+    const flashcardDocs = flashcards.map(fc => ({
+      _id: new mongoose.Types.ObjectId(),
+      question: fc.question,
+      answer: fc.answer,
+      deckId: new mongoose.Types.ObjectId(deckId),
+      image_url: null
+    }));
+
+    // Bulk insert
+    const createdFlashcards = await Flashcard.insertMany(flashcardDocs);
+
+    // Update deck with new flashcard IDs
+    const flashcardIds = createdFlashcards.map(fc => fc._id);
+    await CardDeck.findByIdAndUpdate(
+      deckId,
+      { $push: { flashcardIds: { $each: flashcardIds } } }
+    );
+
+    return createdFlashcards;
+  } catch (error) {
+    console.error('Bulk import error:', error);
+    throw new Error('Failed to import flashcards');
+  }
+}
+
 export default resolvers;
