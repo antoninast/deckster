@@ -7,25 +7,22 @@ import Auth from "../../utils/auth";
 import "./Login.css";
 import { setLogin } from "../../user/userState";
 
-//TODO: Add option for "I forgot my password" to reset with security question
-
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formState, setFormState] = useState({ email: "", password: "" });
   const [login, { error, data }] = useMutation(LOGIN_USER);
 
-  // update state based on form input changes
+  // Update form state based on input changes
   const handleChange = (event: ChangeEvent) => {
     const { name, value } = event.target as HTMLInputElement;
-
     setFormState({
       ...formState,
       [name]: value,
     });
   };
 
-  // submit form
+  // Handle form submission and authentication
   const handleFormSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
@@ -34,21 +31,25 @@ const Login = () => {
         variables: { ...formState },
       });
 
-      console.log("username here:", data.login.profile.username); // Changed
+      // Store user ID for app-wide access
+      localStorage.setItem("userId", data.login.profile._id);
+
+      // Update Redux store with user data
       dispatch(
         setLogin({
-          username: data.login.profile.username, // Changed from 'name'
+          username: data.login.profile.username,
           _id: data.login.profile._id,
         })
       );
 
+      // Store auth token and redirect
       Auth.login(data.login.token);
       navigate("/browse-decks");
     } catch (e) {
       console.error(e);
     }
 
-    // clear form values
+    // Clear form after submission
     setFormState({
       email: "",
       password: "",
@@ -56,43 +57,64 @@ const Login = () => {
   };
 
   return (
-    <main>
-      <div>
-        <div>
-          <h4>Login</h4>
-          <div className="signup-link">
-            New user? Sign up <Link to="/signup">here</Link>!
+    <main className="login-page">
+      <div className="login-container">
+        <div className="login-card">
+          <div className="login-header">
+            <h1 className="login-title">Welcome Back</h1>
+            <p className="login-subtitle">
+              New to Deckster? <Link to="/signup">Create an account</Link>
+            </p>
           </div>
-          <br></br>
-          <div>
-            {data ? (
-              <p>
-                Success! You may now head{" "}
-                <Link to="/">back to the homepage.</Link>
-              </p>
-            ) : (
-              <form onSubmit={handleFormSubmit}>
-                <input
-                  placeholder="Your email"
-                  name="email"
-                  type="email"
-                  value={formState.email}
-                  onChange={handleChange}
-                />
-                <input
-                  placeholder="******"
-                  name="password"
-                  type="password"
-                  value={formState.password}
-                  onChange={handleChange}
-                />
+
+          {data ? (
+            <p className="success-message">
+              Success! You may now head{" "}
+              <Link to="/">back to the homepage.</Link>
+            </p>
+          ) : (
+            <>
+              <form className="login-form" onSubmit={handleFormSubmit}>
+                <div className="form-group">
+                  <label htmlFor="email">Email Address</label>
+                  <input
+                    id="email"
+                    className="form-input"
+                    placeholder="Enter your email"
+                    name="email"
+                    type="email"
+                    value={formState.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    id="password"
+                    className="form-input"
+                    placeholder="Enter your password"
+                    name="password"
+                    type="password"
+                    value={formState.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
                 <button className="submit-button" type="submit">
-                  Submit
+                  Sign In
                 </button>
               </form>
-            )}
-            {error && <div>{error.message}</div>}
-          </div>
+
+              {error && <div className="error-message">{error.message}</div>}
+
+              <div className="forgot-password">
+                <Link to="/forgot-password">Forgot your password?</Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </main>
