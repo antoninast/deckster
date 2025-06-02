@@ -1,32 +1,19 @@
-.viewport {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.container {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
-}
-
-footer {
-  flex-shrink: 0;
-  padding: 1rem;
-  text-align: center;
-  margin-top: auto;
-}
-
-/* client/src/styles/global.css or wherever your main styles are */
 :root {
-  /* Earth tone palette */
+  /* Earth tone color palette */
   --color-sage: #ccd5ae;
   --color-cream: #e9edc9;
   --color-vanilla: #fefae0;
   --color-peach: #faedcd;
   --color-tan: #d4a373;
 
-  /* Semantic assignments */
+  /* Semantic color assignments */
   --primary-bg: var(--color-vanilla);
   --secondary-bg: var(--color-cream);
   --accent: var(--color-tan);
@@ -38,29 +25,45 @@ footer {
 }
 
 body {
-  background-color: var(--primary-bg);
+  margin: 0;
+  padding: 0;
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
 }
 
-/* Card styling for decks */
-.deck-card {
-  background: var(--secondary-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin: 1rem;
-  box-shadow: var(--shadow);
-  transition: all 0.3s ease;
+/* Main layout structure */
+.viewport {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.deck-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
+.main-content {
+  flex: 1;
+  padding-top: 60px;
+  background: linear-gradient(180deg, #fefae0 0%, #faedcd 50%, #e9edc9 100%);
+  display: flex;
+  flex-direction: column;
 }
 
-/* Button styling */
+@media (min-width: 769px) {
+  .main-content {
+    padding-top: 70px;
+  }
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+footer {
+  margin-top: auto;
+}
+
+/* Button styles */
 .btn-primary {
   background-color: var(--color-tan);
   color: white;
@@ -73,11 +76,11 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #c4935c;
+  background-color: #996515;
   transform: translateY(-1px);
 }
 
-/* Form styling */
+/* Form controls */
 .form-control {
   width: 100%;
   padding: 0.75rem;
@@ -91,23 +94,4 @@ body {
 .form-control:focus {
   outline: none;
   border-color: var(--accent);
-}
-
-/* Navigation styling */
-.navbar {
-  background-color: var(--color-sage);
-  padding: 1rem 2rem;
-  box-shadow: var(--shadow);
-}
-
-.navbar a {
-  color: var(--text-primary);
-  text-decoration: none;
-  margin: 0 1rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.navbar a:hover {
-  color: var(--accent);
 }
