@@ -1,6 +1,6 @@
 import { Profile, CardDeck, Flashcard, StudyAttempt } from "../models/index.js";
 import { IProfile } from "../models/Profile.js";
-import { IFlashcard } from "../models/Flashcard.js";
+import type { IFlashcard } from "../models/Flashcard.js";
 import { ICardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 import mongoose from "mongoose";
@@ -12,12 +12,17 @@ interface ProfileArgs {
 
 interface AddProfileArgs {
   input: {
-    username: string; // Changed from 'login'
+    username: string;
     email: string;
     password: string;
     securityQuestion: string;
     securityAnswer: string;
   };
+}
+
+interface FlashcardInput {
+  question: string;
+  answer: string;
 }
 
 interface Context {
@@ -29,12 +34,14 @@ const resolvers = {
     profiles: async (): Promise<IProfile[]> => {
       return await Profile.find();
     },
+
     profile: async (
       _parent: any,
       { profileId }: ProfileArgs
     ): Promise<IProfile | null> => {
       return await Profile.findOne({ _id: profileId });
     },
+
     me: async (
       _parent: any,
       _args: any,
@@ -45,18 +52,15 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    // cardDecks: [CardDeck]!
+
     cardDecks: async (
       _parent: any,
       { isPublic }: { isPublic?: boolean }
     ): Promise<ICardDeck[]> => {
-      console.log("isPublic:", isPublic);
-      // If isPublic is true, only return public decks
       const query = isPublic === true ? { isPublic: true } : {};
-      console.log("Query filter:", query);
       return await CardDeck.find(query);
     },
-    // cardDecksByUser(userId: ID!): [CardDeck]!
+
     cardDecksByUser: async (
       _parent: any,
       { userId }: { userId: string }
@@ -64,7 +68,7 @@ const resolvers = {
       const objectId = new ObjectId(userId);
       return await CardDeck.find({ userId: objectId });
     },
-    // myCardDecks: [CardDeck]!
+
     myCardDecks: async (
       _parent: any,
       _args: any,
@@ -75,18 +79,18 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    // cardDeck(deckId: ID!): CardDeck
+
     cardDeck: async (
       _parent: any,
       { deckId }: { deckId: string }
     ): Promise<ICardDeck | null> => {
       return await CardDeck.findOne({ _id: deckId });
     },
-    // flashcards: [Flashcard]!
+
     flashcards: async (): Promise<IFlashcard[]> => {
       return await Flashcard.find();
     },
-    // flashcardsByDeck(deckId: ID!): [Flashcard]!
+
     flashcardsByDeck: async (
       _parent: any,
       { deckId }: { deckId: string }
@@ -94,13 +98,14 @@ const resolvers = {
       const objectId = new ObjectId(deckId);
       return await Flashcard.find({ deckId: objectId });
     },
-    // flashcard(flashcardId: ID!): Flashcard
+
     flashcard: async (
       _parent: any,
       { flashcardId }: { flashcardId: string }
     ): Promise<IFlashcard | null> => {
       return await Flashcard.findOne({ _id: flashcardId });
     },
+
     sessionStats: async (
       _parent: any,
       { studySessionId }: { studySessionId: string },
@@ -154,6 +159,7 @@ const resolvers = {
         }
       );
     },
+
     recentSessionsStats: async (
       _parent: any,
       { deckId, limit = 10 }: { deckId: string; limit?: number },
@@ -166,7 +172,7 @@ const resolvers = {
       const userId = new mongoose.Types.ObjectId(context.user._id);
       const deckObjectId = new mongoose.Types.ObjectId(deckId);
 
-      // get unique session IDs first, sorted by most recent
+      // Get unique session IDs, sorted by most recent
       const sessions = await StudyAttempt.aggregate([
         {
           $match: {
@@ -188,6 +194,8 @@ const resolvers = {
           $limit: limit,
         },
       ]);
+
+      // Calculate stats for each session
       const sessionStats = await Promise.all(
         sessions.map(async (session) => {
           const stats = await StudyAttempt.aggregate([
@@ -222,8 +230,8 @@ const resolvers = {
       return sessionStats;
     },
   },
+
   Mutation: {
-    //TODO: Hash the profile password before saving
     addProfile: async (
       _parent: any,
       { input }: AddProfileArgs
@@ -249,15 +257,18 @@ const resolvers = {
       return { token, profile };
     },
 
-    // addCardDeck(input: CardDeckInput!): CardDeck
     addCardDeck: async (
       _parent: any,
-      { input }: { input: ICardDeck }
+      { input }: { input: ICardDeck },
+      context: Context
     ): Promise<ICardDeck> => {
+      if (!context.user) {
+        throw AuthenticationError;
+      }
       const cardDeck = await CardDeck.create(input);
       return cardDeck;
     },
-    // updateCardDeck(deckId: ID!, input: CardDeckInput!): CardDeck
+
     updateCardDeck: async (
       _parent: any,
       { deckId, input }: { deckId: string; input: ICardDeck }
@@ -267,7 +278,7 @@ const resolvers = {
         runValidators: true,
       });
     },
-    // removeCardDeck(deckId: ID!): CardDeck
+
     removeCardDeck: async (
       _parent: any,
       { deckId }: { deckId: string }
@@ -275,7 +286,7 @@ const resolvers = {
       const objectId = new ObjectId(deckId);
       return await CardDeck.findByIdAndDelete(objectId);
     },
-    // addFlashcard(input: FlashcardInput!): Flashcard
+
     addFlashcard: async (
       _parent: any,
       { input }: { input: IFlashcard }
@@ -283,7 +294,7 @@ const resolvers = {
       const flashcard = await Flashcard.create(input);
       return flashcard;
     },
-    // updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
+
     updateFlashcard: async (
       _parent: any,
       { flashcardId, input }: { flashcardId: string; input: IFlashcard }
@@ -293,14 +304,14 @@ const resolvers = {
         runValidators: true,
       });
     },
-    // removeFlashcard(flashcardId: ID!): Flashcard
+
     removeFlashcard: async (
       _parent: any,
       { flashcardId }: { flashcardId: string }
     ): Promise<IFlashcard | null> => {
       return await Flashcard.findByIdAndDelete(flashcardId);
     },
-    // reviewFlashcard(flashcardId: ID!, correct: Boolean!): Flashcard
+
     reviewFlashcard: async (
       _parent: any,
       {
@@ -314,9 +325,6 @@ const resolvers = {
       },
       context: Context
     ): Promise<IFlashcard | null> => {
-      console.log("Server - flashcardId:", flashcardId);
-      console.log("Server - correct:", correct);
-      console.log("Server - studySessionId:", studySessionId);
       if (!context.user) {
         throw AuthenticationError;
       }
@@ -328,36 +336,85 @@ const resolvers = {
         throw new Error("Deck not found for the provided flashcard.");
       }
 
-      // create a new study attempt with studySessionId
+      // Create study attempt record
       await StudyAttempt.create({
         userId,
         flashcardId: new mongoose.Types.ObjectId(flashcardId),
         deckId: new mongoose.Types.ObjectId(deckId),
         isCorrect: correct,
-        studySessionId, // studySessionId from the client
+        studySessionId,
       });
 
-      // return updated flashcard
       return await Flashcard.findById(flashcardId);
     },
 
-    //JH: Add import_csv resolver
-    // import_csv: async (_: any, { csvData}: { csvData: string}) => {
-    //   try {
-    //     const records = parse(csvData, {
-    //       columns: true,
-    //       skip_empty_lines: true,
-    //     });
-    //     await insertMany(records);
+    addMultipleFlashcards: async (
+      _parent: any,
+      { deckId, flashcards }: { deckId: string; flashcards: FlashcardInput[] },
+      context: Context
+    ): Promise<IFlashcard[]> => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
 
-    //     return true;
-    //   } catch (error) {
-    //     console.error('Eeks! Error importing CSV:', error);
-    //     return false;
-    //   }
-    // },
+      try {
+        // Validate input
+        if (!deckId) {
+          throw new Error("DeckId is required");
+        }
+
+        if (
+          !flashcards ||
+          !Array.isArray(flashcards) ||
+          flashcards.length === 0
+        ) {
+          throw new Error("Flashcards array is required and must not be empty");
+        }
+
+        // Validate each flashcard has required fields
+        flashcards.forEach((fc: FlashcardInput, index: number) => {
+          if (!fc.question || !fc.answer) {
+            throw new Error(
+              `Flashcard at index ${index} is missing question or answer`
+            );
+          }
+        });
+
+        // Verify deck exists and user owns it
+        const deck = await CardDeck.findById(deckId);
+        if (!deck) {
+          throw new Error(`Deck not found with ID: ${deckId}`);
+        }
+
+        if (deck.userId.toString() !== context.user._id.toString()) {
+          throw new Error("Unauthorized: You do not own this deck");
+        }
+
+        // Create flashcard documents
+        const flashcardDocs = flashcards.map((fc: FlashcardInput) => ({
+          question: fc.question.trim(),
+          answer: fc.answer.trim(),
+          deckId: new mongoose.Types.ObjectId(deckId),
+          image_url: null,
+        }));
+
+        // Bulk insert flashcards
+        const createdFlashcards = await Flashcard.insertMany(flashcardDocs);
+
+        // Update deck with new flashcard IDs
+        const flashcardIds = createdFlashcards.map((fc) => fc._id);
+        await CardDeck.findByIdAndUpdate(deckId, {
+          $push: { flashcardIds: { $each: flashcardIds } },
+        });
+
+        return createdFlashcards;
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    },
   },
 
+  // Field resolvers for computed fields
   CardDeck: {
     userStudyAttemptStats: async (
       parent: ICardDeck,
@@ -386,7 +443,6 @@ const resolvers = {
           },
         },
         {
-          // add attemptAccuracy as a new field based on the grouped data
           $addFields: {
             attemptAccuracy: {
               $cond: [
@@ -403,9 +459,8 @@ const resolvers = {
           },
         },
         {
-          // project the final fields using attemptAccuracy
           $project: {
-            _id: 0, // dont include _id in the output
+            _id: 0,
             totalAttempts: 1,
             correctAttempts: 1,
             attemptAccuracy: 1,
@@ -450,7 +505,7 @@ const resolvers = {
 
   Flashcard: {
     userStudyAttemptStats: async (
-      parent: IFlashcard, // Ensure this parent type is correct
+      parent: IFlashcard,
       _args: any,
       context: Context
     ) => {
@@ -464,10 +519,10 @@ const resolvers = {
       }
 
       const userId = new mongoose.Types.ObjectId(context.user._id);
-      const flashcardId = new mongoose.Types.ObjectId(parent._id.toString()); // Robust conversion
+      const flashcardId = new mongoose.Types.ObjectId(parent._id.toString());
 
       const results = await StudyAttempt.aggregate([
-        { $match: { userId: userId, flashcardId: flashcardId } }, // <-- Match on flashcardId
+        { $match: { userId: userId, flashcardId: flashcardId } },
         {
           $group: {
             _id: null,
@@ -536,47 +591,5 @@ const resolvers = {
     },
   },
 };
-
-addMultipleFlashcards: async (
-  _parent: any,
-  { deckId, flashcards }: { deckId: string; flashcards: Array<{ question: string; answer: string }> },
-  context: Context
-) => {
-  if (!context.user) {
-    throw new AuthenticationError('You must be logged in to import flashcards');
-  }
-
-  try {
-    // Verify deck ownership
-    const deck = await CardDeck.findById(deckId);
-    if (!deck || deck.userId.toString() !== context.user._id.toString()) {
-      throw new Error('Deck not found or unauthorized');
-    }
-
-    // Create flashcards with auto-generated IDs
-    const flashcardDocs = flashcards.map(fc => ({
-      _id: new mongoose.Types.ObjectId(),
-      question: fc.question,
-      answer: fc.answer,
-      deckId: new mongoose.Types.ObjectId(deckId),
-      image_url: null
-    }));
-
-    // Bulk insert
-    const createdFlashcards = await Flashcard.insertMany(flashcardDocs);
-
-    // Update deck with new flashcard IDs
-    const flashcardIds = createdFlashcards.map(fc => fc._id);
-    await CardDeck.findByIdAndUpdate(
-      deckId,
-      { $push: { flashcardIds: { $each: flashcardIds } } }
-    );
-
-    return createdFlashcards;
-  } catch (error) {
-    console.error('Bulk import error:', error);
-    throw new Error('Failed to import flashcards');
-  }
-}
 
 export default resolvers;
