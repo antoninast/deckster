@@ -10,7 +10,8 @@ interface CSVRow {
 }
 
 interface CSVImportProps {
-  onImportComplete: (data: CSVRow[]) => void;
+  onImportComplete: (data: any[]) => Promise<void>;
+  isProcessing?: boolean;
 }
 
 const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
@@ -21,11 +22,11 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validateCSVStructure = (headers: string[]) => {
-    const requiredHeaders = ['Question', 'Answer'];
-    const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+    const requiredHeaders = ["Question", "Answer"];
+    const missingHeaders = requiredHeaders.filter((h) => !headers.includes(h));
 
     if (missingHeaders.length > 0) {
-      throw new Error(`Missing required columns: ${missingHeaders.join(', ')}`);
+      throw new Error(`Missing required columns: ${missingHeaders.join(", ")}`);
     }
   };
 
@@ -120,12 +121,18 @@ const CSVImport: React.FC<CSVImportProps> = ({ onImportComplete }) => {
         <small>Optional columns: Category, Difficulty</small>
       </div>
 
+      <label htmlFor="csvFileInput" className="visually-hidden">
+        Upload CSV File
+      </label>
       <input
+        id="csvFileInput"
         ref={inputRef}
         type="file"
         accept=".csv"
         onChange={handleChange}
-        style={{ display: "none" }}
+        title="Upload a CSV file"
+        placeholder="Choose a CSV file"
+        className="hidden-input"
       />
 
       <div
