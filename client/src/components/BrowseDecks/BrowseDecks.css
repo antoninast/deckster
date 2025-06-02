@@ -40,12 +40,8 @@
     margin: 0;
     height: 360px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: visible;
-    position: relative;
     animation: slideIn 0.4s ease-out both;
 }
 
@@ -57,14 +53,16 @@
 /* Card Header */
 .deck.card .card-header {
     background: linear-gradient(135deg, var(--color-sage) 0%, #bfcfa7 100%);
+    display: flex;
+    justify-content: space-between;
     padding: 1rem 1rem 0.75rem;
-    margin: 0;
-    position: relative;
+    /* margin: 0; */
+    /* position: relative; */
     min-height: 60px;
     width: 100%;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
     border-radius: 16px 16px 0 0;
-    border: none;
+    /* border: none; */
 }
 
 .deck.card .card-title {
@@ -80,7 +78,11 @@
 }
 
 /* Delete Button */
-.delete-button-wrapper {
+.deck-delete-button-wrapper:hover svg {
+    fill: red;
+}
+
+/* .delete-button-wrapper {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
@@ -97,55 +99,51 @@
     z-index: 10;
     opacity: 1;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
+} */
 
-.delete-button-wrapper:hover {
+/* .delete-button-wrapper:hover {
     background: var(--color-peach);
     border-color: var(--color-peach);
     transform: scale(1.1);
     box-shadow: 0 3px 8px rgba(212, 163, 115, 0.3);
-}
+} */
 
-.delete-icon {
+/* .delete-icon {
     font-size: 18px;
     line-height: 1;
     color: #d4a373;
     font-weight: 400;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
+} */
 
-.delete-button-wrapper:hover .delete-icon {
+/* .delete-button-wrapper:hover .delete-icon {
     color: var(--text-primary);
     font-weight: 500;
-}
+} */
 
 /* Card Body */
 .deck-details {
+    width: 100%;
     padding: 1rem;
-    flex: 1;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .deck-details p.deck-stat {
     display: block;
-    margin: 0 0 0.5rem;
-    font-size: 0.9rem;
     line-height: 1.4;
     padding: 0;
-    text-align: left;
 }
 
 .deck-stat-label {
     font-weight: 600;
     color: var(--text-primary);
-    display: inline-block;
-    width: 75px;
-    vertical-align: top;
 }
 
 .deck-stat-value {
     color: var(--text-secondary);
-    display: inline;
     margin-left: 0.25rem;
 }
 
@@ -646,7 +644,7 @@
 
 /* Focus styles for accessibility */
 .deck-action-btn:focus,
-.delete-button-wrapper:focus,
+.deck-delete-button-wrapper:focus,
 .modal-btn:focus,
 .empty-state-btn:focus {
     outline: 2px solid var(--color-sage);
@@ -659,7 +657,7 @@
         padding: 0;
     }
 
-    .delete-button-wrapper,
+    .deck-delete-button-wrapper,
     .action-buttons,
     .modal {
         display: none !important;

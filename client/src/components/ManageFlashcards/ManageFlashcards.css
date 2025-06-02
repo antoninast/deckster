@@ -21,8 +21,12 @@
     transform: scale(1.05);
 }
 
-.delete-button-wrapper svg {
+.flashcard-delete-button-wrapper {
     margin: 0.1em 0.5em 0 0;
+}
+
+.flashcard-delete-button-wrapper:hover svg {
+    fill: red;
 }
 
 .view-mode,
