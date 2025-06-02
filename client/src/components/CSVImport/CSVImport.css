@@ -1,51 +1,380 @@
+/* client/src/components/CSVImport/CSVImport.css */
 .csv-import-container {
-  max-width: 600px;
-  margin: 2rem auto;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.import-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.import-card-header {
+  background: linear-gradient(135deg, var(--color-sage) 0%, #bfcfa7 100%);
   padding: 2rem;
-  background: var(--secondary-bg);
+  text-align: center;
+}
+
+.import-card-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.import-subtitle {
+  color: var(--text-primary);
+  opacity: 0.9;
+  font-size: 1rem;
+}
+
+.import-card-body {
+  padding: 2rem;
+}
+
+/* Instructions Section */
+.instructions-section {
+  background: var(--color-vanilla);
   border-radius: 12px;
-  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.csv-import-instructions {
-  margin-bottom: 1.5rem;
+.instructions-section h3 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.instructions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  counter-reset: step;
+}
+
+.instructions-list li {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.75rem;
   color: var(--text-secondary);
+  line-height: 1.5;
 }
 
-.csv-import-dropzone {
-  border: 2px dashed var(--border-color);
+.instructions-list li::before {
+  content: counter(step);
+  counter-increment: step;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--color-sage);
+  color: var(--text-primary);
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.template-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: var(--text-primary);
+  border: 2px solid var(--color-sage);
   border-radius: 8px;
-  padding: 3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.template-button:hover {
+  background: var(--color-sage);
+  transform: translateY(-1px);
+}
+
+.template-icon {
+  font-size: 1rem;
+}
+
+/* Dropzone */
+.dropzone {
+  border: 3px dashed var(--color-sage);
+  border-radius: 12px;
+  padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: white;
+  background: linear-gradient(180deg,
+      rgba(254, 250, 224, 0.3) 0%,
+      rgba(250, 237, 205, 0.3) 100%);
+  margin-bottom: 2rem;
 }
 
-.csv-import-dropzone:hover {
-  border-color: var(--accent);
-  background-color: rgba(212, 163, 115, 0.05);
+.dropzone:hover {
+  border-color: var(--color-tan);
+  background: linear-gradient(180deg,
+      rgba(254, 250, 224, 0.5) 0%,
+      rgba(250, 237, 205, 0.5) 100%);
 }
 
-.csv-import-dropzone.active {
-  border-color: var(--accent);
-  background-color: rgba(212, 163, 115, 0.1);
+.dropzone.active {
+  border-color: var(--color-tan);
+  background: rgba(204, 213, 174, 0.2);
+  transform: scale(1.02);
 }
 
-.alert {
-  padding: 1rem;
-  border-radius: 6px;
+.dropzone.has-file {
+  border-style: solid;
+  background: rgba(204, 213, 174, 0.1);
+}
+
+.dropzone.processing {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.dropzone-content {
+  pointer-events: none;
+}
+
+.upload-icon,
+.csv-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.upload-icon {
+  color: var(--color-sage);
+}
+
+.csv-icon {
+  color: var(--color-tan);
+}
+
+.dropzone h3 {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.dropzone p {
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.file-hint,
+.file-size {
+  font-size: 0.875rem;
+  color: var(--gray-text);
+}
+
+.change-file-btn {
   margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  color: var(--text-primary);
+  border: 2px solid var(--color-sage);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: all;
 }
 
-.alert-error {
-  background-color: #fee;
-  color: #c33;
-  border: 1px solid #fcc;
+.change-file-btn:hover {
+  background: var(--color-sage);
 }
 
-.alert-success {
-  background-color: #efe;
-  color: #3c3;
-  border: 1px solid #cfc;
+/* Validation Results */
+.validation-results {
+  background: #f0f8f0;
+  border: 1px solid #c3e6c3;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.validation-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.validation-icon {
+  font-size: 1.5rem;
+  color: #4caf50;
+}
+
+.validation-header h3 {
+  color: #2e7d2e;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.validation-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-value.valid {
+  color: #4caf50;
+}
+
+.stat-value.invalid {
+  color: #ff9800;
+}
+
+/* Error Container */
+.error-container {
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.error-icon {
+  font-size: 1.25rem;
+  color: #d32f2f;
+  flex-shrink: 0;
+}
+
+.error-container p {
+  color: #c62828;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Import Button */
+.import-button {
+  width: 100%;
+  padding: 1rem;
+  background: var(--color-tan);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.import-button:hover {
+  background: #996515;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
+}
+
+.import-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.import-icon {
+  font-size: 1.2rem;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .import-card-header {
+    padding: 1.5rem;
+  }
+
+  .import-card-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .import-card-body {
+    padding: 1.5rem;
+  }
+
+  .dropzone {
+    padding: 2rem 1rem;
+  }
+
+  .validation-stats {
+    gap: 1rem;
+  }
+
+  .instructions-section {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .import-card-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .import-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .dropzone h3 {
+    font-size: 1.1rem;
+  }
+
+  .upload-icon,
+  .csv-icon {
+    font-size: 2.5rem;
+  }
+
+  .stat {
+    flex: 1 1 100%;
+  }
 }
