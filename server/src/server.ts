@@ -2,34 +2,27 @@ import express from "express";
 import cors from "cors";
 import path from "node:path";
 import type { Request, Response } from "express";
-import db from "./config/connection.js";
-import { ApolloServer } from "@apollo/server"; // Note: Import from @apollo/server-express
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
+
+import db from "./config/connection.js";
 import { typeDefs, resolvers } from "./schemas/index.js";
 import { authenticateToken } from "./utils/auth.js";
 import { SecurityQuestion } from "./models/index.js";
-// import multer from 'multer';
-// import { GraphQLUpload, FileUpload } from 'graphql-upload';
-// import csvParser from 'csv-parser';
-// import fs from 'fs';
-// import { MongoClient } from 'mongodb';
-
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
-
-// const uri = 'mongodb://localhost:27017'; // Replace with your MongoDB connection string
-// const client = new MongoClient(uri);
-// const dbName = 'your_database_name'; // Replace with your database name
-// const collectionName = 'your_collection_name'; // Replace with your collection name
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError: (err) => {
+    console.error("GraphQL Error:", err);
+    console.error("Extensions:", err.extensions);
+    return err;
+  },
 });
 
 const startApolloServer = async () => {
@@ -39,78 +32,31 @@ const startApolloServer = async () => {
   const app = express();
   const PORT = process.env.PORT || 3001;
 
+  // Middleware
   app.use(cors());
-
-  app.get("/api/security-questions", async (_req: Request, res: Response) => {
-      // Example security questions
-      // const securityQuestions = [
-      //   "What is your mother's maiden name?",
-      //   "What was the name of your first pet?",
-      //   "What is the name of the city where you were born?",
-      //   "What is your favorite book?",
-      //   "What is your favorite movie?"
-      // ];
-      const securityQuestions = await SecurityQuestion.find({})
-      
-      // res.json(securityQuestions);
-      return res.send(securityQuestions);
-    });
-
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  app.use('/graphql', expressMiddleware(server as any,
-    {
-      context: authenticateToken as any
-    }
-  ));
+  // REST endpoint for security questions
+  app.get("/api/security-questions", async (_req: Request, res: Response) => {
+    const securityQuestions = await SecurityQuestion.find({});
+    return res.send(securityQuestions);
+  });
 
-  
+  // GraphQL endpoint with authentication
+  app.use(
+    "/graphql",
+    expressMiddleware(server as any, {
+      context: async ({ req }) => {
+        const modifiedReq = authenticateToken({ req });
+        return {
+          user: modifiedReq.user,
+        };
+      },
+    })
+  );
 
-  // // Endpoint to upload CSV and import to MongoDB
-  // app.post('/upload-csv', upload.single('file'), async (req, res) => {
-  //   if (!req.file) {
-  //     return res.status(400).send('No file uploaded.');
-  //   }
-
-  //   const filePath = path.resolve(req.file.path);
-  //   try {
-  //     await client.connect();
-  //     const db = client.db('your_database_name');
-  //     const collection = db.collection('your_collection_name');
-  //     const records: any[] = [];
-
-  //     // Crerate a read stream and pipe it to csv-parser
-  //     fs.createReadStream(filePath)
-  //       .pipe(csvParser())
-  //       .on('data', (row) => {
-  //         records.push(row);
-  //       })
-  //       .on('end', async () => {
-  //         try {
-  //           // Insert records into MongoDB if there are any
-  //           if (records.length > 0) {
-  //             await collection.insertMany(records);
-  //             res.status(200).send(`Successfully imported ${records.length} records.`);
-  //             console.log('You did it, B! Data successfully inserted into MongoDB');  
-  //           }
-            
-  //           // Delete the uploaded file
-  //           fs.unlinkSync(filePath);
-  //           console.log('File deleted successfully');
-
-  //         } catch (err) {
-  //           console.error('Error inserting data into MongoDB:', err);
-  //           res.status(500).send('Error inserting data into MongoDB');
-  //         }
-  //       })
-  //   } catch (err) {
-  //     console.error('Error connecting to MongoDB:', err);
-  //     res.status(500).send('Error connecting to MongoDB');
-  //   }
-
-  // });
-
+  // Serve static files in production
   if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../../client/dist")));
 
