@@ -11,33 +11,39 @@ interface SecurityQuestion {
 }
 
 const Signup = () => {
+  // Form state management
   const [formState, setFormState] = useState({
-    username: "", // Changed from 'login'
+    username: "",
     email: "",
     password: "",
     passwordConfirm: "",
     securityQuestion: "",
     securityAnswer: "",
   });
+
+  // Security questions from API
   const [securityQuestions, setSecurityQuestions] = useState<
     SecurityQuestion[]
   >([]);
+
+  // Form validation errors
   const [passwordError, setPasswordError] = useState("");
+
+  // GraphQL mutation hook
   const [addProfile, { error, data }] = useMutation(ADD_PROFILE);
 
+  // Fetch security questions on component mount
   useEffect(() => {
     const fetchSecurityQuestions = async () => {
       try {
         const response = await fetch("/api/security-questions");
-
         if (!response.ok) {
           throw new Error("Failed to fetch security questions");
         }
         const questions = await response.json();
-        console.log("Security Questions:", questions);
         setSecurityQuestions(questions);
 
-        // Default to the first question if available
+        // Set default selection to first question
         if (questions.length > 0) {
           setFormState((prevState) => ({
             ...prevState,
@@ -52,44 +58,48 @@ const Signup = () => {
     fetchSecurityQuestions();
   }, []);
 
-  // update state based on form input changes
+  // Handle form input changes
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = event.target;
-
     setFormState({
       ...formState,
       [name]: value,
     });
 
-    // Clear password error when user types
+    // Clear password error when user types in password fields
     if (name === "password" || name === "passwordConfirm") {
       setPasswordError("");
     }
-
-
   };
 
-  // submit form
+  // Handle form submission
   const handleFormSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    // check if passwords match
+    // Validate password match
     if (formState.password !== formState.passwordConfirm) {
       setPasswordError("Passwords do not match");
       return;
     }
 
-    const {email, password, securityAnswer, securityQuestion, username} = formState;
-
-    const formStateCopy = { email, password, securityAnswer, securityQuestion, username };
+    // Extract form data for mutation
+    const { email, password, securityAnswer, securityQuestion, username } =
+      formState;
+    const formStateCopy = {
+      email,
+      password,
+      securityAnswer,
+      securityQuestion,
+      username,
+    };
 
     try {
       const { data } = await addProfile({
-        variables: { input: formStateCopy},
+        variables: { input: formStateCopy },
       });
-
+      // Auto-login user after successful registration
       Auth.login(data.addProfile.token);
     } catch (e) {
       console.error(e);
@@ -97,118 +107,131 @@ const Signup = () => {
   };
 
   return (
-    <main className="signup-container">
-      <div className="signup-wrapper">
-        <h4 className="signup-title">Sign up</h4>
-        <div className="signup-content">
+    <main className="signup-page">
+      <div className="signup-container">
+        <div className="signup-card">
+          <div className="signup-header">
+            <h1 className="signup-title">Create Account</h1>
+            <p className="signup-subtitle">
+              Already have an account? <Link to="/login">Sign in</Link>
+            </p>
+          </div>
+
           {data ? (
             <p className="success-message">
               Success! You may now head{" "}
               <Link to="/">back to the homepage.</Link>
             </p>
           ) : (
-            <form className="signup-form" onSubmit={handleFormSubmit}>
-              <div className="form-group">
-                <label htmlFor="username">Username:</label>
-                <input
-                  id="username"
-                  className="form-input"
-                  placeholder="Your username"
-                  name="username"
-                  type="text"
-                  value={formState.username}
-                  onChange={handleChange}
-                  required
-                />
+            <>
+              <form className="signup-form" onSubmit={handleFormSubmit}>
+                <div className="form-group">
+                  <label htmlFor="username">Username</label>
+                  <input
+                    id="username"
+                    className="form-input"
+                    placeholder="Choose a username"
+                    name="username"
+                    type="text"
+                    value={formState.username}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="email">Email Address</label>
+                  <input
+                    id="email"
+                    className="form-input"
+                    placeholder="Enter your email"
+                    name="email"
+                    type="email"
+                    value={formState.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    id="password"
+                    className="form-input"
+                    placeholder="Create a password (min. 5 characters)"
+                    name="password"
+                    type="password"
+                    value={formState.password}
+                    onChange={handleChange}
+                    required
+                    minLength={5}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="passwordConfirm">Confirm Password</label>
+                  <input
+                    id="passwordConfirm"
+                    className="form-input"
+                    placeholder="Re-enter your password"
+                    name="passwordConfirm"
+                    type="password"
+                    value={formState.passwordConfirm}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                {passwordError && (
+                  <div className="field-error">{passwordError}</div>
+                )}
+
+                <div className="form-group">
+                  <label htmlFor="securityQuestion">Security Question</label>
+                  <select
+                    id="securityQuestion"
+                    className="form-select"
+                    name="securityQuestion"
+                    value={formState.securityQuestion}
+                    onChange={handleChange}
+                    aria-label="Select a security question"
+                    required
+                  >
+                    {securityQuestions.map((question) => (
+                      <option key={question.id} value={question.question}>
+                        {question.question}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="securityAnswer">Security Answer</label>
+                  <input
+                    id="securityAnswer"
+                    className="form-input"
+                    placeholder="Your answer (case sensitive)"
+                    name="securityAnswer"
+                    type="text"
+                    value={formState.securityAnswer}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <button className="submit-button" type="submit">
+                  Create Account
+                </button>
+              </form>
+
+              {error && <div className="error-message">{error.message}</div>}
+
+              <div className="privacy-notice">
+                By creating an account, you agree to our Terms of Service and
+                Privacy Policy.
               </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email address:</label>
-                <input
-                  id="email"
-                  className="form-input"
-                  placeholder="Your email"
-                  name="email"
-                  type="email"
-                  value={formState.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="password">Password:</label>
-                <input
-                  id="password"
-                  className="form-input"
-                  placeholder="******"
-                  name="password"
-                  type="password"
-                  value={formState.password}
-                  onChange={handleChange}
-                  required
-                  minLength={5}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="passwordConfirm">Confirm Password:</label>
-                <input
-                  id="passwordConfirm"
-                  className="form-input"
-                  placeholder="******"
-                  name="passwordConfirm"
-                  type="password"
-                  value={formState.passwordConfirm}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              {passwordError && (
-                <div className="field-error">{passwordError}</div>
-              )}
-
-              <div className="form-group">
-                <label htmlFor="securityQuestion">Security Question:</label>
-                <select
-                  id="securityQuestion"
-                  className="form-select"
-                  name="securityQuestion"
-                  value={formState.securityQuestion}
-                  onChange={handleChange}
-                  aria-label="Select a security question"
-                  required
-                >
-                  {securityQuestions.map((question) => (
-                    <option key={question.id} value={question.question}>
-                      {question.question}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="securityAnswer">Security Answer:</label>
-                <input
-                  id="securityAnswer"
-                  className="form-input"
-                  placeholder="Your answer"
-                  name="securityAnswer"
-                  type="text"
-                  value={formState.securityAnswer}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <button className="submit-button" type="submit">
-                Submit
-              </button>
-            </form>
+            </>
           )}
-
-          {error && <div className="error-message">{error.message}</div>}
         </div>
       </div>
     </main>
