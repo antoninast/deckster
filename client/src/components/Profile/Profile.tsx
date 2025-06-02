@@ -12,9 +12,14 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { QUERY_SINGLE_PROFILE, QUERY_ME } from "../../utils/queries";
+import {
+  QUERY_SINGLE_PROFILE,
+  QUERY_ME,
+  QUERY_MY_DECKS,
+} from "../../utils/queries";
 import auth from "../../utils/auth";
 import "./Profile.css";
+import { CardDeck } from "../../interfaces/CardDeck";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -25,6 +30,9 @@ const Profile = () => {
     profileId ? QUERY_SINGLE_PROFILE : QUERY_ME,
     { variables: { profileId: profileId } }
   );
+
+  const { data: myDecksData } = useQuery(QUERY_MY_DECKS);
+  const myDecks = myDecksData?.myCardDecks || [];
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
@@ -49,12 +57,22 @@ const Profile = () => {
     );
   }
 
+  console.log("myDecks:", myDecks);
+
   // Profile statistics
   const stats = {
-    totalDecks: 12,
-    totalCards: 248,
-    studySessions: 45,
-    averageAccuracy: 87.5,
+    totalDecks: myDecks.length,
+    totalCards: myDecks.reduce(
+      (total: number, deck: CardDeck) => total + (deck.numberOfCards || 0),
+      0
+    ),
+    // studySessions: 45, <-- already captured in Study Component
+    averageAccuracy:
+      myDecks.reduce(
+        (total: number, deck: CardDeck) =>
+          total + (deck.userStudyAttemptStats?.attemptAccuracy || 0),
+        0
+      ) / myDecks.length || 0,
     currentStreak: 7,
     totalStudyTime: "24h 35m",
   };

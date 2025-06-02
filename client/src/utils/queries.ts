@@ -45,11 +45,13 @@ export const QUERY_MY_DECKS = gql`
       name
       categoryName
       image_url
-      isPublic
+      flashcardIds
+      numberOfCards
       userStudyAttemptStats {
         attemptAccuracy
         proficiency
       }
+      isPublic
     }
   }
 `;

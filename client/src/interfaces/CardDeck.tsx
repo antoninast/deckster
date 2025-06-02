@@ -6,9 +6,10 @@ export interface CardDeck {
   categoryName: string;
   userId: number;
   flashcardIds: number[];
-  isPublic: boolean;
+  numberOfCards?: number;
   userStudyAttemptStats?: {
     attemptAccuracy?: number;
     proficiency?: string;
   };
+  isPublic: boolean;
 }
