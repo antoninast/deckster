@@ -5,7 +5,6 @@
 /* Page Container */
 .browse-page {
     padding: 2rem 1rem;
-    /* margin: 0 auto; */
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - 4rem);
 }
 
@@ -80,7 +79,7 @@
     display: block;
 }
 
-/* Delete Button - Always Visible */
+/* Delete Button */
 .delete-button-wrapper {
     position: absolute;
     top: 0.75rem;
@@ -91,12 +90,12 @@
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(212, 163, 115, 0.3); /* Subtle peach border */
+    border: 1px solid rgba(212, 163, 115, 0.3);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
     z-index: 10;
-    opacity: 1; /* Always visible */
+    opacity: 1;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -110,7 +109,7 @@
 .delete-icon {
     font-size: 18px;
     line-height: 1;
-    color: #d4a373; /* Soft brown that matches your palette */
+    color: #d4a373;
     font-weight: 400;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -390,16 +389,13 @@
 /* Extra large devices (large desktops, 1400px and up) */
 @media (min-width: 1400px) {
     .decks-container {
-        /* Keep the fluid auto-fill behavior */
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        /* The browse-page max-width already limits the container */
     }
 }
 
-/* Ultra-wide screens (1600px and up) - optional max columns */
+/* Ultra-wide screens (1600px and up) */
 @media (min-width: 1600px) {
     .decks-container {
-        /* This ensures a maximum of 4 columns by increasing min-width */
         grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     }
 }
@@ -646,7 +642,6 @@
 /* Ensure consistent card sizing */
 .decks-container>* {
     min-height: 0;
-    /* Prevent grid blowout */
 }
 
 /* Focus styles for accessibility */
