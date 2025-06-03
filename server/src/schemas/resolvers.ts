@@ -50,7 +50,7 @@ const resolvers = {
       if (context.user) {
         return await Profile.findOne({ _id: context.user._id });
       }
-      throw AuthenticationError;
+      throw new AuthenticationError('You must be logged in to perform this action');
     },
 
     cardDecks: async (
@@ -77,7 +77,7 @@ const resolvers = {
       if (context.user) {
         return await CardDeck.find({ userId: context.user._id });
       }
-      throw AuthenticationError;
+      throw new AuthenticationError('You must be logged in to perform this action');
     },
 
     cardDeck: async (
@@ -112,7 +112,7 @@ const resolvers = {
       context: Context
     ) => {
       if (!context.user) {
-        throw AuthenticationError;
+        throw new AuthenticationError('You must be logged in to perform this action');
       }
 
       const userId = new mongoose.Types.ObjectId(context.user._id);
@@ -166,7 +166,7 @@ const resolvers = {
       context: Context
     ) => {
       if (!context.user) {
-        throw AuthenticationError;
+        throw new AuthenticationError('You must be logged in to perform this action');
       }
 
       const userId = new mongoose.Types.ObjectId(context.user._id);
@@ -247,11 +247,11 @@ const resolvers = {
     ): Promise<{ token: string; profile: IProfile }> => {
       const profile = await Profile.findOne({ email });
       if (!profile) {
-        throw AuthenticationError;
+        throw new AuthenticationError('You must be logged in to perform this action');
       }
       const correctPw = await profile.isCorrectPassword(password);
       if (!correctPw) {
-        throw AuthenticationError;
+        throw new AuthenticationError('You must be logged in to perform this action');
       }
       const token = signToken(profile.username, profile.email, profile._id);
       return { token, profile };
@@ -263,7 +263,7 @@ const resolvers = {
       context: Context
     ): Promise<ICardDeck> => {
       if (!context.user) {
-        throw AuthenticationError;
+        throw new AuthenticationError('You must be logged in to perform this action');
       }
       const cardDeck = await CardDeck.create(input);
       return cardDeck;
@@ -271,8 +271,12 @@ const resolvers = {
 
     updateCardDeck: async (
       _parent: any,
-      { deckId, input }: { deckId: string; input: ICardDeck }
+      { deckId, input }: { deckId: string; input: ICardDeck },
+      context: Context
     ): Promise<ICardDeck | null> => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to perform this action');
+      }
       return await CardDeck.findByIdAndUpdate(deckId, input, {
         new: true,
         runValidators: true,
@@ -281,24 +285,44 @@ const resolvers = {
 
     removeCardDeck: async (
       _parent: any,
-      { deckId }: { deckId: string }
-    ): Promise<ICardDeck | null> => {
+      { deckId }: { deckId: string },
+      context: Context
+    ): Promise<ICardDeck | null | any> => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to perform this action');
+      }
       const objectId = new ObjectId(deckId);
+      const deck = await CardDeck.findById(objectId);
+      if (!deck) {
+        throw new Error(`Deck with id ${deckId} does not exist.`);
+      }
+      if (context.user._id.toString() !== deck.userId.toString()) {
+        throw new Error('Only the owner of the deck can delete it.');
+      }
+      await Flashcard.deleteMany({ deckId });
       return await CardDeck.findByIdAndDelete(objectId);
     },
 
     addFlashcard: async (
       _parent: any,
-      { input }: { input: IFlashcard }
+      { input }: { input: IFlashcard },
+      context: Context
     ): Promise<IFlashcard> => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to perform this action');
+      }
       const flashcard = await Flashcard.create(input);
       return flashcard;
     },
 
     updateFlashcard: async (
       _parent: any,
-      { flashcardId, input }: { flashcardId: string; input: IFlashcard }
+      { flashcardId, input }: { flashcardId: string; input: IFlashcard },
+      context: Context
     ): Promise<IFlashcard | null> => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to perform this action');
+      }
       return await Flashcard.findByIdAndUpdate(flashcardId, input, {
         new: true,
         runValidators: true,
@@ -307,8 +331,18 @@ const resolvers = {
 
     removeFlashcard: async (
       _parent: any,
-      { flashcardId }: { flashcardId: string }
+      { flashcardId }: { flashcardId: string },
+      context: Context
     ): Promise<IFlashcard | null> => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to perform this action');
+      }
+
+      const flashcard = await Flashcard.findById(flashcardId);
+      const deck = await CardDeck.findById(flashcard?.deckId);
+      if (context.user._id.toString() !== deck?.userId.toString()) {
+        throw new Error('Only the owner of the deck can delete the flashcards associated with the it.');
+      }
       return await Flashcard.findByIdAndDelete(flashcardId);
     },
 
@@ -326,7 +360,7 @@ const resolvers = {
       context: Context
     ): Promise<IFlashcard | null> => {
       if (!context.user) {
-        throw AuthenticationError;
+        throw new AuthenticationError('You must be logged in to perform this action');
       }
 
       const userId = new mongoose.Types.ObjectId(context.user._id);

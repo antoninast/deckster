@@ -242,12 +242,8 @@
     max-width: 400px;
     width: 90%;
     margin: 0 1rem;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-}
-
-.modal.show .modal-dialog {
     transform: scale(1);
+    transition: transform 0.3s ease;
 }
 
 .modal-content {
