@@ -5,6 +5,7 @@ const typeDefs = `
     username: String
     email: String
     password: String
+    securityQuestion: String
     studyAttempts: [StudyAttempt]
   }
 
@@ -95,7 +96,7 @@ const typeDefs = `
   type Query {
     # User queries
     profiles: [Profile]!
-    profile(profileId: ID!): Profile
+    profile(profileId: ID, username: String): Profile
     me: Profile
 
     # Deck queries

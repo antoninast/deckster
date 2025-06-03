@@ -42,6 +42,16 @@ export const LOGIN_USER = gql`
   }
 `;
 
+// TODO - Implement password reset mutation based on security question
+
+export const RETRIEVE_SECURITY_QUESTION = gql`
+  mutation retrieveSecurityQuestion($username: String!) {
+    retrieveSecurityQuestion(username: $username) {
+      securityQuestion
+    }
+  }
+`;
+
 // Creates a new card deck with specified properties
 export const ADD_CARD_DECK = gql`
   mutation addCardDeck($input: CardDeckInput!) {

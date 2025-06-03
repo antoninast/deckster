@@ -19,6 +19,7 @@ import BrowseDecks from "./components/BrowseDecks/BrowseDecks.js";
 import Study from "./components/Study/Study.js";
 import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
 import ImportPage from "./pages/ImportPage.js";
+import ResetPassword from "./components/ResetPassword/ResetPassword.js";
 import { store } from "./app/store";
 import "./styles/variables.css";
 import "./styles/animations.css";
@@ -87,8 +88,9 @@ const router = createBrowserRouter([
       },
       {
         path: "/forgot-password",
-        element: <div>Forgot Password Page (not implemented)</div>,
+        element: <ResetPassword />,
       }
+
     ],
   },
 ]);

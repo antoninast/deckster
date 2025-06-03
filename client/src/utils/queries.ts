@@ -18,6 +18,16 @@ export const QUERY_SINGLE_PROFILE = gql`
   }
 `;
 
+export const QUERY_SINGLE_PROFILE_BY_USERNAME = gql`
+  query singleProfile($username: String!) {
+    profile(username: $username) {
+      _id
+      username
+      securityQuestion
+    }
+  }
+`;
+
 export const QUERY_ME = gql`
   query me {
     me {

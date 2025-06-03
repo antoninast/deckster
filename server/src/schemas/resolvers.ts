@@ -6,9 +6,10 @@ import { signToken, AuthenticationError } from "../utils/auth.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 
-interface ProfileArgs {
-  profileId: string;
-}
+// Making it so that the ProfileArgs can be either profileId or username, but not both at the same time -JH
+type ProfileArgs = 
+  | { profileId: string, username: undefined }
+  | { username: string, profileId: undefined };
 
 interface AddProfileArgs {
   input: {
@@ -37,9 +38,15 @@ const resolvers = {
 
     profile: async (
       _parent: any,
-      { profileId }: ProfileArgs
+      profileRef : ProfileArgs
     ): Promise<IProfile | null> => {
-      return await Profile.findOne({ _id: profileId });
+      if (profileRef.profileId) {
+        return await Profile.findOne({ _id: profileRef.profileId });
+      } else if (profileRef.username) {
+        return await Profile.findOne({ username: profileRef.username });
+      } else {
+        throw new Error("You must provide either a profileId or username");
+      }
     },
 
     me: async (

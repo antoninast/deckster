@@ -11,8 +11,8 @@ export interface IProfile extends Document {
   fullName?: string;
   profilePicture?: string;
   lastLogin?: Date;
-  securityQuestion?: string;
-  securityAnswer?: string;
+  securityQuestion: string;
+  securityAnswer: string;
   isCorrectPassword(password: string): Promise<boolean>;
   studyAttempts: IStudyAttempt[];
   createdAt: Date;
@@ -43,9 +43,11 @@ const profileSchema = new Schema<IProfile>(
     },
     securityQuestion: {
       type: String,
+      required: true,
     },
     securityAnswer: {
       type: String,
+      required: true,
     },
   },
   {
@@ -60,6 +62,11 @@ profileSchema.pre<IProfile>("save", async function (next) {
   if (this.isNew || this.isModified("password")) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
+  }
+  // Hash the security answer if it is modified or new
+  if (this.isNew || this.isModified("securityAnswer")) {
+    const saltRounds = 10;
+    this.securityAnswer = await bcrypt.hash(this.securityAnswer, saltRounds);
   }
   next();
 });
