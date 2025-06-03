@@ -85,6 +85,10 @@ const router = createBrowserRouter([
         path: "/deck/:deckId/import",
         element: <ImportPage />,
       },
+      {
+        path: "/forgot-password",
+        element: <div>Forgot Password Page (not implemented)</div>,
+      }
     ],
   },
 ]);

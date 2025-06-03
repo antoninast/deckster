@@ -7,7 +7,8 @@ import Auth from "../../utils/auth";
 import "./Login.css";
 import { setLogin } from "../../user/userState";
 
-const Login = () => {
+
+const ResetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const [formState, setFormState] = useState({ email: "", password: "" });
@@ -28,7 +29,6 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      console.log("Form submitted with state:", formState);
       const { data } = await login({
         variables: { ...formState },
       });
@@ -133,4 +133,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;

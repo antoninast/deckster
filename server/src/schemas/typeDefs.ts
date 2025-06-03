@@ -118,7 +118,7 @@ const typeDefs = `
   type Mutation {
     # Authentication mutations
     addProfile(input: ProfileInput!): Auth
-    login(email: String!, password: String!): Auth
+    login(username: String!, password: String!): Auth
 
     # Deck management mutations
     addCardDeck(input: CardDeckInput!): CardDeck

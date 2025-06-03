@@ -241,21 +241,39 @@ const resolvers = {
       return { token, profile };
     },
 
+    // Uncomment this section if you want to use email/password login
+    // login: async (
+    //   _parent: any,
+    //   { email, password }: { email: string; password: string }
+    // ): Promise<{ token: string; profile: IProfile }> => {
+    //   const profile = await Profile.findOne({ email });
+    //   if (!profile) {
+    //     throw AuthenticationError;
+    //   }
+    //   const correctPw = await profile.isCorrectPassword(password);
+    //   if (!correctPw) {
+    //     throw AuthenticationError;
+    //   }
+    //   const token = signToken(profile.username, profile.email, profile._id);
+    //   return { token, profile };
+    // },
+
+    // Login using username and password instead of email
     login: async (
-      _parent: any,
-      { email, password }: { email: string; password: string }
-    ): Promise<{ token: string; profile: IProfile }> => {
-      const profile = await Profile.findOne({ email });
-      if (!profile) {
-        throw AuthenticationError;
-      }
-      const correctPw = await profile.isCorrectPassword(password);
-      if (!correctPw) {
-        throw AuthenticationError;
-      }
-      const token = signToken(profile.username, profile.email, profile._id);
-      return { token, profile };
-    },
+    _parent: any,
+    { username, password }: { username: string; password: string }
+  ): Promise<{ token: string; profile: IProfile }> => {
+    const profile = await Profile.findOne({ username });
+    if (!profile) {
+      throw AuthenticationError;
+    }
+    const correctPw = await profile.isCorrectPassword(password);
+    if (!correctPw) {
+      throw AuthenticationError;
+    }
+    const token = signToken(profile.username, profile.email, profile._id);
+    return { token, profile };
+  },
 
     addCardDeck: async (
       _parent: any,
