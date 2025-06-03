@@ -28,10 +28,12 @@
   "author": "Project 3 Team",
   "license": "ISC",
   "dependencies": {
+    "@apollo/client": "^3.8.10",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.18",
+    "apollo-server-express": "^3.13.0",
     "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.4.9",
     "concurrently": "^8.2.2",
@@ -52,10 +54,6 @@
   },
   "devDependencies": {
     "@types/multer": "^1.4.12",
-    "apollo-server-express": "^3.13.0",
-    "graphql-upload": "^17.0.0",
-    "mongodb": "^6.16.0",
-    "multer": "^1.4.5-lts.2",
-    "ts-node": "^10.9.2"
+    "@types/uuid": "^9.0.8"
   }
 }

@@ -68,11 +68,13 @@ const Profile = () => {
     ),
     // studySessions: 45, <-- already captured in Study Component
     averageAccuracy:
-      myDecks.reduce(
-        (total: number, deck: CardDeck) =>
-          total + (deck.userStudyAttemptStats?.attemptAccuracy || 0),
-        0
-      ) / myDecks.length || 0,
+      Math.round(
+        myDecks.reduce(
+          (total: number, deck: CardDeck) =>
+            total + (deck.userStudyAttemptStats?.attemptAccuracy || 0),
+          0
+        ) / (myDecks.length || 1)
+      ) || 0,
     currentStreak: 7,
     totalStudyTime: "24h 35m",
   };
