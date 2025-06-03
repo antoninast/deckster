@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
-import { REVIEW_FLASHCARD } from "../../utils/mutations";
-import { createStudySession } from "../../utils/sessionUtils";
+import {
+  REVIEW_FLASHCARD,
+  START_STUDY_SESSION,
+  END_STUDY_SESSION,
+} from "../../utils/mutations";
 import {
   GET_SESSION_STATS,
   GET_RECENT_SESSION_STATS,
@@ -21,6 +24,9 @@ export default function Study() {
   const [isSessionComplete, setIsSessionComplete] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [startStudySession] = useMutation(START_STUDY_SESSION);
+  const [endStudySession] = useMutation(END_STUDY_SESSION);
+  const [reviewFlashcard] = useMutation(REVIEW_FLASHCARD);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const correctBtnRef = useRef<HTMLButtonElement>(null);
@@ -50,18 +56,59 @@ export default function Study() {
     }
   );
 
-  const [reviewFlashcard] = useMutation(REVIEW_FLASHCARD);
-
   useEffect(() => {
-    const newSessionId = createStudySession();
-    setSessionId(newSessionId);
+    const initializeSession = async () => {
+      try {
+        const { data } = await startStudySession({
+          variables: { deckId },
+        });
+        setSessionId(data.startStudySession._id);
+      } catch (err) {
+        console.error("Error starting study session:", err);
+      }
+    };
+
+    initializeSession();
+
+    // Cleanup function for unmount/navigation
+    return () => {
+      if (sessionId && !isSessionComplete) {
+        endStudySession({
+          variables: {
+            sessionId,
+            status: "abandoned",
+          },
+        }).catch((err) => console.error("Error ending session:", err));
+      }
+    };
   }, []);
 
-  const startNewSession = () => {
-    const newSessionId = createStudySession();
-    setSessionId(newSessionId);
-    setCurrentCardIndex(0);
-    setIsSessionComplete(false);
+  const startNewSession = async () => {
+    try {
+      const { data } = await startStudySession({
+        variables: { deckId },
+      });
+      setSessionId(data.startStudySession._id);
+      setCurrentCardIndex(0);
+      setIsSessionComplete(false);
+    } catch (err) {
+      console.error("Error starting new session:", err);
+    }
+  };
+
+  const handleSessionComplete = async (abandonedEarly = false) => {
+    try {
+      await endStudySession({
+        variables: {
+          sessionId,
+          status: abandonedEarly ? "abandoned" : "completed",
+        },
+      });
+      setIsSessionComplete(true);
+      await recentSessionsStatsRefetch();
+    } catch (err) {
+      console.error("Error ending session:", err);
+    }
   };
 
   const handleResponse = async (correct: boolean) => {
@@ -95,6 +142,10 @@ export default function Study() {
     } catch (err) {
       console.error("Error recording flashcard review:", err);
     }
+  };
+
+  const handleEndSessionClick = () => {
+    handleSessionComplete(true);
   };
 
   useEffect(() => {
@@ -229,7 +280,7 @@ export default function Study() {
         <button
           ref={endSessionRef}
           className="end-session-btn"
-          onClick={() => setIsSessionComplete(true)}
+          onClick={handleEndSessionClick}
         >
           End Session
         </button>
