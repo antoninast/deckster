@@ -12,7 +12,6 @@ import IndividualDeck from "../IndividualDeck/IndividualDeck";
 const BrowseDecks = () => {
   const navigate = useNavigate();
   const user = useSelector((state: any) => state.user.value);
-  console.log(user);
 
   const [openModal, setOpenModal] = useState(false);
   const [deckIdToRemove, setDeckIdToRemove] = useState("");
@@ -48,8 +47,10 @@ const BrowseDecks = () => {
         variables: { deckId: deckIdToRemove },
       });
       setOpenModal(false);
-    } catch (error) {
-      console.error("Failed to remove deck:", error);
+    } catch (error: any) {
+      setOpenModal(false);
+      console.error(error.message);
+      alert(error);
     }
   };
 

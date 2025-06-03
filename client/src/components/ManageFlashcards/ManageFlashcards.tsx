@@ -36,8 +36,10 @@ export default function Flashcards() {
               variables: { flashcardId: flashcardIdToRemove } 
             });
             setOpenModal(false);
-        } catch (error) {
-            throw new Error(`Failed to remove the flashcard, ${error}`);
+        } catch (error: any) {
+            alert(error.message);
+            setOpenModal(false);
+            console.error(error.message);
         }
     }
 
@@ -103,7 +105,10 @@ export default function Flashcards() {
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-body">
-                    Do you want to delete permanently this flashcard?
+                    <h3 style={{ marginBottom: "1rem" }}>Delete Flashcard?</h3>
+                    <p>
+                        This will permanently delete this flashcard.
+                    </p>
                   </div>
                   <div className="modal-footer">
                     <button onClick={cancelRemoveFlashcard} type="button" className="btn btn-secondary btn-sm">Cancel</button>
