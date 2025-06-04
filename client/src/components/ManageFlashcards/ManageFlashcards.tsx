@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
 import { REMOVE_FLASHCARD, UPDATE_FLASHCARD } from "../../utils/mutations";
@@ -13,6 +13,7 @@ export default function Flashcards() {
     const [flashcardIdToRemove, setFlashcardIdToRemove] = useState('');
     const [updatedFlashcard, setUpdatedFlashcard] = useState({ question: '', answer: '' });
     const [currentlyEditedCardId, setCurrentlyEditedCardId] = useState('');
+    const [flashcardList, setFlashcardList] = useState([]);
 
     const { loading: queryLoading, data: flashcards, refetch } = useQuery(QUERY_FLASHCARDS_BY_DECK,
         { variables: { deckId } }
@@ -83,11 +84,31 @@ export default function Flashcards() {
 
     const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setUpdatedFlashcard({ ...updatedFlashcard, question: e.target.value });
-    };
+    }
 
     const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setUpdatedFlashcard({ ...updatedFlashcard, answer: e.target.value });
-    };
+    }
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        if (e.target.value) {
+            const updatedFlashcardList = flashcards.flashcardsByDeck.filter((card: any) => {
+                return card.question.toLowerCase().includes(value)
+                    || card.answer.toLowerCase().includes(value)
+            });
+            setFlashcardList([...updatedFlashcardList] as any);            
+        } else {
+            setFlashcardList(flashcards.flashcardsByDeck);
+        }
+    }
+
+    useEffect(() => {
+        if (flashcards?.flashcardsByDeck) {
+            setFlashcardList(flashcards.flashcardsByDeck);
+        }
+    }, [flashcards])
 
     if (queryLoading || removeLoading || updateLoading) {
         return (
@@ -118,8 +139,11 @@ export default function Flashcards() {
               </div>
             </div>
             <h2>Flashcards with - DECK ID - {deckId}</h2>
+            <div className="search-bar">
+                <input onChange={handleSearch} type="text" className="form-control" placeholder="Search flashcard by keyword" />
+            </div>
             <div className="flashcards-container">
-                {flashcards.flashcardsByDeck.map((flashcard: Flashcard) =>
+                {flashcardList.map((flashcard: Flashcard) =>
                     <div key={flashcard._id} className="card">
                         <div
                             className="flashcard-delete-button-wrapper"

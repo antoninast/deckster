@@ -1,3 +1,15 @@
+.search-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 2em auto 2em auto;
+}
+
+.search-bar input {
+    width: 70%;
+}
+
 .flashcards-container {
     display: flex;
     flex-direction: row;
