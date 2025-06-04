@@ -3,6 +3,7 @@
     width: 100%;
     overflow-x: hidden;
     background: linear-gradient(180deg, #fefae0 0%, #faedcd 50%, #e9edc9 100%);
+    min-height: 100vh;
 }
 
 /* Hero Section */
