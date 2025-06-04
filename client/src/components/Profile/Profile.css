@@ -411,6 +411,10 @@
         font-size: 3rem;
     }
 
+    .profile-avatar-edit {
+        text-decoration: none;
+    }
+
     .profile-info {
         display: flex;
         flex-direction: column;

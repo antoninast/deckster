@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import {
@@ -21,6 +21,7 @@ import {
 import auth from "../../utils/auth";
 import "./Profile.css";
 import { CardDeck } from "../../interfaces/CardDeck";
+
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -108,7 +109,9 @@ const Profile = () => {
             </div>
             {isOwnProfile && (
               <button className="edit-avatar-btn">
-                <FaEdit /> Edit
+                <Link to="/me">
+                <FaEdit/> Edit
+                </Link>
               </button>
             )}
           </div>

@@ -10,7 +10,8 @@ import { setLogin } from "../../user/userState";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [formState, setFormState] = useState({ email: "", password: "" });
+  // const [formState, setFormState] = useState({ email: "", password: "" });
+  const [formState, setFormState] = useState({ username: "", password: "" });
   const [login, { error, data }] = useMutation(LOGIN_USER);
 
   // Update form state based on input changes
@@ -27,6 +28,7 @@ const Login = () => {
     event.preventDefault();
 
     try {
+      console.log("Form submitted with state:", formState);
       const { data } = await login({
         variables: { ...formState },
       });
@@ -51,7 +53,8 @@ const Login = () => {
 
     // Clear form after submission
     setFormState({
-      email: "",
+      // email: "",
+      username: "",
       password: "",
     });
   };
@@ -76,14 +79,19 @@ const Login = () => {
             <>
               <form className="login-form" onSubmit={handleFormSubmit}>
                 <div className="form-group">
-                  <label htmlFor="email">Email Address</label>
+                  {/* <label htmlFor="email">Email Address</label> */}
+                  <label htmlFor="username">Username</label>
                   <input
-                    id="email"
                     className="form-input"
-                    placeholder="Enter your email"
-                    name="email"
-                    type="email"
-                    value={formState.email}
+                    // id="email"
+                    // placeholder="Enter your email"
+                    // type="email"
+                    // value={formState.email}
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    type="text"
+                    value={formState.username}
                     onChange={handleChange}
                     required
                   />

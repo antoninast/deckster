@@ -1,44 +1,102 @@
 [
   {
+    "question": "What is JavaScript?",
+    "answer": "A programming language used to create interactive effects on web pages.",
+    "image_url": ""
+  },
+  {
+    "question": "What is undefined in JavaScript?",
+    "answer": "A variable that has been declared but not assigned a value.",
+    "image_url": ""
+  },
+  {
+    "question": "What is a closure?",
+    "answer": "A function that remembers variables from its outer scope even after the outer function has closed.",
+    "image_url": ""
+  },
+  {
+    "question": "What does == do?",
+    "answer": "Compares values with type coercion.",
+    "image_url": ""
+  },
+  {
+    "question": "What does === do?",
+    "answer": "Compares values and types strictly (no type coercion).",
+    "image_url": ""
+  },
+  {
     "question": "What is the capital of France?",
     "answer": "Paris",
-    "image_url": "",
-    "deckId": "649f3a2b4f1e8c001c4e5d7a"
-  },
-  {
-    "question": "What is the largest planet in our solar system?",
-    "answer": "Jupiter",
-    "image_url": "",
-    "deckId": "649f3a2b4f1e8c001c4e5d7a"
-  },
-  {
-    "question": "What is the chemical symbol for gold?",
-    "answer": "Au",
-    "image_url": "",
-    "deckId": "649f3a2b4f1e8c001c4e5d7a"
-  },
-  {
-    "question": "What is the speed of light?",
-    "answer": "299,792,458 m/s",
-    "image_url": "",
-    "deckId": "649f3a2b4f1e8c001c4e5d7a"
-  },
-  {
-    "question": "What is the square root of 64?",
-    "answer": "8",
-    "image_url": "",
-    "deckId": "649f3a2b4f1e8c001c4e5d7a"
+    "image_url": ""
   },
   {
     "question": "What is the capital of Japan?",
     "answer": "Tokyo",
-    "image_url": "",
-    "deckId": "649f3a2b4f1e8c001c4e5d7a"
+    "image_url": ""
   },
   {
-    "question": "What is the largest ocean on Earth?",
-    "answer": "Pacific Ocean",
-    "image_url": "",
-    "deckId": "649f3a2b4f1e8c001c4e5d7a"
+    "question": "What is the capital of Canada?",
+    "answer": "Ottawa",
+    "image_url": ""
+  },
+  {
+    "question": "What is the capital of Brazil?",
+    "answer": "Brasilia",
+    "image_url": ""
+  },
+  {
+    "question": "What is the capital of Egypt?",
+    "answer": "Cairo",
+    "image_url": ""
+  },
+  {
+    "question": "What is algebra?",
+    "answer": "Math with variables and symbols.",
+    "image_url": ""
+  },
+  {
+    "question": "What is a variable?",
+    "answer": "A symbol for an unknown value.",
+    "image_url": ""
+  },
+  {
+    "question": "What is an equation?",
+    "answer": "A math statement with an equals sign.",
+    "image_url": ""
+  },
+  {
+    "question": "What is a linear equation?",
+    "answer": "An equation with variables to the power of 1.",
+    "image_url": ""
+  },
+  {
+    "question": "What does solving an equation mean?",
+    "answer": "Finding the variable’s value.",
+    "image_url": ""
+  },
+  {
+    "question": "What is biology?",
+    "answer": "Study of living things.",
+    "image_url": ""
+  },
+    {
+    "question": "What is cell?",
+    "answer": "Basic unit of life.",
+    "image_url": ""
+  },
+  {
+    "question": "What is biology?",
+    "answer": "Study of living things.",
+    "image_url": ""
+  },
+  {
+    "question": "What is DNA?",
+    "answer": "Genetic material.",
+    "image_url": ""
+  },
+  {
+    "question": "What is photosynthesis?",
+    "answer": "Plants make food using sunlight.",
+    "image_url": ""
   }
 ]

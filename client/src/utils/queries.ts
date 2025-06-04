@@ -18,6 +18,16 @@ export const QUERY_SINGLE_PROFILE = gql`
   }
 `;
 
+export const QUERY_SINGLE_PROFILE_BY_USERNAME = gql`
+  query singleProfile($username: String!) {
+    profile(username: $username) {
+      _id
+      username
+      securityQuestion
+    }
+  }
+`;
+
 export const QUERY_ME = gql`
   query me {
     me {
@@ -45,8 +55,11 @@ export const QUERY_MY_DECKS = gql`
       name
       categoryName
       image_url
-      flashcardIds
       numberOfCards
+      user {
+        _id
+        username
+      }
       userStudyAttemptStats {
         attemptAccuracy
         proficiency
@@ -64,6 +77,10 @@ export const QUERY_CARD_DECKS = gql`
       categoryName
       image_url
       isPublic
+      user {
+        _id
+        username
+      }
       userStudyAttemptStats {
         attemptAccuracy
         proficiency

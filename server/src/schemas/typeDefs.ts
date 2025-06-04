@@ -5,6 +5,7 @@ const typeDefs = `
     username: String
     email: String
     password: String
+    securityQuestion: String
     studyAttempts: [StudyAttempt]
   }
 
@@ -68,8 +69,8 @@ const typeDefs = `
     lastReview: String
     image_url: String
     categoryName: String
-    userId: ID
-    flashcardIds: [ID]
+    userId: ID!
+    user: Profile
     numberOfCards: Int
     userStudyAttemptStats: StudyAttemptStats
     isPublic: Boolean
@@ -90,7 +91,6 @@ const typeDefs = `
     image_url: String
     categoryName: String
     userId: ID!
-    flashcardIds: [ID]
     isPublic: Boolean
   }
 
@@ -103,7 +103,7 @@ const typeDefs = `
   type Query {
     # User queries
     profiles: [Profile]!
-    profile(profileId: ID!): Profile
+    profile(profileId: ID, username: String): Profile
     me: Profile
 
     # Deck queries
@@ -127,7 +127,7 @@ const typeDefs = `
   type Mutation {
     # Authentication mutations
     addProfile(input: ProfileInput!): Auth
-    login(email: String!, password: String!): Auth
+    login(username: String!, password: String!): Auth
 
     # Deck management mutations
     addCardDeck(input: CardDeckInput!): CardDeck

@@ -3,6 +3,7 @@
     width: 100%;
     overflow-x: hidden;
     background: linear-gradient(180deg, #fefae0 0%, #faedcd 50%, #e9edc9 100%);
+    min-height: 100vh;
 }
 
 /* Hero Section */
@@ -118,8 +119,8 @@
 }
 
 .float-card:hover {
-    transform: translateY(-8px) rotate(-2deg);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
 }
 
 .float-card h4 {

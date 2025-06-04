@@ -54,7 +54,7 @@ const ImportPage: React.FC = () => {
           input: {
             ...deckFormData,
             userId: user.data._id,
-            flashcardIds: [],
+            // flashcardIds: [],
           },
         },
         refetchQueries: [

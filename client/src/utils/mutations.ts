@@ -16,14 +16,38 @@ export const ADD_PROFILE = gql`
 `;
 
 // Authenticates user and returns token with basic profile info
+// Using email and password for login
+// export const LOGIN_USER = gql`
+//   mutation login($email: String!, $password: String!) {
+//     login(email: $email, password: $password) {
+//       token
+//       profile {
+//         _id
+//         username
+//       }
+//     }
+//   }
+// `;
+
+// Using username and password for login
 export const LOGIN_USER = gql`
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
       token
       profile {
         _id
         username
       }
+    }
+  }
+`;
+
+// TODO - Implement password reset mutation based on security question
+
+export const RETRIEVE_SECURITY_QUESTION = gql`
+  mutation retrieveSecurityQuestion($username: String!) {
+    retrieveSecurityQuestion(username: $username) {
+      securityQuestion
     }
   }
 `;

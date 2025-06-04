@@ -72,7 +72,7 @@ const AppNavbar = () => {
                   <div>
                     <Link to="/import" className="nav-link-with-icon">
                       <FaFileImport className="nav-icon" />
-                      <span>Import CSV</span>
+                      <span>Create Deck</span>
                     </Link>
                   </div>
                   <div>

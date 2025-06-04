@@ -6,7 +6,7 @@ export interface ICardDeck extends Document {
   image_url: string | null;
   categoryName: string;
   userId: Types.ObjectId;
-  flashcardIds: Types.ObjectId[];
+  // flashcardIds: Types.ObjectId[];
   isPublic: boolean;
 }
 
@@ -30,13 +30,13 @@ const cardDeckSchema = new Schema<ICardDeck>(
       ref: "Profile",
       required: true,
     },
-    flashcardIds: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Flashcard",
-        required: true,
-      },
-    ],
+    // flashcardIds: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Flashcard",
+    //     required: true,
+    //   },
+    // ],
     isPublic: {
       type: Boolean,
       default: false
@@ -47,9 +47,9 @@ const cardDeckSchema = new Schema<ICardDeck>(
   }
 );
 
-cardDeckSchema.virtual("numberOfCards").get(function () {
-  return this.flashcardIds.length;
-});
+// cardDeckSchema.virtual("numberOfCards").get(function () {
+//   return this.flashcardIds.length;
+// });
 
 const CardDeck = model<ICardDeck>("CardDeck", cardDeckSchema);
 export default CardDeck;
