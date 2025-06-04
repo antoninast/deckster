@@ -16,6 +16,7 @@ import {
   QUERY_SINGLE_PROFILE,
   QUERY_ME,
   QUERY_MY_DECKS,
+  QUERY_MY_STUDY_SESSIONS,
 } from "../../utils/queries";
 import auth from "../../utils/auth";
 import "./Profile.css";
@@ -33,6 +34,11 @@ const Profile = () => {
 
   const { data: myDecksData } = useQuery(QUERY_MY_DECKS);
   const myDecks = myDecksData?.myCardDecks || [];
+
+  const { data: myStudySessionsData } = useQuery(QUERY_MY_STUDY_SESSIONS);
+  const myStudySessions = myStudySessionsData?.myStudySessions || [];
+
+  console.log("mystudySessionsData:", myStudySessionsData);
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
@@ -57,8 +63,6 @@ const Profile = () => {
     );
   }
 
-  console.log("myDecks:", myDecks);
-
   // Profile statistics
   const stats = {
     totalDecks: myDecks.length,
@@ -76,7 +80,13 @@ const Profile = () => {
         ) / (myDecks.length || 1)
       ) || 0,
     currentStreak: 7,
-    totalStudyTime: "24h 35m",
+    totalStudyTime:
+      myStudySessions
+        .reduce(
+          (total: number, session: any) => total + (session.studyTime || 0),
+          0
+        )
+        .toFixed(2) + " hrs",
   };
 
   // User achievements

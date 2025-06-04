@@ -58,10 +58,10 @@ export const START_STUDY_SESSION = gql`
   mutation StartStudySession($deckId: ID!) {
     startStudySession(deckId: $deckId) {
       _id
+      userId
+      deckId
       startTime
       status
-      totalAttempts
-      correctAttempts
     }
   }
 `;
@@ -70,7 +70,7 @@ export const END_STUDY_SESSION = gql`
   mutation EndStudySession(
     $sessionId: ID!
     $clientDuration: Int!
-    $status: String!
+    $status: SessionStatus!
   ) {
     endStudySession(
       sessionId: $sessionId
@@ -90,10 +90,10 @@ export const END_STUDY_SESSION = gql`
 
 // Records a study attempt for a flashcard with correctness tracking
 export const REVIEW_FLASHCARD = gql`
-  mutation reviewFlashcard(
+  mutation ReviewFlashcard(
     $flashcardId: ID!
     $correct: Boolean!
-    $studySessionId: String!
+    $studySessionId: ID!
   ) {
     reviewFlashcard(
       flashcardId: $flashcardId
@@ -103,8 +103,6 @@ export const REVIEW_FLASHCARD = gql`
       _id
       question
       answer
-      image_url
-      deckId
     }
   }
 `;

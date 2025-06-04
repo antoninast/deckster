@@ -5,7 +5,7 @@ export interface StudyAttempt {
   deckId: string;
   isCorrect: boolean;
   timestamp: Date;
-  studySessionId: string | null;
+  studySessionId: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -29,7 +29,7 @@ const typeDefs = `
     deckId: ID
     isCorrect: Boolean
     timestamp: String
-    studySessionId: String
+    studySessionId: ID
   }
 
   type StudyAttemptStats {
@@ -39,18 +39,26 @@ const typeDefs = `
     proficiency: String!
   }
 
-  type SessionStats {
-    totalAttempts: Int!
-    correctAttempts: Int!
-    sessionAccuracy: Float!
+  enum SessionStatus {
+    active
+    completed
+    abandoned
   }
 
-  type RecentSessionsStats {
-    studySessionId: String!
-    timestamp: String!
+  type StudySession {
+    _id: ID!
+    userId: ID!
+    deckId: ID!
+    startTime: String!
+    endTime: String
+    clientDuration: Int!
+    calculatedDuration: Int
     totalAttempts: Int!
     correctAttempts: Int!
+    status: SessionStatus!
     sessionAccuracy: Float!
+    createdAt: String
+    updatedAt: String
   }
 
   # Core content types
@@ -110,8 +118,9 @@ const typeDefs = `
     flashcard(flashcardId: ID!): Flashcard
 
     # Study statistics queries
-    sessionStats(studySessionId: String!): SessionStats
-    recentSessionsStats(deckId: ID!, limit: Int): [RecentSessionsStats]!
+    studySession(studySessionId: ID!): StudySession
+    myStudySessions: [StudySession]!
+    recentStudySessions(deckId: ID!, limit: Int): [StudySession]!
   }
 
   # Mutations
@@ -129,10 +138,18 @@ const typeDefs = `
     addFlashcard(input: FlashcardInput!): Flashcard
     updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
     removeFlashcard(flashcardId: ID!): Flashcard
-    reviewFlashcard(flashcardId: ID!, correct: Boolean!, studySessionId: String!): Flashcard
+    reviewFlashcard(flashcardId: ID!, correct: Boolean!, studySessionId: ID!): Flashcard
 
     # Bulk operations
     addMultipleFlashcards(deckId: ID!, flashcards: [FlashcardInput!]!): [Flashcard]
+
+    # Study session mutations
+    startStudySession(deckId: ID!): StudySession!
+    endStudySession(
+      sessionId: ID!
+      clientDuration: Int!
+      status: SessionStatus!
+    ): StudySession!
   }
 `;
 

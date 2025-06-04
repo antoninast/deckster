@@ -1,4 +1,10 @@
-import { Profile, CardDeck, Flashcard, StudyAttempt } from "../models/index.js";
+import {
+  Profile,
+  CardDeck,
+  Flashcard,
+  StudyAttempt,
+  StudySession,
+} from "../models/index.js";
 import { IProfile } from "../models/Profile.js";
 import type { IFlashcard } from "../models/Flashcard.js";
 import { ICardDeck } from "../models/CardDeck.js";
@@ -106,7 +112,7 @@ const resolvers = {
       return await Flashcard.findOne({ _id: flashcardId });
     },
 
-    sessionStats: async (
+    studySession: async (
       _parent: any,
       { studySessionId }: { studySessionId: string },
       context: Context
@@ -115,119 +121,73 @@ const resolvers = {
         throw AuthenticationError;
       }
 
-      const userId = new mongoose.Types.ObjectId(context.user._id);
+      const session = await StudySession.findById(studySessionId);
+      if (!session) {
+        throw new Error("Session not found");
+      }
 
-      const results = await StudyAttempt.aggregate([
-        {
-          $match: {
-            userId,
-            studySessionId,
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalAttempts: { $sum: 1 },
-            correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
-          },
-        },
-        {
-          $addFields: {
-            sessionAccuracy: {
-              $multiply: [
-                { $divide: ["$correctAttempts", "$totalAttempts"] },
-                100,
-              ],
-            },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            totalAttempts: 1,
-            correctAttempts: 1,
-            sessionAccuracy: 1,
-          },
-        },
-      ]);
+      if (session.userId.toString() !== context.user._id.toString()) {
+        throw new Error("Unauthorized: Not your session");
+      }
 
-      return (
-        results[0] || {
-          totalAttempts: 0,
-          correctAttempts: 0,
-          sessionAccuracy: 0,
-        }
-      );
+      return session; // Return the entire session object
     },
 
-    recentSessionsStats: async (
+    myStudySessions: async (_parent: any, _args: any, context: Context) => {
+      if (!context.user) {
+        throw AuthenticationError;
+      }
+
+      // Convert user ID to ObjectId
+      const userId = new mongoose.Types.ObjectId(context.user._id);
+
+      const sessions = await StudySession.find({
+        userId: userId,
+        status: { $in: ["completed", "abandoned"] },
+      })
+        .sort({ endTime: -1 })
+        .select(
+          "_id userId deckId startTime endTime totalAttempts correctAttempts status clientDuration sessionAccuracy"
+        )
+        .lean();
+
+      // Transform the documents and ensure all required fields are present
+      return sessions.map((session) => ({
+        ...session,
+        _id: session._id.toString(),
+        userId: session.userId.toString(),
+        deckId: session.deckId.toString(),
+        startTime: session.startTime.toISOString(),
+        endTime: session.endTime ? session.endTime.toISOString() : null,
+        totalAttempts: session.totalAttempts || 0,
+        correctAttempts: session.correctAttempts || 0,
+        clientDuration: session.clientDuration || 0,
+        status: session.status || "completed",
+        sessionAccuracy: session.sessionAccuracy || 0,
+      }));
+    },
+
+    recentStudySessions: async (
       _parent: any,
-      { deckId, limit = 10 }: { deckId: string; limit?: number },
+      { deckId, limit = 5 }: { deckId: string; limit?: number },
       context: Context
     ) => {
       if (!context.user) {
         throw AuthenticationError;
       }
 
-      const userId = new mongoose.Types.ObjectId(context.user._id);
-      const deckObjectId = new mongoose.Types.ObjectId(deckId);
+      const sessions = await StudySession.find({
+        userId: context.user._id,
+        deckId: new mongoose.Types.ObjectId(deckId),
+        status: { $in: ["completed", "abandoned"] },
+      })
+        .sort({ endTime: -1 })
+        .limit(limit)
+        .select(
+          "startTime endTime totalAttempts correctAttempts status clientDuration sessionAccuracy"
+        );
 
-      // Get unique session IDs, sorted by most recent
-      const sessions = await StudyAttempt.aggregate([
-        {
-          $match: {
-            userId,
-            deckId: deckObjectId,
-            studySessionId: { $ne: null },
-          },
-        },
-        {
-          $sort: { createdAt: -1 },
-        },
-        {
-          $group: {
-            _id: "$studySessionId",
-            timestamp: { $first: "$createdAt" },
-          },
-        },
-        {
-          $limit: limit,
-        },
-      ]);
-
-      // Calculate stats for each session
-      const sessionStats = await Promise.all(
-        sessions.map(async (session) => {
-          const stats = await StudyAttempt.aggregate([
-            {
-              $match: {
-                userId,
-                deckId: deckObjectId,
-                studySessionId: session._id,
-              },
-            },
-            {
-              $group: {
-                _id: null,
-                totalAttempts: { $sum: 1 },
-                correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
-              },
-            },
-          ]);
-
-          return {
-            studySessionId: session._id,
-            timestamp: session.timestamp,
-            totalAttempts: stats[0]?.totalAttempts || 0,
-            correctAttempts: stats[0]?.correctAttempts || 0,
-            sessionAccuracy: stats[0]
-              ? (stats[0].correctAttempts / stats[0].totalAttempts) * 100
-              : 0,
-          };
-        })
-      );
-
-      return sessionStats;
+      return sessions;
     },
   },
 
@@ -324,28 +284,31 @@ const resolvers = {
         studySessionId: string;
       },
       context: Context
-    ): Promise<IFlashcard | null> => {
+    ) => {
       if (!context.user) {
         throw AuthenticationError;
       }
 
-      const userId = new mongoose.Types.ObjectId(context.user._id);
-      const deckId = (await Flashcard.findById(flashcardId))?.deckId;
+      const session = await StudySession.findById(studySessionId);
+      if (!session || session.status !== "active") {
+        throw new Error("Invalid or inactive study session");
+      }
 
-      if (!deckId) {
-        throw new Error("Deck not found for the provided flashcard.");
+      const flashcard = await Flashcard.findById(flashcardId);
+      if (!flashcard) {
+        throw new Error("Flashcard not found");
       }
 
       // Create study attempt record
       await StudyAttempt.create({
-        userId,
+        userId: context.user._id,
         flashcardId: new mongoose.Types.ObjectId(flashcardId),
-        deckId: new mongoose.Types.ObjectId(deckId),
+        deckId: session.deckId,
         isCorrect: correct,
-        studySessionId,
+        studySessionId: new mongoose.Types.ObjectId(studySessionId),
       });
 
-      return await Flashcard.findById(flashcardId);
+      return flashcard;
     },
 
     addMultipleFlashcards: async (
@@ -412,9 +375,82 @@ const resolvers = {
         throw new Error(error.message);
       }
     },
+
+    startStudySession: async (
+      _parent: any,
+      { deckId }: { deckId: string },
+      context: Context
+    ) => {
+      if (!context.user) {
+        throw AuthenticationError;
+      }
+
+      const session = await StudySession.create({
+        userId: context.user._id,
+        deckId: new mongoose.Types.ObjectId(deckId),
+        startTime: new Date(),
+        status: "active",
+      });
+
+      return session;
+    },
+
+    endStudySession: async (
+      _parent: any,
+      {
+        sessionId,
+        clientDuration,
+        status,
+      }: {
+        sessionId: string;
+        clientDuration: number;
+        status: "completed" | "abandoned";
+      },
+      context: Context
+    ) => {
+      if (!context.user) {
+        throw AuthenticationError;
+      }
+
+      const session = await StudySession.findById(sessionId);
+      if (!session) {
+        throw new Error("Session not found");
+      }
+
+      if (session.userId.toString() !== context.user._id.toString()) {
+        throw new Error("Unauthorized: Not your session");
+      }
+
+      session.endTime = new Date();
+      session.clientDuration = clientDuration;
+      session.status = status;
+
+      // Calculate final stats
+      const attempts = await StudyAttempt.aggregate([
+        {
+          $match: {
+            studySessionId: new mongoose.Types.ObjectId(session._id as string),
+            userId: new mongoose.Types.ObjectId(context.user._id),
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalAttempts: { $sum: 1 },
+            correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
+          },
+        },
+      ]);
+      if (attempts.length > 0) {
+        session.totalAttempts = attempts[0].totalAttempts;
+        session.correctAttempts = attempts[0].correctAttempts;
+      }
+
+      await session.save();
+      return session;
+    },
   },
 
-  // Field resolvers for computed fields
   CardDeck: {
     userStudyAttemptStats: async (
       parent: ICardDeck,

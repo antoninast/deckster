@@ -5,13 +5,15 @@ export interface IStudySession extends Document {
   deckId: Types.ObjectId;
   startTime: Date;
   endTime: Date | null;
-  clientDuration: number; // duration from client in seconds
-  calculatedDuration: number; // server-side validation
+  clientDuration: number;
+  calculatedDuration: number;
   totalAttempts: number;
   correctAttempts: number;
   status: "active" | "completed" | "abandoned";
   createdAt: Date;
   updatedAt: Date;
+  sessionAccuracy: number;
+  updateAttempts(correct: boolean): Promise<void>;
 }
 
 const studySessionSchema = new Schema<IStudySession>(
@@ -70,9 +72,17 @@ const studySessionSchema = new Schema<IStudySession>(
 studySessionSchema.virtual("sessionAccuracy").get(function (): number {
   if (!this.totalAttempts || this.totalAttempts === 0) return 0;
   const accuracy = (this.correctAttempts / this.totalAttempts) * 100;
-  // Round to whole number and ensure valid range
-  return Math.min(Math.max(Math.round(accuracy) / 100, 0), 100);
+  return Math.round(accuracy);
 });
+
+// Add middleware to update attempt counts
+studySessionSchema.methods.updateAttempts = async function (correct: boolean) {
+  this.totalAttempts += 1;
+  if (correct) {
+    this.correctAttempts += 1;
+  }
+  await this.save();
+};
 
 // Pre-save middleware to validate duration
 studySessionSchema.pre("save", function (next) {

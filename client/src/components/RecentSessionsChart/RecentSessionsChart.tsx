@@ -9,7 +9,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useQuery } from "@apollo/client";
-import { GET_RECENT_SESSION_STATS } from "../../utils/queries";
+import { QUERY_RECENT_STUDY_SESSIONS } from "../../utils/queries";
 import "./RecentSessionsChart.css";
 
 ChartJS.register(
@@ -26,7 +26,7 @@ interface RecentSessionsProps {
 }
 
 export default function RecentSessionsChart({ deckId }: RecentSessionsProps) {
-  const { data, loading, error } = useQuery(GET_RECENT_SESSION_STATS, {
+  const { data, loading, error } = useQuery(QUERY_RECENT_STUDY_SESSIONS, {
     variables: {
       deckId,
       limit: 10,
@@ -40,24 +40,25 @@ export default function RecentSessionsChart({ deckId }: RecentSessionsProps) {
     console.error("Error fetching session stats:", error);
     return <div>Error loading chart data</div>;
   }
-  if (!data?.recentSessionsStats?.length) {
+  if (!data?.recentStudySessions?.length) {
     return <div>No session data available</div>;
   }
 
-  const sortedSessions = [...data.recentSessionsStats]
+  console.log("data.recentStudySessions:", data.recentStudySessions);
+  const sortedSessions = [...data.recentStudySessions]
     .sort((a, b) => {
-      // convert timestamps to numbers for comparison
-      const timeA = parseInt(a.timestamp);
-      const timeB = parseInt(b.timestamp);
+      // convert endTimes to numbers for comparison
+      const timeA = parseInt(a.endTime);
+      const timeB = parseInt(b.endTime);
       // sort descending (newest first)
       return timeB - timeA;
     })
     // Take only the 5 most recent
     .slice(0, 5);
 
-  const formatDate = (timestamp: string) => {
+  const formatDate = (endTime: string) => {
     try {
-      const date = new Date(parseInt(timestamp));
+      const date = new Date(parseInt(endTime));
       return date.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -71,7 +72,7 @@ export default function RecentSessionsChart({ deckId }: RecentSessionsProps) {
   };
 
   const chartData = {
-    labels: sortedSessions.map((session) => formatDate(session.timestamp)),
+    labels: sortedSessions.map((session) => formatDate(session.endTime)),
     datasets: [
       {
         label: "Session Accuracy (%)",
