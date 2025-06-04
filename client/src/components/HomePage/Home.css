@@ -119,8 +119,8 @@
 }
 
 .float-card:hover {
-    transform: translateY(-8px) rotate(-2deg);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
 }
 
 .float-card h4 {
