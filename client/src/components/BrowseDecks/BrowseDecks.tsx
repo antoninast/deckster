@@ -72,6 +72,10 @@ const BrowseDecks = () => {
     navigate(`/study-deck/${deckId}`);
   };
 
+  const handleImportFlashcard = (deckId: string) => {
+    navigate(`/deck/${deckId}/import`)
+  };
+
   const getProficiencyClass = (proficiency: string | undefined) => {
     if (!proficiency || proficiency === "No Data") return "";
     return proficiency.toLowerCase();
@@ -161,6 +165,7 @@ const BrowseDecks = () => {
                   handleRemoveCardDeck={handleRemoveCardDeck}
                   handleManageDeck={handleManageDeck}
                   handleStudyDeck={handleStudyDeck}
+                  handleImportFlashcard={handleImportFlashcard}
                   getProficiencyClass={getProficiencyClass}
                 />
             ))}
@@ -177,6 +182,7 @@ const BrowseDecks = () => {
               handleRemoveCardDeck={handleRemoveCardDeck}
               handleManageDeck={handleManageDeck}
               handleStudyDeck={handleStudyDeck}
+              handleImportFlashcard={handleImportFlashcard}
               getProficiencyClass={getProficiencyClass}
             />
           ))}

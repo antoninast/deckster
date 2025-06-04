@@ -1,5 +1,4 @@
 import { FaCog, FaBookOpen, FaFileImport } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { CardDeck } from "../../interfaces/CardDeck";
 
 interface Props {
@@ -8,6 +7,7 @@ interface Props {
     handleRemoveCardDeck: (id: string) => void;
     handleManageDeck: (id: string) => void;
     handleStudyDeck: (id: string) => void;
+    handleImportFlashcard: (id: string) => void;
     getProficiencyClass: (proficiency: string | undefined) => void;
 }
 
@@ -17,10 +17,9 @@ const IndividualDeck = ({
     handleRemoveCardDeck,
     handleManageDeck,
     handleStudyDeck,
+    handleImportFlashcard,
     getProficiencyClass
 }: Props) => {
-    const navigate = useNavigate();
-
     return (
         <div className="deck card">
           <div className="card-header">
@@ -53,7 +52,7 @@ const IndividualDeck = ({
               </span>
             </p>
             <p className="deck-stat">
-              <span className="deck-stat-label">Total cards:</span>
+              <span className="deck-stat-label">Total flashcards:</span>
               <span className="deck-stat-value">{deck.isPublic}</span>
             </p>
             <p className="deck-stat">
@@ -98,7 +97,7 @@ const IndividualDeck = ({
             </button>
             {user ?
               <button
-                onClick={() => navigate(`/deck/${deck._id}/import`)}
+                onClick={() => handleImportFlashcard(deck._id)}
                 type="button"
                 className="deck-action-btn btn-import"
               >
