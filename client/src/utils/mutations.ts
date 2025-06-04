@@ -54,6 +54,40 @@ export const ADD_MULTIPLE_FLASHCARDS = gql`
   }
 `;
 
+export const START_STUDY_SESSION = gql`
+  mutation StartStudySession($deckId: ID!) {
+    startStudySession(deckId: $deckId) {
+      _id
+      startTime
+      status
+      totalAttempts
+      correctAttempts
+    }
+  }
+`;
+
+export const END_STUDY_SESSION = gql`
+  mutation EndStudySession(
+    $sessionId: ID!
+    $clientDuration: Int!
+    $status: String!
+  ) {
+    endStudySession(
+      sessionId: $sessionId
+      clientDuration: $clientDuration
+      status: $status
+    ) {
+      _id
+      endTime
+      status
+      sessionAccuracy
+      totalAttempts
+      correctAttempts
+      clientDuration
+    }
+  }
+`;
+
 // Records a study attempt for a flashcard with correctness tracking
 export const REVIEW_FLASHCARD = gql`
   mutation reviewFlashcard(
