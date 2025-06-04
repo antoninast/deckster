@@ -38,10 +38,6 @@ const Login = () => {
 
       // Update Redux store with user data
       dispatch(
-        // setLogin({
-        //   username: data.login.profile.username,
-        //   _id: data.login.profile._id,
-        // })
         setLogin({
           username: data.login.profile.username,
           _id: data.login.profile._id,

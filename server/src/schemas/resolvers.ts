@@ -268,15 +268,15 @@ const resolvers = {
     // Login using username and password instead of email
     login: async (
       _parent: any,
-      { email, password }: { email: string; password: string }
+      { username, password }: { username: string; password: string }
     ): Promise<{ token: string; profile: IProfile }> => {
-      const profile = await Profile.findOne({ email });
+      const profile = await Profile.findOne({ username });
       if (!profile) {
-        throw new AuthenticationError('You must be logged in to perform this action');
+        throw new AuthenticationError('Username is not found.');
       }
       const correctPw = await profile.isCorrectPassword(password);
       if (!correctPw) {
-        throw new AuthenticationError('You must be logged in to perform this action');
+        throw new AuthenticationError('Password is wrong.');
       }
       const token = signToken(profile.username, profile.email, profile._id);
       return { token, profile };
