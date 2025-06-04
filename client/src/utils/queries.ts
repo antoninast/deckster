@@ -55,7 +55,6 @@ export const QUERY_MY_DECKS = gql`
       name
       categoryName
       image_url
-      flashcardIds
       numberOfCards
       userStudyAttemptStats {
         attemptAccuracy
@@ -74,6 +73,10 @@ export const QUERY_CARD_DECKS = gql`
       categoryName
       image_url
       isPublic
+      user {
+        _id
+        username
+      }
       userStudyAttemptStats {
         attemptAccuracy
         proficiency

@@ -32,7 +32,7 @@ const BrowseDecks = () => {
   );
 
   const personalDecksArr = personalDecks?.myCardDecks || [];
-  const publicDecksArr = publicDecks?.cardDecks || [];
+  const publicDecksArr = publicDecks?.cardDecks.filter((deck: CardDeck) => deck.user?._id !== user?._id) || [];
 
   const [removeCardDeckMutation] = useMutation(REMOVE_CARDDECK, {
     onCompleted: () => {

@@ -65,7 +65,7 @@ const resolvers = {
       { isPublic }: { isPublic?: boolean }
     ): Promise<ICardDeck[]> => {
       const query = isPublic === true ? { isPublic: true } : {};
-      return await CardDeck.find(query);
+      return await CardDeck.find(query).populate("userId", "_id username");
     },
 
     cardDecksByUser: async (
@@ -461,10 +461,10 @@ const resolvers = {
         const createdFlashcards = await Flashcard.insertMany(flashcardDocs);
 
         // Update deck with new flashcard IDs
-        const flashcardIds = createdFlashcards.map((fc) => fc._id);
-        await CardDeck.findByIdAndUpdate(deckId, {
-          $push: { flashcardIds: { $each: flashcardIds } },
-        });
+        // const flashcardIds = createdFlashcards.map((fc) => fc._id);
+        // await CardDeck.findByIdAndUpdate(deckId, {
+        //   $push: { flashcardIds: { $each: flashcardIds } },
+        // });
 
         return createdFlashcards;
       } catch (error: any) {
@@ -475,6 +475,7 @@ const resolvers = {
 
   // Field resolvers for computed fields
   CardDeck: {
+    user: (parent: { userId: any; }) => parent.userId,
     userStudyAttemptStats: async (
       parent: ICardDeck,
       _args: any,

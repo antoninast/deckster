@@ -61,8 +61,8 @@ const typeDefs = `
     lastReview: String
     image_url: String
     categoryName: String
-    userId: ID
-    flashcardIds: [ID]
+    userId: ID!
+    user: Profile
     numberOfCards: Int
     userStudyAttemptStats: StudyAttemptStats
     isPublic: Boolean
@@ -83,7 +83,6 @@ const typeDefs = `
     image_url: String
     categoryName: String
     userId: ID!
-    flashcardIds: [ID]
     isPublic: Boolean
   }
 

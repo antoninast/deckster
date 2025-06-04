@@ -70,6 +70,10 @@ const IndividualDeck = ({
               <span className="deck-stat-label">Visibility:</span>
               <span className="deck-stat-value">{deck.isPublic ? 'Public' : 'Only you'}</span>
             </p>
+            <p className="deck-stat">
+              <span className="deck-stat-label">Created by:</span>
+              <span className="deck-stat-value">{deck?.user?.username}</span>
+            </p>
           </div>
           <div className="action-buttons">
             {user ?

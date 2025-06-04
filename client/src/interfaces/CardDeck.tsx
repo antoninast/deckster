@@ -4,8 +4,11 @@ export interface CardDeck {
   lastReview: Date;
   image_url: string;
   categoryName: string;
-  userId: number;
-  flashcardIds: number[];
+  user: {
+    username: string;
+    _id: string;
+  }
+  // flashcardIds: number[];
   numberOfCards?: number;
   userStudyAttemptStats?: {
     attemptAccuracy?: number;

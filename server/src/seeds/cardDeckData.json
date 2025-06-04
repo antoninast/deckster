@@ -1,11 +1,16 @@
 [
   {
-    "name": "Countries by continent",
+    "name": "JavaScript",
+    "lastReview": "2024-08-05T09:45:00.000Z",
+    "image_url": "https://example.com/science_biology.jpg",
+    "categoryName": "Technology",
+    "isPublic": true
+  },
+  {
+    "name": "Capitals and Countries",
     "lastReview": "2024-08-15T12:00:00.000Z",
     "image_url": "https://example.com/history_us.jpg",
     "categoryName": "Geography",
-    "userId": "6542b3b0a8e9b2b4d7b6c8e0",
-    "flashcardIds": ["6542b3b0a8e9b2b4d7b6c8d0", "6542b3b0a8e9b2b4d7b6c8d1"],
     "isPublic": true
   },
   {
@@ -13,8 +18,6 @@
     "lastReview": "2024-08-10T18:30:00.000Z",
     "image_url": "https://example.com/math_algebra.jpg",
     "categoryName": "Math",
-    "userId": "6542b3b0a8e9b2b4d7b6c8e1",
-    "flashcardIds": ["6542b3b0a8e9b2b4d7b6c8d2", "6542b3b0a8e9b2b4d7b6c8d3"],
     "isPublic": true
   },
   {
@@ -22,8 +25,6 @@
     "lastReview": "2024-08-05T09:45:00.000Z",
     "image_url": "https://example.com/science_biology.jpg",
     "categoryName": "Science",
-    "userId": "6542b3b0a8e9b2b4d7b6c8e2",
-    "flashcardIds": ["6542b3b0a8e9b2b4d7b6c8d4", "6542b3b0a8e9b2b4d7b6c8d5"],
     "isPublic": true
   }
 ]
