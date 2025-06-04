@@ -56,6 +56,10 @@ export const QUERY_MY_DECKS = gql`
       categoryName
       image_url
       numberOfCards
+      user {
+        _id
+        username
+      }
       userStudyAttemptStats {
         attemptAccuracy
         proficiency

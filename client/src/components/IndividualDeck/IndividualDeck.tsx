@@ -25,7 +25,7 @@ const IndividualDeck = ({
         <div className="deck card">
           <div className="card-header">
             <h3 className="card-title">{deck.name}</h3>
-            {user && (
+            {user?._id === deck?.user?._id && (
               <div
                 className="deck-delete-button-wrapper"
                 onClick={() => handleRemoveCardDeck(deck._id)}
@@ -70,10 +70,12 @@ const IndividualDeck = ({
               <span className="deck-stat-label">Visibility:</span>
               <span className="deck-stat-value">{deck.isPublic ? 'Public' : 'Only you'}</span>
             </p>
-            <p className="deck-stat">
-              <span className="deck-stat-label">Created by:</span>
-              <span className="deck-stat-value">{deck?.user?.username}</span>
-            </p>
+            {deck?.user?.username ?
+              <p className="deck-stat">
+                <span className="deck-stat-label">Created by:</span>
+                <span className="deck-stat-value">{deck?.user?.username}</span>
+              </p> : null
+            }
           </div>
           <div className="action-buttons">
             {user ?

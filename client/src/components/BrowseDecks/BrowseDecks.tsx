@@ -120,8 +120,8 @@ const BrowseDecks = () => {
       )}
 
       {user ?
-        <>
-          <h2>Your Decks</h2>
+        <div className="personal-decks">
+          <h2>My Decks</h2>
           <div className="decks-container">
             {!personalDecksArr.length ?
               <div className="browse-page">
@@ -165,21 +165,22 @@ const BrowseDecks = () => {
                 />
             ))}
           </div>
-        </> : null
+        </div> : null
       }
-
-      <h2>Public Decks</h2>
-      <div className="decks-container">
-        {publicDecksArr.map((deck: CardDeck) => (
-          <IndividualDeck
+      <div className="public-decks">
+        <h2>Public Decks</h2>
+        <div className="decks-container">
+          {publicDecksArr.map((deck: CardDeck) => (
+            <IndividualDeck
               deck={deck}
               user={user}
               handleRemoveCardDeck={handleRemoveCardDeck}
               handleManageDeck={handleManageDeck}
               handleStudyDeck={handleStudyDeck}
               getProficiencyClass={getProficiencyClass}
-          />
-        ))}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

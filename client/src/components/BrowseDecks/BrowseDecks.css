@@ -12,9 +12,12 @@
     text-align: center;
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 3rem;
+    color: var(--color-tan);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.personal-decks {
+    margin-bottom: 2em;
 }
 
 /* ========================================
@@ -36,7 +39,7 @@
     background: white;
     border: none;
     border-radius: 16px;
-    height: 23em;
+    height: 40%;
     width: 20%;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -54,13 +57,9 @@
     display: flex;
     justify-content: space-between;
     padding: 1rem 1rem 0.75rem;
-    /* margin: 0; */
-    /* position: relative; */
     min-height: 60px;
     width: 100%;
-    /* box-sizing: border-box; */
     border-radius: 16px 16px 0 0;
-    /* border: none; */
 }
 
 .deck.card .card-title {
@@ -336,7 +335,6 @@
     }
 
     .deck.card {
-        height: 340px;
         margin-top: 2em;
     }
 
