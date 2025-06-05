@@ -50,7 +50,14 @@ const resolvers = {
       if (profileRef.profileId) {
         return await Profile.findOne({ _id: profileRef.profileId });
       } else if (profileRef.username) {
-        return await Profile.findOne({ username: profileRef.username });
+        // return await Profile.findOne({ username: profileRef.username });
+        return await Profile.findOne({$expr: {
+          $eq: [
+            { $toLower: "$username" },
+            profileRef.username.toLowerCase()
+          ]
+        }
+      });
       } else {
         throw new Error("You must provide either a profileId or username");
       }
@@ -254,7 +261,18 @@ const resolvers = {
       _parent: any,
       { username, password }: { username: string; password: string }
     ): Promise<{ token: string; profile: IProfile }> => {
-      const profile = await Profile.findOne({ username });
+      // const profile = await Profile.findOne({ username: username.toLowerCase() });
+      // const profile = await Profile.findOne({ username: {$regex: new RegExp(username.toLowerCase(), "i") }});
+
+      const profile = await Profile.findOne({
+        $expr: {
+          $eq: [
+            { $toLower: "$username" },
+            username.toLowerCase()
+          ]
+        }
+      });
+
       if (!profile) {
         throw new AuthenticationError("Username is not found.");
       }
