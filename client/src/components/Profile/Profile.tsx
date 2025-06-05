@@ -1,4 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import {
@@ -9,14 +10,15 @@ import {
   FaLayerGroup,
   FaGraduationCap,
   FaEdit,
-  FaCog,
-  FaSignOutAlt,
+  // FaCog,
+  // FaSignOutAlt,
 } from "react-icons/fa";
 import {
   QUERY_SINGLE_PROFILE,
   QUERY_ME,
   QUERY_MY_DECKS,
   QUERY_MY_STUDY_SESSIONS,
+  QUERY_RECENT_STUDY_SESSIONS,
 } from "../../utils/queries";
 import auth from "../../utils/auth";
 import "./Profile.css";
@@ -38,7 +40,14 @@ const Profile = () => {
   const { data: myStudySessionsData } = useQuery(QUERY_MY_STUDY_SESSIONS);
   const myStudySessions = myStudySessionsData?.myStudySessions || [];
 
-  console.log("mystudySessionsData:", myStudySessionsData);
+  const { data: recentStudySessionsData } = useQuery(
+    QUERY_RECENT_STUDY_SESSIONS,
+    {
+      variables: { limit: 5 },
+    }
+  );
+  const recentStudySessions =
+    recentStudySessionsData?.recentStudySessions || [];
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
@@ -132,7 +141,7 @@ const Profile = () => {
             </p>
           </div>
 
-          {isOwnProfile && (
+          {/* {isOwnProfile && (
             <div className="profile-actions">
               <button
                 className="profile-action-btn"
@@ -147,7 +156,7 @@ const Profile = () => {
                 <FaSignOutAlt /> Logout
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -169,7 +178,7 @@ const Profile = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.totalCards}</h3>
-            <p>Cards Learned</p>
+            <p>Total Cards</p>
           </div>
         </div>
 
@@ -179,7 +188,7 @@ const Profile = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.averageAccuracy}%</h3>
-            <p>Avg Accuracy</p>
+            <p>Average Accuracy</p>
           </div>
         </div>
 
@@ -189,7 +198,7 @@ const Profile = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.totalStudyTime}</h3>
-            <p>Study Time</p>
+            <p>Total Study Time</p>
           </div>
         </div>
       </div>
@@ -265,16 +274,23 @@ const Profile = () => {
             <div className="tab-panel">
               <h3>Recent Study Sessions</h3>
               <div className="activity-list">
-                <div className="activity-item">
-                  <span className="activity-date">Today</span>
-                  <span className="activity-deck">JavaScript Fundamentals</span>
-                  <span className="activity-score">92% accuracy</span>
-                </div>
-                <div className="activity-item">
-                  <span className="activity-date">Yesterday</span>
-                  <span className="activity-deck">React Hooks</span>
-                  <span className="activity-score">88% accuracy</span>
-                </div>
+                {recentStudySessions.length === 0 ? (
+                  <p>No recent study sessions found.</p>
+                ) : (
+                  recentStudySessions.map((session: any, index: number) => (
+                    <div key={index} className="activity-item">
+                      <span className="activity-date">
+                        {DateTime.fromMillis(
+                          Number(session.startTime)
+                        ).toLocaleString(DateTime.DATETIME_FULL)}
+                      </span>
+                      <span className="activity-deck">{session.deckTitle}</span>
+                      <span className="activity-score">
+                        {session.sessionAccuracy}% accuracy
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

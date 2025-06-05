@@ -135,7 +135,7 @@ export const QUERY_MY_STUDY_SESSIONS = gql`
 `;
 
 export const QUERY_RECENT_STUDY_SESSIONS = gql`
-  query recentStudySessions($deckId: ID!, $limit: Int) {
+  query recentStudySessions($deckId: ID, $limit: Int) {
     recentStudySessions(deckId: $deckId, limit: $limit) {
       _id
       startTime

@@ -184,7 +184,7 @@ const resolvers = {
 
     recentStudySessions: async (
       _parent: any,
-      { deckId, limit = 5 }: { deckId: string; limit?: number },
+      { deckId, limit = 5 }: { deckId?: string | ""; limit?: number },
       context: Context
     ) => {
       if (!context.user) {
@@ -195,8 +195,8 @@ const resolvers = {
 
       const sessions = await StudySession.find({
         userId: context.user._id,
-        deckId: new mongoose.Types.ObjectId(deckId),
         status: { $in: ["completed", "abandoned"] },
+        ...(deckId && { deckId: new mongoose.Types.ObjectId(deckId) }),
       })
         .sort({ endTime: -1 })
         .limit(limit)

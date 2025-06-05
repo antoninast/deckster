@@ -120,7 +120,7 @@ const typeDefs = `
     # Study statistics queries
     studySession(studySessionId: ID!): StudySession
     myStudySessions: [StudySession]!
-    recentStudySessions(deckId: ID!, limit: Int): [StudySession]!
+    recentStudySessions(deckId: ID, limit: Int): [StudySession]
   }
 
   # Mutations
