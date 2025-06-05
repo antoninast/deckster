@@ -108,11 +108,12 @@
 .proficiency-badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;
+    margin-left: 0.4em;
     border-radius: 12px;
     font-size: 0.8rem;
     font-weight: 600;
-    background: var(--color-vanilla);
-    color: var(--text-primary);
+    background: #f4f4c7cc;
+    color: #8c8c13;
 }
 
 .proficiency-badge.mastered {
@@ -131,8 +132,8 @@
 }
 
 .proficiency-badge.developing {
-    background: #f8d7da;
-    color: #721c24;
+    background: #7a95d08b;
+    color: #18419afd;
 }
 
 .proficiency-badge.beginner {

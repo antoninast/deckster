@@ -140,7 +140,7 @@ export default function Flashcards() {
             </div>
             <h2>Flashcards with - DECK ID - {deckId}</h2>
             <div className="search-bar">
-                <input onChange={handleSearch} type="text" className="form-control" placeholder="Search flashcard by keyword" />
+                <input onChange={handleSearch} type="text" className="form-control" placeholder="Search by keyword" />
             </div>
             <div className="flashcards-container">
                 {flashcardList.map((flashcard: Flashcard) =>
