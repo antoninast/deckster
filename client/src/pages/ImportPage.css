@@ -1,14 +1,6 @@
-/* Page Container */
-.import-page {
-    padding: 2rem 1rem;
-    max-width: 900px;
-    margin: 0 auto;
-    min-height: calc(100vh - var(--header-height) - var(--footer-height));
-}
-
 /* Header Section */
 .import-header {
-    margin-bottom: 2rem;
+    margin: 2rem;
 }
 
 /* Navigation */
@@ -17,8 +9,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    width: 100%;
-    max-width: 800px;
+    width: 40%;
     margin: 0 auto;
     padding: 1rem;
     background: var(--color-cream);
@@ -54,9 +45,11 @@
     font-size: 1.1rem;
 }
 
-/* Content Container */
-.import-content {
-    width: 100%;
+.import-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 2rem;
 }
 
 /* Deck Form Styles */
@@ -212,14 +205,21 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-    .import-page {
-        padding: 1.5rem 1rem;
+@media (max-width: 1130px) {
+    .import-options {
+        flex-direction: column;
+        align-items: center;
     }
+}
 
+@media (max-width: 768px) {
     .back-button {
         padding: 0.875rem;
         font-size: 0.95rem;
+    }
+
+    .import-container {
+        width: 90%;
     }
 }
 
@@ -231,17 +231,5 @@
 
     .back-icon {
         font-size: 1rem;
-    }
-}
-
-@media (max-width: 396px) {
-    .import-page {
-        padding: 1.5rem 0.5rem;
-    }
-}
-
-@media (min-width: 890px) {
-    .import-page {
-        padding: 3rem 2rem;
     }
 }
