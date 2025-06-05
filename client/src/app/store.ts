@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 import userReducer from '../user/userState';
+import AuthService from '../utils/auth.js';
 
 const token = localStorage.getItem('id_token') || '';
 let initialUser = null;
 
-if (token) {
+if (token && !AuthService.isTokenExpired(token)) {
   const savedUser = jwtDecode(token);
   initialUser = (savedUser as any)?.data || null;
 }
