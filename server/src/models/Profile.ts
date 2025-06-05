@@ -13,7 +13,7 @@ export interface IProfile extends Document {
   lastLogin?: Date;
   securityQuestion: string;
   securityAnswer: string;
-  isCorrectPassword(password: string): Promise<boolean>;
+  isCorrectPassword(password: string): Promise<boolean>; //This is a "shallow abstraction" that we should have just put directly on the resolver
   studyAttempts: IStudyAttempt[];
   createdAt: Date;
   updatedAt: Date;
@@ -81,3 +81,4 @@ profileSchema.methods.isCorrectPassword = async function (
 const Profile = model<IProfile>("Profile", profileSchema);
 
 export default Profile;
+

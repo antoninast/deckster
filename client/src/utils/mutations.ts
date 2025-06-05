@@ -42,7 +42,27 @@ export const LOGIN_USER = gql`
   }
 `;
 
+
 // TODO - Implement password reset mutation based on security question
+export const RESET_PASSWORD = gql`
+  mutation resetPassword(
+    $username: String!
+    $newPassword: String!
+    $securityAnswer: String!
+  ) {
+    resetPassword(
+      username: $username
+      newPassword: $newPassword
+      securityAnswer: $securityAnswer
+    ) {
+      token
+      profile {
+        _id
+        username
+      }
+    }
+  }
+`;
 
 export const RETRIEVE_SECURITY_QUESTION = gql`
   mutation retrieveSecurityQuestion($username: String!) {

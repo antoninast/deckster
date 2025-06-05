@@ -5,6 +5,7 @@ import { ICardDeck } from "../models/CardDeck.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
+import bcrypt from "bcrypt";
 
 // Making it so that the ProfileArgs can be either profileId or username, but not both at the same time -JH
 type ProfileArgs = 
@@ -58,6 +59,19 @@ const resolvers = {
         return await Profile.findOne({ _id: context.user._id });
       }
       throw new AuthenticationError('You must be logged in to perform this action');
+    },
+
+    compareSecurityAnswers: async (
+      _parent: any,
+      { username, securityAnswer }: { username: string; securityAnswer: string }
+    ): Promise<boolean> => {
+
+      const profile = await Profile.findOne({ username });
+      if (!profile) {
+        throw new AuthenticationError('Username not found.');
+      } else {
+        return await bcrypt.compare(securityAnswer, profile.securityAnswer);
+      }
     },
 
     cardDecks: async (

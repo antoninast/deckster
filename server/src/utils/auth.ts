@@ -54,6 +54,11 @@ export const hashPassword = async (password: string): Promise<string> => {
   return await bcrypt.hash(password, saltRounds);
 };
 
+export const hashSecurityAnswer = async (securityAnswer: string): Promise<string> => {
+  const saltRounds = 10;
+  return await bcrypt.hash(securityAnswer, saltRounds);
+};
+
 /**
  * Custom GraphQL error class for authentication failures
  * Extends GraphQL error with UNAUTHENTICATED extension

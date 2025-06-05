@@ -1,17 +1,23 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Link } from "react-router-dom";
-import { useLazyQuery } from "@apollo/client";
-import { QUERY_SINGLE_PROFILE_BY_USERNAME } from "../../utils/queries";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { QUERY_SINGLE_PROFILE_BY_USERNAME, COMPARE_SECURITY_ANSWERS } from "../../utils/queries";
+// COMPARE_SECURITY_ANSWERS
 import "./ResetPassword.css";
-
-
+// import { PassThrough } from "stream";
 
 const ResetPassword = () => {
 
-  const [formState, setFormState] = useState({ username: ""});
-  const [securityQuestion, setSecurityQuestion] = useState("");
+  const [formState, setFormState] = useState({ 
+    username: "", 
+    securityAnswer: "", 
+    newPassword: "", 
+    confirmNewPassword: ""
+  });
   const [fetchProfile] = useLazyQuery(QUERY_SINGLE_PROFILE_BY_USERNAME)
-
+  const [securityQuestion, setSecurityQuestion] = useState("");
+  const [compareSecurityAnswers] = useLazyQuery(COMPARE_SECURITY_ANSWERS)
+  const [passwordResetAvailable, setPasswordResetAvailable] = useState(false);
 
   // Update form state based on input changes
   const handleChange = (event: ChangeEvent) => {
@@ -26,31 +32,57 @@ const ResetPassword = () => {
     event.preventDefault();
     console.log("fetchSecurityQuestion called with formState:", formState);
     const userData = await fetchProfile({
+      // variables: { username: formState.username.toLowerCase() },
       variables: { username: formState.username },
     });
+    if (!userData || !userData.data.profile) {
+      console.error("User not found or profile data is missing.");
+      //TODO: Make this be a modal instead of alert
+      alert("This username was not found.");
+      setSecurityQuestion("");
+      return;
+    }
     setSecurityQuestion(userData.data.profile.securityQuestion);
-  }
+  };
 
+  // Submit the security answer and verify it matches the stored answer
   const submitSecurityAnswer = async (event: FormEvent) => {
     event.preventDefault();
-    console.log("submitSecurityAnswer called with formState:", formState);
-    // TODO: Implement logic to verify the security answer
-    // const userData = await fetchProfile({
-    //   variables: { username: formState.username },
-    // });
-    
+    // console.log("submitSecurityAnswer called with formState:", formState);
 
+    const matchCheckResult = await compareSecurityAnswers({
+      variables: {
+        username: formState.username,
+        securityAnswer: formState.securityAnswer,
+      },
+    });
+    const answerMatch = matchCheckResult.data.compareSecurityAnswers;
+    setPasswordResetAvailable(answerMatch);
+    // TODO : Make this be a modal instead of alert
+    if (!answerMatch) {
+      alert("Security answer does not match. Please try again.");
+      return;
+    }
+  };
+
+  // // TODO : Implement logic to reset the password after verifying the security answer
+  const setNewPassword = async (event: FormEvent) => {
+    event.preventDefault();
+    // console.log("newPassword called with formState:", formState);
+    // if (formState.newPassword !== formState.confirmNewPassword) {
+    //   setPasswordError("");
+    //   alert("Passwords do not match. Please try again.");
+    //   return;
+    // }
+
+    // // Call mutation to reset the password
   }
 
-  // TODO : Implement logic to reset the password after verifying the security answer
-  // const newPassword = async (event: FormEvent) => {
-  //   event.preventDefault();
 
-  // }
 
-  const buttonHandler = !!securityQuestion ? submitSecurityAnswer : fetchSecurityQuestion;
+  const buttonHandler = !!passwordResetAvailable ? setNewPassword : !!securityQuestion ? submitSecurityAnswer : fetchSecurityQuestion;
 
-  const buttonLabel = !!securityQuestion ? "Submit Answer" : "Check Security Question";
+  const buttonLabel = !!passwordResetAvailable ? "Reset Password" : !!securityQuestion ? "Submit Answer" : "Check Security Question";
 
   return (
     <main className="login-page">
@@ -96,6 +128,34 @@ const ResetPassword = () => {
                       type="text"
                       onChange={handleChange}
                       required
+                      disabled={!!passwordResetAvailable}
+                    />
+                  </div>
+                )}
+
+                {passwordResetAvailable && (
+                  <div className="form-group">
+                    <label htmlFor="newPassword">New Password</label>
+                    <input
+                      id="newPassword"
+                      name="newPassword"
+                      placeholder="Enter your new password"
+                      type="password"
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                )}
+                {passwordResetAvailable && (
+                  <div className="form-group">
+                    <label htmlFor="confirmNewPassword">Confirm New Password</label>
+                    <input
+                      id="confirmNewPassword"
+                      name="confirmNewPassword"
+                      placeholder="Confirm your new password"
+                      type="password"
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 )}
@@ -104,8 +164,6 @@ const ResetPassword = () => {
                   {buttonLabel}
                 </button>
               </form>
-
-              {/* {error && <div className="error-message">{error.message}</div>} */}
 
             </>
           )}

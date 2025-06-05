@@ -97,6 +97,7 @@ const typeDefs = `
     profiles: [Profile]!
     profile(profileId: ID, username: String): Profile
     me: Profile
+    compareSecurityAnswers(username: String!, securityAnswer: String!): Boolean
 
     # Deck queries
     cardDecks(isPublic: Boolean): [CardDeck]!

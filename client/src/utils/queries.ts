@@ -28,6 +28,23 @@ export const QUERY_SINGLE_PROFILE_BY_USERNAME = gql`
   }
 `;
 
+export const COMPARE_SECURITY_ANSWERS = gql`
+  query compareSecurityAnswers($username: String!, $securityAnswer: String!) {
+    compareSecurityAnswers(username: $username, securityAnswer: $securityAnswer)
+  }
+`;
+
+// export const COMPARE_SECURITY_ANSWERS = gql`
+//   query compareSecurityAnswer($username: String!, $securityAnswer: String!) {
+//     security(username: $username, securityAnswer: $securityAnswer) {
+//       _id  
+//       username
+//       securityQuestion
+//       securityAnswer
+//     }
+//   }
+// `;
+
 export const QUERY_ME = gql`
   query me {
     me {
