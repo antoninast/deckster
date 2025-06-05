@@ -44,7 +44,6 @@ export default function RecentSessionsChart({ deckId }: RecentSessionsProps) {
     return <div>No session data available</div>;
   }
 
-  console.log("data.recentStudySessions:", data.recentStudySessions);
   const sortedSessions = [...data.recentStudySessions]
     .sort((a, b) => {
       // convert endTimes to numbers for comparison

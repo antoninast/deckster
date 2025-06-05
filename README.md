@@ -105,7 +105,8 @@ The application uses MongoDB with the following collections:
 - `profiles` - User accounts and authentication
 - `carddecks` - Flashcard deck metadata
 - `flashcards` - Individual flashcard content
-- `studyattempts` - Performance tracking data
+- `studyattempts` - Performance tracking for flashcards
+- `studysessions` - Performance tracking for study sessions
 - `securityquestions` - Account recovery options
 
 ## Usage

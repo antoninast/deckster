@@ -104,6 +104,7 @@ export const QUERY_STUDY_SESSION = gql`
   query studySession($studySessionId: ID!) {
     studySession(studySessionId: $studySessionId) {
       _id
+      startTime
       totalAttempts
       correctAttempts
       sessionAccuracy

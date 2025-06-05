@@ -22,7 +22,6 @@ import auth from "../../utils/auth";
 import "./Profile.css";
 import { CardDeck } from "../../interfaces/CardDeck";
 
-
 const Profile = () => {
   const { profileId } = useParams();
   const navigate = useNavigate();
@@ -71,7 +70,7 @@ const Profile = () => {
       (total: number, deck: CardDeck) => total + (deck.numberOfCards || 0),
       0
     ),
-    // studySessions: 45, <-- already captured in Study Component
+    // studySessions: 45,
     averageAccuracy:
       Math.round(
         myDecks.reduce(
@@ -81,13 +80,22 @@ const Profile = () => {
         ) / (myDecks.length || 1)
       ) || 0,
     currentStreak: 7,
-    totalStudyTime:
-      myStudySessions
-        .reduce(
-          (total: number, session: any) => total + (session.studyTime || 0),
-          0
-        )
-        .toFixed(2) + " hrs",
+    totalStudyTime: (() => {
+      const totalSeconds = myStudySessions.reduce(
+        (total: number, session: any) => total + (session.clientDuration || 0),
+        0
+      );
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const days = Math.floor(hours / 24);
+
+      if (days < 1 && hours < 1) {
+        return `${minutes}m`;
+      } else if (days < 1 && hours >= 1) {
+        return `${hours}h ${minutes}m`;
+      }
+      return `${days}d ${hours}h ${minutes}m`;
+    })(),
   };
 
   // User achievements
@@ -110,7 +118,7 @@ const Profile = () => {
             {isOwnProfile && (
               <button className="edit-avatar-btn">
                 <Link to="/me">
-                <FaEdit/> Edit
+                  <FaEdit /> Edit
                 </Link>
               </button>
             )}

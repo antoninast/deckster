@@ -109,10 +109,19 @@ export default function Study() {
   const handleSessionComplete = async (abandonedEarly = false) => {
     try {
       setIsSessionAbandoned(abandonedEarly);
+
+      const startTimeMs = Number(statsData?.studySession?.startTime);
+
+      const clientDuration = startTimeMs
+        ? Math.floor((Date.now() - startTimeMs) / 1000)
+        : 0;
+
+      // console.log("Calculated duration (seconds):", clientDuration);
+
       await endStudySession({
         variables: {
           sessionId,
-          clientDuration: statsData?.studySession.calculatedDuration || 0,
+          clientDuration,
           status: abandonedEarly ? "abandoned" : "completed",
         },
       });
@@ -245,9 +254,7 @@ export default function Study() {
           <p>Final Results:</p>
           <p>Cards Studied: {statsData?.studySession.totalAttempts}</p>
           <p>Correct: {statsData?.studySession.correctAttempts}</p>
-          <p>
-            Accuracy: {statsData?.studySession.sessionAccuracy.toFixed(1)}%
-          </p>
+          <p>Accuracy: {statsData?.studySession.sessionAccuracy.toFixed(1)}%</p>
         </div>
         <div className="session-controls">
           <button onClick={startNewSession}>Study Again</button>
