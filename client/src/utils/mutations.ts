@@ -43,7 +43,6 @@ export const LOGIN_USER = gql`
 `;
 
 
-// TODO - Implement password reset mutation based on security question
 export const RESET_PASSWORD = gql`
   mutation resetPassword(
     $username: String!
@@ -54,13 +53,7 @@ export const RESET_PASSWORD = gql`
       username: $username
       newPassword: $newPassword
       securityAnswer: $securityAnswer
-    ) {
-      token
-      profile {
-        _id
-        username
-      }
-    }
+    )
   }
 `;
 

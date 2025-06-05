@@ -266,6 +266,35 @@ const resolvers = {
       return { token, profile };
     },
 
+    resetPassword: async (
+      _parent: any,
+      {
+        username,
+        newPassword,
+        securityAnswer,
+      }: {
+        username: string;
+        newPassword: string;
+        securityAnswer: string;
+      }): Promise<boolean> => {
+      const profile = await Profile.findOne({ username });
+      if (!profile) {
+        throw new AuthenticationError("Username not found.");
+      }
+      const isAnswerCorrect = await bcrypt.compare(
+        securityAnswer,
+        profile.securityAnswer
+      );  
+      if (!isAnswerCorrect) {
+        throw new AuthenticationError("Security answer is incorrect.");
+      }
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      // Update the profile with the new password
+      await Profile.findByIdAndUpdate(profile._id,{ password: hashedPassword });
+      return true;
+    },  
+
     addCardDeck: async (
       _parent: any,
       { input }: { input: ICardDeck },

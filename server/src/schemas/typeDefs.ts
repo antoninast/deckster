@@ -129,6 +129,11 @@ const typeDefs = `
     # Authentication mutations
     addProfile(input: ProfileInput!): Auth
     login(username: String!, password: String!): Auth
+    resetPassword(
+      username: String!
+      newPassword: String!
+      securityAnswer: String!
+    ): Boolean
 
     # Deck management mutations
     addCardDeck(input: CardDeckInput!): CardDeck

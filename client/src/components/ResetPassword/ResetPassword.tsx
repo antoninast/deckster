@@ -1,7 +1,9 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { QUERY_SINGLE_PROFILE_BY_USERNAME, COMPARE_SECURITY_ANSWERS } from "../../utils/queries";
+import { RESET_PASSWORD } from "../../utils/mutations";
 // COMPARE_SECURITY_ANSWERS
 import "./ResetPassword.css";
 // import { PassThrough } from "stream";
@@ -18,6 +20,8 @@ const ResetPassword = () => {
   const [securityQuestion, setSecurityQuestion] = useState("");
   const [compareSecurityAnswers] = useLazyQuery(COMPARE_SECURITY_ANSWERS)
   const [passwordResetAvailable, setPasswordResetAvailable] = useState(false);
+  const [changePassword] = useMutation(RESET_PASSWORD);
+  const navigate = useNavigate();
 
   // Update form state based on input changes
   const handleChange = (event: ChangeEvent) => {
@@ -65,17 +69,39 @@ const ResetPassword = () => {
     }
   };
 
-  // // TODO : Implement logic to reset the password after verifying the security answer
+
   const setNewPassword = async (event: FormEvent) => {
     event.preventDefault();
-    // console.log("newPassword called with formState:", formState);
-    // if (formState.newPassword !== formState.confirmNewPassword) {
-    //   setPasswordError("");
-    //   alert("Passwords do not match. Please try again.");
-    //   return;
-    // }
+    console.log("newPassword called with formState:", formState);
+    if (formState.newPassword !== formState.confirmNewPassword) {
+      // TODO : Make this be a modal instead of alert
+      alert("Passwords do not match. Please try again.");
+      return;
+    }
 
-    // // Call mutation to reset the password
+    // Call mutation to reset the password
+    try {
+      const { data } = await changePassword({
+        variables: {
+          username: formState.username,
+          newPassword: formState.newPassword,
+          securityAnswer: formState.securityAnswer,
+        },
+      });
+      if (data.resetPassword) {
+        // TODO : Make this be a modal instead of alert
+        alert("Password reset successfully! You may now log in.");
+        // Redirect to login page or homepage
+        navigate("/login");
+      } else {
+        // TODO : Make this be a modal instead of alert
+        alert("Failed to reset password. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      // TODO : Make this be a modal instead of alert
+      alert("An error occurred while resetting the password. Please try again.");
+    }
   }
 
 
