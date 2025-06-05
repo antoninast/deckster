@@ -1,8 +1,6 @@
-/* client/src/components/CSVImport/CSVImport.css */
-.csv-import-container {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+.import-container {
+  width: 40%;
+  margin: 2em;
 }
 
 .import-card {

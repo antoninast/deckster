@@ -11,6 +11,7 @@ import {
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import auth from "../utils/auth";
 import "./ImportPage.css";
+import ManualImport from "../components/ManualImport/ManualImport";
 
 const ImportPage: React.FC = () => {
   const { deckId } = useParams<{ deckId: string }>();
@@ -139,6 +140,34 @@ const ImportPage: React.FC = () => {
     }
   };
 
+  const handleManualImportSubmit = async (data: {question: string, answer: string}) => {
+    const targetDeckId = deckId || createdDeckId;
+
+    if (!targetDeckId) {
+      alert("No deck selected or created");
+      return;
+    }
+
+    await addMultipleFlashcards({
+      variables: {
+        deckId: targetDeckId,
+        flashcards: [data],
+      },
+      refetchQueries: [
+        { query: QUERY_MY_DECKS },
+      ],
+      awaitRefetchQueries: true,
+    });
+
+    setImportedCount(1);
+    setImportSuccess(true);
+
+    // Redirect to deck view after showing success message
+    setTimeout(() => {
+      navigate(`/browse-decks/${targetDeckId}`);
+    }, 2500);
+  }
+
   useEffect(() => {
     // Verify user is authenticated on component mount
     const profile = auth.getProfile();
@@ -180,71 +209,70 @@ const ImportPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="import-content">
-        {showDeckForm ? (
-          <div className="deck-form-container">
-            <h2>Create New Deck</h2>
-            <p>First, let's create a deck for your flashcards</p>
-            <form onSubmit={handleDeckFormSubmit} className="deck-form">
-              <div className="form-group">
-                <label htmlFor="deckName">Deck Name</label>
+      {showDeckForm ? (
+        <div className="deck-form-container">
+          <h2>Create New Deck</h2>
+          <p>First, let's create a deck for your flashcards</p>
+          <form onSubmit={handleDeckFormSubmit} className="deck-form">
+            <div className="form-group">
+              <label htmlFor="deckName">Deck Name</label>
+              <input
+                id="deckName"
+                type="text"
+                placeholder="e.g., Spanish Vocabulary"
+                value={deckFormData.name}
+                onChange={(e) =>
+                  setDeckFormData({ ...deckFormData, name: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="categoryName">Category</label>
+              <input
+                id="categoryName"
+                type="text"
+                placeholder="e.g., Language Learning"
+                value={deckFormData.categoryName}
+                onChange={(e) =>
+                  setDeckFormData({
+                    ...deckFormData,
+                    categoryName: e.target.value,
+                  })
+                }
+                required
+              />
+            </div>
+            <div className="form-group checkbox-group">
+              <label>
                 <input
-                  id="deckName"
-                  type="text"
-                  placeholder="e.g., Spanish Vocabulary"
-                  value={deckFormData.name}
-                  onChange={(e) =>
-                    setDeckFormData({ ...deckFormData, name: e.target.value })
-                  }
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="categoryName">Category</label>
-                <input
-                  id="categoryName"
-                  type="text"
-                  placeholder="e.g., Language Learning"
-                  value={deckFormData.categoryName}
+                  type="checkbox"
+                  checked={deckFormData.isPublic}
                   onChange={(e) =>
                     setDeckFormData({
                       ...deckFormData,
-                      categoryName: e.target.value,
+                      isPublic: e.target.checked,
                     })
                   }
-                  required
                 />
-              </div>
-
-              <div className="form-group checkbox-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={deckFormData.isPublic}
-                    onChange={(e) =>
-                      setDeckFormData({
-                        ...deckFormData,
-                        isPublic: e.target.checked,
-                      })
-                    }
-                  />
-                  Make this deck public
-                </label>
-              </div>
-
-              <button type="submit" className="submit-button">
-                Create Deck & Continue
-              </button>
-            </form>
-          </div>
-        ) : (
+                Make this deck public
+              </label>
+            </div>
+            <button type="submit" className="submit-button">
+              Create Deck & Continue
+            </button>
+          </form>
+        </div>
+      ) :
+      (
+        <div className="import-options">
           <CSVImport
             onImportComplete={handleImportComplete}
             isProcessing={isProcessing}
           />
-        )}
-      </div>
+          <ManualImport onManualImportSubmit={handleManualImportSubmit}/>
+        </div>
+      )}
     </div>
   );
 };

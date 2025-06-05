@@ -8,6 +8,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 
 import App from "./App.jsx";
 import Home from "./components/HomePage/Home.js";
@@ -37,6 +38,26 @@ const authLink = setContext((_, { headers }) => {
       authorization: token ? `Bearer ${token}` : "",
     },
   };
+});
+
+// Handle GraphQL errors (401, etc.)
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    for (let err of graphQLErrors) {
+      if (err.message === "Invalid or expired token") {
+        // Remove token and redirect
+        localStorage.removeItem("id_token");
+        localStorage.removeItem("userId");
+        window.location.href = "/login";
+      }
+    }
+  }
+
+  if (networkError) {
+    localStorage.removeItem("id_token");
+    localStorage.removeItem("userId");
+    window.location.href = "/login";
+  }
 });
 
 // Route configuration
@@ -96,7 +117,7 @@ const router = createBrowserRouter([
 ]);
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: errorLink.concat(authLink.concat(httpLink)),
   cache: new InMemoryCache(),
 });
 

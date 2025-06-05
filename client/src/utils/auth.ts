@@ -25,10 +25,7 @@ class AuthService {
   isTokenExpired(token: string) {
     try {
       const decoded = jwtDecode<JwtPayload>(token);
-
-      if (decoded?.exp && decoded?.exp < Date.now() / 1000) {
-        return true;
-      }
+      return decoded?.exp && decoded?.exp < Date.now() / 1000;
     } catch (err) {
       return false;
     }

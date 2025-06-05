@@ -77,7 +77,7 @@ const IndividualDeck = ({
             }
           </div>
           <div className="action-buttons">
-            {user ?
+            {user?._id === deck?.user?._id ?
               <button
                 onClick={() => handleManageDeck(deck._id)}
                 type="button"
@@ -95,7 +95,7 @@ const IndividualDeck = ({
               <FaBookOpen className="btn-icon" />
               Study
             </button>
-            {user ?
+            {user?._id === deck?.user?._id ?
               <button
                 onClick={() => handleImportFlashcard(deck._id)}
                 type="button"

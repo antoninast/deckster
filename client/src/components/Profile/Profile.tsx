@@ -1,4 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import {
@@ -9,18 +10,19 @@ import {
   FaLayerGroup,
   FaGraduationCap,
   FaEdit,
-  FaCog,
-  FaSignOutAlt,
+  // FaCog,
+  // FaSignOutAlt,
 } from "react-icons/fa";
 import {
   QUERY_SINGLE_PROFILE,
   QUERY_ME,
   QUERY_MY_DECKS,
+  QUERY_MY_STUDY_SESSIONS,
+  QUERY_RECENT_STUDY_SESSIONS,
 } from "../../utils/queries";
 import auth from "../../utils/auth";
 import "./Profile.css";
 import { CardDeck } from "../../interfaces/CardDeck";
-
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -34,6 +36,18 @@ const Profile = () => {
 
   const { data: myDecksData } = useQuery(QUERY_MY_DECKS);
   const myDecks = myDecksData?.myCardDecks || [];
+
+  const { data: myStudySessionsData } = useQuery(QUERY_MY_STUDY_SESSIONS);
+  const myStudySessions = myStudySessionsData?.myStudySessions || [];
+
+  const { data: recentStudySessionsData } = useQuery(
+    QUERY_RECENT_STUDY_SESSIONS,
+    {
+      variables: { limit: 5 },
+    }
+  );
+  const recentStudySessions =
+    recentStudySessionsData?.recentStudySessions || [];
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
@@ -58,8 +72,6 @@ const Profile = () => {
     );
   }
 
-  console.log("myDecks:", myDecks);
-
   // Profile statistics
   const stats = {
     totalDecks: myDecks.length,
@@ -67,15 +79,32 @@ const Profile = () => {
       (total: number, deck: CardDeck) => total + (deck.numberOfCards || 0),
       0
     ),
-    // studySessions: 45, <-- already captured in Study Component
+    // studySessions: 45,
     averageAccuracy:
-      myDecks.reduce(
-        (total: number, deck: CardDeck) =>
-          total + (deck.userStudyAttemptStats?.attemptAccuracy || 0),
-        0
-      ) / myDecks.length || 0,
+      Math.round(
+        myDecks.reduce(
+          (total: number, deck: CardDeck) =>
+            total + (deck.userStudyAttemptStats?.attemptAccuracy || 0),
+          0
+        ) / (myDecks.length || 1)
+      ) || 0,
     currentStreak: 7,
-    totalStudyTime: "24h 35m",
+    totalStudyTime: (() => {
+      const totalSeconds = myStudySessions.reduce(
+        (total: number, session: any) => total + (session.clientDuration || 0),
+        0
+      );
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const days = Math.floor(hours / 24);
+
+      if (days < 1 && hours < 1) {
+        return `${minutes}m`;
+      } else if (days < 1 && hours >= 1) {
+        return `${hours}h ${minutes}m`;
+      }
+      return `${days}d ${hours}h ${minutes}m`;
+    })(),
   };
 
   // User achievements
@@ -98,7 +127,7 @@ const Profile = () => {
             {isOwnProfile && (
               <button className="edit-avatar-btn">
                 <Link to="/me">
-                <FaEdit/> Edit
+                  <FaEdit /> Edit
                 </Link>
               </button>
             )}
@@ -112,7 +141,7 @@ const Profile = () => {
             </p>
           </div>
 
-          {isOwnProfile && (
+          {/* {isOwnProfile && (
             <div className="profile-actions">
               <button
                 className="profile-action-btn"
@@ -127,7 +156,7 @@ const Profile = () => {
                 <FaSignOutAlt /> Logout
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -149,7 +178,7 @@ const Profile = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.totalCards}</h3>
-            <p>Cards Learned</p>
+            <p>Total Cards</p>
           </div>
         </div>
 
@@ -159,7 +188,7 @@ const Profile = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.averageAccuracy}%</h3>
-            <p>Avg Accuracy</p>
+            <p>Average Accuracy</p>
           </div>
         </div>
 
@@ -169,7 +198,7 @@ const Profile = () => {
           </div>
           <div className="stat-content">
             <h3>{stats.totalStudyTime}</h3>
-            <p>Study Time</p>
+            <p>Total Study Time</p>
           </div>
         </div>
       </div>
@@ -245,16 +274,23 @@ const Profile = () => {
             <div className="tab-panel">
               <h3>Recent Study Sessions</h3>
               <div className="activity-list">
-                <div className="activity-item">
-                  <span className="activity-date">Today</span>
-                  <span className="activity-deck">JavaScript Fundamentals</span>
-                  <span className="activity-score">92% accuracy</span>
-                </div>
-                <div className="activity-item">
-                  <span className="activity-date">Yesterday</span>
-                  <span className="activity-deck">React Hooks</span>
-                  <span className="activity-score">88% accuracy</span>
-                </div>
+                {recentStudySessions.length === 0 ? (
+                  <p>No recent study sessions found.</p>
+                ) : (
+                  recentStudySessions.map((session: any, index: number) => (
+                    <div key={index} className="activity-item">
+                      <span className="activity-date">
+                        {DateTime.fromMillis(
+                          Number(session.startTime)
+                        ).toLocaleString(DateTime.DATETIME_FULL)}
+                      </span>
+                      <span className="activity-deck">{session.deckTitle}</span>
+                      <span className="activity-score">
+                        {session.sessionAccuracy}% accuracy
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

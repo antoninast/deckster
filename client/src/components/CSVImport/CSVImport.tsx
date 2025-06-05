@@ -1,4 +1,3 @@
-// client/src/components/CSVImport/CSVImport.tsx
 import React, { useState, useRef } from "react";
 import Papa from "papaparse";
 import {
@@ -160,7 +159,7 @@ const CSVImport: React.FC<CSVImportProps> = ({
   };
 
   return (
-    <div className="csv-import-container">
+    <div className="import-container">
       <div className="import-card">
         <div className="import-card-header">
           <h2>Import Flashcards from CSV</h2>

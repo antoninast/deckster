@@ -24,11 +24,12 @@ export const authenticateToken = ({ req }: any) => {
 
   try {
     const { data }: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "", {
-      maxAge: "2hr",
+      maxAge: "1h",
     });
     req.user = data;
   } catch (err) {
     console.log("Invalid token");
+    throw new AuthenticationError("Invalid or expired token");
   }
 
   return req;
@@ -42,7 +43,7 @@ export const signToken = (username: string, email: string, _id: unknown) => {
   const payload = { username, email, _id };
   const secretKey: any = process.env.JWT_SECRET_KEY;
 
-  return jwt.sign({ data: payload }, secretKey, { expiresIn: "2h" });
+  return jwt.sign({ data: payload }, secretKey, { expiresIn: "1h" });
 };
 
 /**

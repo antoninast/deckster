@@ -98,12 +98,46 @@ export const ADD_MULTIPLE_FLASHCARDS = gql`
   }
 `;
 
+export const START_STUDY_SESSION = gql`
+  mutation StartStudySession($deckId: ID!) {
+    startStudySession(deckId: $deckId) {
+      _id
+      userId
+      deckId
+      startTime
+      status
+    }
+  }
+`;
+
+export const END_STUDY_SESSION = gql`
+  mutation EndStudySession(
+    $sessionId: ID!
+    $clientDuration: Int!
+    $status: SessionStatus!
+  ) {
+    endStudySession(
+      sessionId: $sessionId
+      clientDuration: $clientDuration
+      status: $status
+    ) {
+      _id
+      endTime
+      status
+      sessionAccuracy
+      totalAttempts
+      correctAttempts
+      clientDuration
+    }
+  }
+`;
+
 // Records a study attempt for a flashcard with correctness tracking
 export const REVIEW_FLASHCARD = gql`
-  mutation reviewFlashcard(
+  mutation ReviewFlashcard(
     $flashcardId: ID!
     $correct: Boolean!
-    $studySessionId: String!
+    $studySessionId: ID!
   ) {
     reviewFlashcard(
       flashcardId: $flashcardId
@@ -113,8 +147,6 @@ export const REVIEW_FLASHCARD = gql`
       _id
       question
       answer
-      image_url
-      deckId
     }
   }
 `;

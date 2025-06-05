@@ -2,11 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
-import { REVIEW_FLASHCARD } from "../../utils/mutations";
-import { createStudySession } from "../../utils/sessionUtils";
 import {
-  GET_SESSION_STATS,
-  GET_RECENT_SESSION_STATS,
+  REVIEW_FLASHCARD,
+  START_STUDY_SESSION,
+  END_STUDY_SESSION,
+} from "../../utils/mutations";
+import {
+  QUERY_STUDY_SESSION,
+  QUERY_RECENT_STUDY_SESSIONS,
 } from "../../utils/queries";
 import Flashcard from "../Flashcard/Flashcard";
 import { HelpModal } from "../HelpModal/HelpModal";
@@ -17,59 +20,127 @@ export default function Study() {
   const { deckId } = useParams();
   const navigate = useNavigate();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [sessionId, setSessionId] = useState("");
+  const [sessionId, setSessionId] = useState<string>("");
   const [isSessionComplete, setIsSessionComplete] = useState(false);
+  const [isSessionAbandoned, setIsSessionAbandoned] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
 
+  // Mutations
+  const [startStudySession] = useMutation(START_STUDY_SESSION);
+  const [endStudySession] = useMutation(END_STUDY_SESSION);
+  const [reviewFlashcard] = useMutation(REVIEW_FLASHCARD);
+
+  // Refs for help modal
   const cardRef = useRef<HTMLDivElement>(null);
   const correctBtnRef = useRef<HTMLButtonElement>(null);
   const incorrectBtnRef = useRef<HTMLButtonElement>(null);
   const endSessionRef = useRef<HTMLButtonElement>(null);
 
+  // Queries
   const { loading, data } = useQuery(QUERY_FLASHCARDS_BY_DECK, {
     variables: { deckId },
   });
 
-  const { data: statsData, refetch: refetchStats } = useQuery(
-    GET_SESSION_STATS,
+  const { data: statsData, refetch: refetchStudySession } = useQuery(
+    QUERY_STUDY_SESSION,
     {
       variables: { studySessionId: sessionId },
-      skip: !sessionId, // only query once sessionId is set to a valid value
+      skip: !sessionId.length,
     }
   );
 
-  const { refetch: recentSessionsStatsRefetch } = useQuery(
-    GET_RECENT_SESSION_STATS,
+  const { refetch: refetchRecentStudySessions } = useQuery(
+    QUERY_RECENT_STUDY_SESSIONS,
     {
-      variables: {
-        deckId: deckId || "",
-        limit: 5,
-      },
+      variables: { deckId: deckId || "", limit: 5 },
       skip: !deckId,
     }
   );
 
-  const [reviewFlashcard] = useMutation(REVIEW_FLASHCARD);
-
+  // Initialize session
   useEffect(() => {
-    const newSessionId = createStudySession();
-    setSessionId(newSessionId);
-  }, []);
+    let isSubscribed = true;
 
-  const startNewSession = () => {
-    const newSessionId = createStudySession();
-    setSessionId(newSessionId);
-    setCurrentCardIndex(0);
-    setIsSessionComplete(false);
+    const initializeSession = async () => {
+      try {
+        if (!sessionId) {
+          const { data } = await startStudySession({ variables: { deckId } });
+          if (isSubscribed) setSessionId(data.startStudySession._id);
+        }
+      } catch (err) {
+        console.error("Error starting study session:", err);
+      }
+    };
+
+    initializeSession();
+    return () => {
+      isSubscribed = false;
+    };
+  }, [deckId, sessionId, startStudySession]);
+
+  // Cleanup effect for abandoned sessions
+  useEffect(() => {
+    return () => {
+      if (
+        sessionId &&
+        statsData?.studySession?.status === "active" &&
+        !isSessionComplete &&
+        isSessionAbandoned
+      ) {
+        endStudySession({
+          variables: {
+            sessionId,
+            clientDuration: statsData?.studySession?.clientDuration || 0,
+            status: "abandoned",
+          },
+        }).catch((err) => console.error("Error ending session:", err));
+      }
+    };
+  }, [
+    sessionId,
+    isSessionComplete,
+    endStudySession,
+    statsData,
+    isSessionAbandoned,
+  ]);
+
+  // Handle session completion
+  const handleSessionComplete = async (abandonedEarly = false) => {
+    try {
+      setIsSessionAbandoned(abandonedEarly);
+
+      const startTimeMs = Number(statsData?.studySession?.startTime);
+
+      const clientDuration = startTimeMs
+        ? Math.floor((Date.now() - startTimeMs) / 1000)
+        : 0;
+
+      // console.log("Calculated duration (seconds):", clientDuration);
+
+      await endStudySession({
+        variables: {
+          sessionId,
+          clientDuration,
+          status: abandonedEarly ? "abandoned" : "completed",
+        },
+      });
+      setIsSessionComplete(true);
+      await refetchRecentStudySessions();
+    } catch (err) {
+      console.error("Error ending session:", err);
+    }
   };
 
+  // Handle flashcard response
   const handleResponse = async (correct: boolean) => {
     if (!flashcards[currentCardIndex]) return;
 
     // consider updating resolver to handle an array of flashcardIds?
     // then save responses locally in an array
     // and batch fetch the reslts when the session is over
+    // console.log("Session Stats:", statsData.studySession);
+    // console.log("typeof sessionId:", typeof sessionId);
     try {
       await reviewFlashcard({
         variables: {
@@ -81,15 +152,15 @@ export default function Study() {
 
       // maybe we only fetchd session stats when session ends?
       // otherwise this could be a problem for scalability
-      await refetchStats();
 
-      // check if this was the last card
       if (currentCardIndex === flashcards.length - 1) {
+        await handleSessionComplete(false);
         setIsSessionComplete(true);
-        await recentSessionsStatsRefetch(); // Refresh chart data when session completes
+        await refetchStudySession();
+        console.log("statsData:", statsData);
+        await refetchRecentStudySessions();
       } else {
-        setCurrentCardIndex((previousIndex) => previousIndex + 1);
-        // reset flip state when moving to next card
+        setCurrentCardIndex((prev) => prev + 1);
         setIsFlipped(false);
       }
     } catch (err) {
@@ -97,6 +168,7 @@ export default function Study() {
     }
   };
 
+  // Keyboard event handlers
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (isSessionComplete) return;
@@ -104,7 +176,7 @@ export default function Study() {
       switch (e.code) {
         case "ArrowUp":
         case "ArrowDown":
-          setIsFlipped((previousIndex) => !previousIndex);
+          setIsFlipped((prev) => !prev);
           break;
         case "ArrowLeft":
           handleResponse(false);
@@ -113,20 +185,16 @@ export default function Study() {
           handleResponse(true);
           break;
         case "Space":
-          setIsSessionComplete(true);
+          handleSessionComplete(true);
           break;
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isSessionComplete, handleResponse]);
+  }, [isSessionComplete, currentCardIndex, sessionId]);
 
-  if (loading) return <div>Loading...</div>;
-
-  const flashcards = data?.flashcardsByDeck || [];
-  const stats = statsData?.sessionStats;
-
+  // Help modal steps
   const helpSteps = [
     {
       message:
@@ -158,19 +226,35 @@ export default function Study() {
     }
   };
 
-  if (flashcards.length === 0) {
+  // Loading and empty states
+  if (loading) return <div>Loading...</div>;
+  if (!data?.flashcardsByDeck?.length)
     return <div>No flashcards found in this deck.</div>;
-  }
 
+  const flashcards = data.flashcardsByDeck;
+
+  const startNewSession = () => {
+    setCurrentCardIndex(0);
+    setIsSessionComplete(false);
+    setIsSessionAbandoned(false);
+    setIsFlipped(false);
+    setSessionId("");
+  };
+
+  const handleEndSessionClick = () => {
+    handleSessionComplete(true);
+  };
+
+  // Session complete view
   if (isSessionComplete) {
     return (
       <div className="session-complete">
         <h2>Session Complete! 🎉</h2>
         <div className="final-stats">
           <p>Final Results:</p>
-          <p>Cards Studied: {stats?.totalAttempts}</p>
-          <p>Correct: {stats?.correctAttempts}</p>
-          <p>Accuracy: {stats?.sessionAccuracy.toFixed(1)}%</p>
+          <p>Cards Studied: {statsData?.studySession.totalAttempts}</p>
+          <p>Correct: {statsData?.studySession.correctAttempts}</p>
+          <p>Accuracy: {statsData?.studySession.sessionAccuracy.toFixed(1)}%</p>
         </div>
         <div className="session-controls">
           <button onClick={startNewSession}>Study Again</button>
@@ -182,6 +266,7 @@ export default function Study() {
     );
   }
 
+  // Main study view
   return (
     <div className="study-page">
       <div className="study-header">
@@ -229,7 +314,7 @@ export default function Study() {
         <button
           ref={endSessionRef}
           className="end-session-btn"
-          onClick={() => setIsSessionComplete(true)}
+          onClick={handleEndSessionClick}
         >
           End Session
         </button>
