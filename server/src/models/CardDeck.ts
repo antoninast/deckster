@@ -6,8 +6,8 @@ export interface ICardDeck extends Document {
   image_url: string | null;
   categoryName: string;
   userId: Types.ObjectId;
-  // flashcardIds: Types.ObjectId[];
   isPublic: boolean;
+  numberOfCards?: number; // Add this to interface
 }
 
 const cardDeckSchema = new Schema<ICardDeck>(
@@ -23,33 +23,31 @@ const cardDeckSchema = new Schema<ICardDeck>(
     },
     categoryName: {
       type: String,
-      required: true
+      required: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "Profile",
       required: true,
     },
-    // flashcardIds: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "Flashcard",
-    //     required: true,
-    //   },
-    // ],
     isPublic: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true }, // Enable virtuals when converting to JSON
+    toObject: { virtuals: true },
   }
 );
 
-// cardDeckSchema.virtual("numberOfCards").get(function () {
-//   return this.flashcardIds.length;
-// });
+cardDeckSchema.virtual("numberOfCards", {
+  ref: "Flashcard",
+  localField: "_id",
+  foreignField: "deckId",
+  count: true, // return only the count
+});
 
 const CardDeck = model<ICardDeck>("CardDeck", cardDeckSchema);
 export default CardDeck;
