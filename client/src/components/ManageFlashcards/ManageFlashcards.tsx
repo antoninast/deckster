@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   QUERY_FLASHCARDS_BY_DECK,
-  //   QUERY_CARD_DECKS,
+  QUERY_CARD_DECKS,
 } from "../../utils/queries";
 import { REMOVE_FLASHCARD, UPDATE_FLASHCARD } from "../../utils/mutations";
 import type { Flashcard } from "../../interfaces/Flashcard";
@@ -45,9 +45,12 @@ export default function Flashcards() {
     }
   );
 
-  // TODO: const decks = useQuery(QUERY_CARD_DECKS, {
-  //     fetchPolicy: "cache-and-network"
-  // });
+  // Add loading state for the decks query
+  const { data: decks, loading: decksLoading } = useQuery(QUERY_CARD_DECKS, {
+    variables: { isPublic: false },
+  });
+
+  const deck = decks?.cardDecks.find((deck: any) => deck._id === deckId);
 
   const removeFlashcard = async () => {
     try {
@@ -137,14 +140,21 @@ export default function Flashcards() {
     }
   }, [flashcards]);
 
-  if (queryLoading || removeLoading || updateLoading) {
+  // Update the loading condition to include decksLoading
+  if (queryLoading || removeLoading || updateLoading || decksLoading) {
     return <div>Loading cards ...</div>;
   }
 
+  // Add a check for deck existence
   if (!flashcards) {
     return <div>No flashcards in this deck</div>;
   }
 
+  if (!deck) {
+    return <div>Deck not found</div>;
+  }
+
+  // Update the h2 element to safely access deck.name
   return (
     <div>
       <div className={openModal ? "modal show" : "modal hide"}>
@@ -173,7 +183,7 @@ export default function Flashcards() {
           </div>
         </div>
       </div>
-      <h2>Flashcards with - DECK ID - {deckId}</h2>
+      <h2>{deck?.name || "Unknown Deck"}</h2>
       <div className="search-bar">
         <input
           onChange={handleSearch}

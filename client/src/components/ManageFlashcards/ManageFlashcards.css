@@ -1,68 +1,81 @@
+body {
+  padding: 2rem 1rem;
+  min-height: calc(100vh - var(--header-height) - var(--footer-height) - 4rem);
+}
+
+h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-tan);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 .search-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin: 2em auto 2em auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 2em auto 2em auto;
 }
 
 .search-bar input {
-    width: 70%;
+  width: 70%;
 }
 
 .flashcards-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .card {
-    margin: 0.8em;
-    height: 20em;
-    width: 18em;
-    align-items: flex-end;
-    display: flex;
-    justify-content: center;
-    background-color: var(--color-beige);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0.8em;
+  height: 20em;
+  width: 18em;
+  align-items: flex-end;
+  display: flex;
+  justify-content: center;
+  background-color: var(--color-beige);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card:hover {
-    box-shadow: 0 0px 12px 1px var(--color-sage);
+  box-shadow: 0 0px 12px 1px var(--color-sage);
 }
 
 .flashcard-delete-button-wrapper {
-    margin: 0.1em 0.5em 0 0;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    padding: 0.5em;
-    margin: 0;
+  margin: 0.1em 0.5em 0 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5em;
+  margin: 0;
 }
 
 .flashcard-delete-button-wrapper:hover svg {
-    fill: red;
+  fill: red;
 }
 
 .view-mode,
 .edit-mode {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 78%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 78%;
 }
 
 .card-question {
-    color: var(--black-text);
+  color: var(--black-text);
 }
 
 .card-answer {
-    color: var(--gray-text);
-    max-height: 6em;
-    overflow-y: auto;
+  color: var(--gray-text);
+  max-height: 6em;
+  overflow-y: auto;
 }
 
 .card-answer::-webkit-scrollbar {
@@ -81,18 +94,18 @@
 }
 
 .edit-mode textarea {
-    resize: vertical;
-    box-sizing: border-box;
-    margin-bottom: 0.5em;
-    max-height: 6em;
-    background-color: var(--tea-green-lighter);
-    width: 90%;
-    color: var(--black-text);
+  resize: vertical;
+  box-sizing: border-box;
+  margin-bottom: 0.5em;
+  max-height: 6em;
+  background-color: var(--tea-green-lighter);
+  width: 90%;
+  color: var(--black-text);
 }
 
 .edit-mode textarea:focus {
-    background-color: var(--tea-green-lighter);
-    box-shadow: none;
+  background-color: var(--tea-green-lighter);
+  box-shadow: none;
 }
 
 .edit-mode textarea::-webkit-scrollbar {
@@ -114,31 +127,31 @@
 }
 
 .view-mode p {
-    width: 70%;
-    text-align: center;
-    font-weight: 450;
+  width: 70%;
+  text-align: center;
+  font-weight: 450;
 }
 
 hr {
-    border-top: 4px dotted #705a4ac8;
-    margin: 1rem 0;
-    width: 55%;
+  border-top: 4px dotted #705a4ac8;
+  margin: 1rem 0;
+  width: 55%;
 }
 
 .action-buttons {
-    display: flex;
-    flex-direction: row;
-    margin-right: 0.4em;
+  display: flex;
+  flex-direction: row;
+  margin-right: 0.4em;
 }
 
 .action-buttons button {
-    margin-right: 0.4em;
+  margin-right: 0.4em;
 }
 
 .modal.show {
-    background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal.hide {
-    display: none;
+  display: none;
 }
