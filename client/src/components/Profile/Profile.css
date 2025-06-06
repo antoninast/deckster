@@ -387,7 +387,6 @@
 }
 
 .activity-deck {
-    flex: 1;
     color: var(--text-primary);
     font-weight: 500;
 }

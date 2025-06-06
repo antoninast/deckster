@@ -16,6 +16,7 @@ export interface IStudySession {
   correctAttempts: number;
   status: SessionStatus;
   sessionAccuracy: number;
+  deckTitle?: string;
   createdAt: string;
   updatedAt: string;
 }

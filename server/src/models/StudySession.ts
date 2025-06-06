@@ -13,6 +13,7 @@ export interface IStudySession extends Document {
   createdAt: Date;
   updatedAt: Date;
   sessionAccuracy: number;
+  deckTitle?: string;
   updateAttempts(correct: boolean): Promise<void>;
 }
 
@@ -74,6 +75,20 @@ studySessionSchema.virtual("sessionAccuracy").get(function (): number {
   const accuracy = (this.correctAttempts / this.totalAttempts) * 100;
   return Math.round(accuracy);
 });
+
+// Virtual for deck title
+studySessionSchema
+  .virtual("deckTitle", {
+    ref: "CardDeck",
+    localField: "deckId",
+    foreignField: "_id",
+    justOne: true,
+    options: { select: "name" },
+  })
+  .get(function (deck: any) {
+    // Extract just the name from the populated deck object
+    return deck ? deck.name : null;
+  });
 
 // Add middleware to update attempt counts
 studySessionSchema.methods.updateAttempts = async function (correct: boolean) {

@@ -58,6 +58,7 @@ const typeDefs = `
     correctAttempts: Int!
     status: SessionStatus!
     sessionAccuracy: Float!
+    deckTitle: String
     createdAt: String
     updatedAt: String
   }
