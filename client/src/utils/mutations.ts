@@ -77,6 +77,20 @@ export const ADD_CARD_DECK = gql`
   }
 `;
 
+export const UPDATE_CARDDECK = gql`
+  mutation updateCardDeck(
+    $deckId: ID!
+    $input: CardDeckInput!
+  ) {
+    updateCardDeck(
+      deckId: $deckId,
+      input: $input
+    ) {
+      _id
+    }
+  }
+`;
+
 // Adds multiple flashcards to a deck (used for CSV import)
 export const ADD_MULTIPLE_FLASHCARDS = gql`
   mutation AddMultipleFlashcards(

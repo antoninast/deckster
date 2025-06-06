@@ -1,0 +1,37 @@
+.deck-details p.deck-stat.visibility {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.deck-stat.visibility .dropdown {
+    margin-left: 0.5rem;
+}
+
+.dropdown-toggle.visibility {
+    padding-left: 0.3em;
+    height: 2em;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    transition: transform 0.2s linear;
+}
+
+.dropdown-toggle.visibility:focus,
+.dropdown-toggle.visibility:focus-visible
+.dropdown-toggle.visibility:checked,
+.dropdown-toggle.visibility:active,
+.dropdown-toggle.visibility:disabled {
+    border: none;
+}
+
+.dropdown-toggle.visibility:hover {
+    color: var(--color-tan);
+    transform: scale(1.1);
+}
+
+.visibility .dropdown-menu {
+    width: 6em;
+    height: 5em;
+}

@@ -4,15 +4,15 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaBookOpen, FaPlus } from "react-icons/fa";
 import { QUERY_MY_DECKS, QUERY_CARD_DECKS } from "../../utils/queries";
-import { REMOVE_CARDDECK } from "../../utils/mutations";
+import { REMOVE_CARDDECK, UPDATE_CARDDECK } from "../../utils/mutations";
 import { CardDeck } from "../../interfaces/CardDeck";
-import "./BrowseDecks.css";
 import IndividualDeck from "../IndividualDeck/IndividualDeck";
+import "./BrowseDecks.css";
 
 const BrowseDecks = () => {
   const navigate = useNavigate();
   const user = useSelector((state: any) => state.user.value);
-
+  const shouldRunpersonalDecksQuery = !!user;
   const [openModal, setOpenModal] = useState(false);
   const [deckIdToRemove, setDeckIdToRemove] = useState("");
 
@@ -20,6 +20,7 @@ const BrowseDecks = () => {
     {
       fetchPolicy: "cache-and-network",
       nextFetchPolicy: "cache-first",
+      skip: !shouldRunpersonalDecksQuery
     }
   );
 
@@ -49,6 +50,33 @@ const BrowseDecks = () => {
       setOpenModal(false);
     } catch (error: any) {
       setOpenModal(false);
+      console.error(error.message);
+      alert(error);
+    }
+  };
+
+  const [updateCardDeckMutation] = useMutation(UPDATE_CARDDECK, {
+    onCompleted: () => {
+      refetchPersonalDecks();
+      refetchPublicDecks();
+    },
+  });
+
+  const handleVisibility = async (deckId: string, isPublic: boolean) => {
+    try {
+      const deck = personalDecksArr.find((deck: any) => deck._id === deckId);
+      await updateCardDeckMutation({
+        variables: {
+          deckId: deckId,
+          input: {
+            name: deck.name,
+            categoryName: deck.categoryName,
+            userId: user._id,
+            isPublic,
+          }
+        },
+      });
+    } catch (error: any) {
       console.error(error.message);
       alert(error);
     }
@@ -160,6 +188,7 @@ const BrowseDecks = () => {
               </div>
               : personalDecks.myCardDecks.map((deck: CardDeck) => (
                 <IndividualDeck
+                  key={deck._id}
                   deck={deck}
                   user={user}
                   handleRemoveCardDeck={handleRemoveCardDeck}
@@ -167,6 +196,7 @@ const BrowseDecks = () => {
                   handleStudyDeck={handleStudyDeck}
                   handleImportFlashcard={handleImportFlashcard}
                   getProficiencyClass={getProficiencyClass}
+                  handleVisibility={handleVisibility}
                 />
             ))}
           </div>
@@ -177,6 +207,7 @@ const BrowseDecks = () => {
         <div className="decks-container">
           {publicDecksArr.map((deck: CardDeck) => (
             <IndividualDeck
+              key={deck._id}
               deck={deck}
               user={user}
               handleRemoveCardDeck={handleRemoveCardDeck}
@@ -184,6 +215,7 @@ const BrowseDecks = () => {
               handleStudyDeck={handleStudyDeck}
               handleImportFlashcard={handleImportFlashcard}
               getProficiencyClass={getProficiencyClass}
+              handleVisibility={handleVisibility}
             />
           ))}
         </div>
