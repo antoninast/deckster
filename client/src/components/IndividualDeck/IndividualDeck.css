@@ -23,6 +23,14 @@
     transition: transform 0.2s linear;
 }
 
+.deck.card .dropdown-menu.show {
+    transform: translate3d(34.5px, 13px, 0px) !important;
+}
+
+.deck.card .dropdown-menu.show .dropdown-item {
+    font-size: 0.9rem;
+}
+
 .dropdown-toggle.visibility:focus,
 .dropdown-toggle.visibility:focus-visible
 .dropdown-toggle.visibility:checked,
@@ -34,9 +42,4 @@
 .dropdown-toggle.visibility:hover {
     color: var(--color-tan);
     transform: scale(1.1);
-}
-
-.visibility .dropdown-menu {
-    width: 6em;
-    height: 5em;
 }

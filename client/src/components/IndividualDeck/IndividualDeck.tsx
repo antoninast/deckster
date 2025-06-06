@@ -41,11 +41,15 @@ const IndividualDeck = ({
           </div>
           <div className="deck-details">
             <div className="deck-stat">
-              <span className="deck-stat-label">Category:</span>
+              <span className="deck-stat-label stat-category">Category:</span>
               <span className="deck-stat-value">{deck.categoryName}</span>
             </div>
             <div className="deck-stat">
-              <span className="deck-stat-label">Accuracy:</span>
+              <span className="deck-stat-label stat-total">Number of cards:</span>
+              <span className="deck-stat-value">{deck.numberOfCards}</span>
+            </div>
+            <div className="deck-stat">
+              <span className="deck-stat-label stat-accuracy">Accuracy:</span>
               <span className="deck-stat-value">
                 {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1) ||
                   "0.0"}
@@ -53,11 +57,7 @@ const IndividualDeck = ({
               </span>
             </div>
             <div className="deck-stat">
-              <span className="deck-stat-label">Total flashcards:</span>
-              <span className="deck-stat-value">{deck.isPublic}</span>
-            </div>
-            <div className="deck-stat">
-              <span className="deck-stat-label">Proficiency:</span>
+              <span className="deck-stat-label stat-proficiency">Proficiency:</span>
               <span
                 className={`proficiency-badge ${getProficiencyClass(
                   deck.userStudyAttemptStats?.proficiency
@@ -66,24 +66,23 @@ const IndividualDeck = ({
                 {deck.userStudyAttemptStats?.proficiency || "No Data"}
               </span>
             </div>
-            <div className="deck-stat visibility">
-              <span className="deck-stat-label">Visibility:</span>
-              <div className="dropdown">
-                {deck.isPublic ? <MdPublic /> : <FaLock />}
-                {user?._id === deck.user._id ?
-                  <>
-                    <button className="btn dropdown-toggle visibility" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
-                    <ul className="dropdown-menu">
-                      <li onClick={() => handleVisibility(deck._id, false)} id="only-me"><a className="dropdown-item" href="#">Only me</a></li>
-                      <li onClick={() => handleVisibility(deck._id, true)} id="public"><a className="dropdown-item" href="#">Public</a></li>
-                    </ul>
-                  </> : null
-                }
-              </div>
-            </div>
-            {deck?.user?.username ?
+            {user?._id === deck.user._id ? 
+              <div className="deck-stat visibility">
+                <span className="deck-stat-label stat-visibility">Visibility:</span>
+                <div className="dropdown">
+                  {deck.isPublic ? <MdPublic /> : <FaLock />}
+                  <button className="btn dropdown-toggle visibility" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                  <ul className="dropdown-menu">
+                    <li onClick={() => handleVisibility(deck._id, false)} id="only-me"><a className="dropdown-item" href="#">Only me</a></li>
+                    <li onClick={() => handleVisibility(deck._id, true)} id="public"><a className="dropdown-item" href="#">Public</a></li>
+                  </ul>
+                </div>
+              </div> : null
+            }
+
+            {user?._id !== deck.user._id ?
               <div className="deck-stat">
-                <span className="deck-stat-label">Created by:</span>
+                <span className="deck-stat-label stat-creator">Created by:</span>
                 <span className="deck-stat-value">{deck?.user?.username}</span>
               </div> : null
             }
