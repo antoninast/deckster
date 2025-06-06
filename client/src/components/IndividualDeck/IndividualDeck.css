@@ -1,3 +1,7 @@
+.deck-delete-button-wrapper svg:hover {
+    stroke: red;
+}
+
 .deck-details div.deck-stat.visibility {
     display: flex;
     flex-direction: row;
@@ -7,6 +11,7 @@
 
 .deck-stat.visibility .dropdown {
     margin-left: 0.5rem;
+    width: 100%;
 }
 
 .dropdown-toggle.visibility {

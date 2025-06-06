@@ -40,6 +40,7 @@
     border: none;
     border-radius: 16px;
     height: 40%;
+    padding: 0;
     width: 20%;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -47,7 +48,8 @@
 }
 
 .browse-page .decks-container .deck.card:hover {
-    transform: translateY(-1px) !important;
+    /* transform: translateY(-1px) !important; */
+    transform: scale(1.02) !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -71,11 +73,6 @@
     text-align: left;
     word-wrap: break-word;
     display: block;
-}
-
-/* Delete Button */
-.deck-delete-button-wrapper:hover svg {
-    fill: red;
 }
 
 /* Card Body */
@@ -150,8 +147,14 @@
     display: flex;
     gap: 0.5rem;
     margin-top: auto;
+    margin-right: 0.4em;
     justify-content: center;
     align-items: center;
+    flex-direction: row;
+}
+
+.action-buttons button {
+    margin-right: 0.4em;
 }
 
 .deck-action-btn {
@@ -348,7 +351,7 @@
     }
 
     .deck-stat-label {
-        width: 70px;
+        width: 80%;
     }
 
     .deck-action-btn {
