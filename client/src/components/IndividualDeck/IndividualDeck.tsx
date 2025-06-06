@@ -43,23 +43,23 @@ const IndividualDeck = ({
             )}
           </div>
           <div className="deck-details">
-            <p className="deck-stat">
+            <div className="deck-stat">
               <span className="deck-stat-label">Category:</span>
               <span className="deck-stat-value">{deck.categoryName}</span>
-            </p>
-            <p className="deck-stat">
+            </div>
+            <div className="deck-stat">
               <span className="deck-stat-label">Accuracy:</span>
               <span className="deck-stat-value">
                 {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1) ||
                   "0.0"}
                 %
               </span>
-            </p>
-            <p className="deck-stat">
+            </div>
+            <div className="deck-stat">
               <span className="deck-stat-label">Total flashcards:</span>
               <span className="deck-stat-value">{deck.isPublic}</span>
-            </p>
-            <p className="deck-stat">
+            </div>
+            <div className="deck-stat">
               <span className="deck-stat-label">Proficiency:</span>
               <span
                 className={`proficiency-badge ${getProficiencyClass(
@@ -68,8 +68,8 @@ const IndividualDeck = ({
               >
                 {deck.userStudyAttemptStats?.proficiency || "No Data"}
               </span>
-            </p>
-            <p className="deck-stat visibility">
+            </div>
+            <div className="deck-stat visibility">
               <span className="deck-stat-label">Visibility:</span>
               <div className="dropdown">
                 {deck.isPublic ? <MdPublic /> : <FaLock />}
@@ -83,12 +83,12 @@ const IndividualDeck = ({
                   </> : null
                 }
               </div>
-            </p>
+            </div>
             {deck?.user?.username ?
-              <p className="deck-stat">
+              <div className="deck-stat">
                 <span className="deck-stat-label">Created by:</span>
                 <span className="deck-stat-value">{deck?.user?.username}</span>
-              </p> : null
+              </div> : null
             }
           </div>
           <div className="action-buttons">

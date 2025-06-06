@@ -1,4 +1,4 @@
-.deck-details p.deck-stat.visibility {
+.deck-details div.deck-stat.visibility {
     display: flex;
     flex-direction: row;
     justify-content: center;
