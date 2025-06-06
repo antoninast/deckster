@@ -25,6 +25,7 @@ export default function Study() {
   const [isSessionAbandoned, setIsSessionAbandoned] = useState(false);
   const [helpStep, setHelpStep] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [jeopardyMode, setJeopardyMode] = useState(false);
 
   // Mutations
   const [startStudySession] = useMutation(START_STUDY_SESSION);
@@ -161,7 +162,11 @@ export default function Study() {
         await refetchRecentStudySessions();
       } else {
         setCurrentCardIndex((prev) => prev + 1);
-        setIsFlipped(false);
+        if (jeopardyMode) {
+          setIsFlipped(true); // Show answer first in Jeopardy mode
+        } else {
+          setIsFlipped(false);
+        }
       }
     } catch (err) {
       console.error("Error recording flashcard review:", err);
@@ -226,6 +231,11 @@ export default function Study() {
     }
   };
 
+  const jeopardyModeToggle = () => {
+    setJeopardyMode(!jeopardyMode);
+    setIsFlipped((prev) => !prev)
+  }
+
   // Loading and empty states
   if (loading) return <div>Loading...</div>;
   if (!data?.flashcardsByDeck?.length)
@@ -239,6 +249,7 @@ export default function Study() {
     setIsSessionAbandoned(false);
     setIsFlipped(false);
     setSessionId("");
+    setJeopardyMode(false);
   };
 
   const handleEndSessionClick = () => {
@@ -276,6 +287,19 @@ export default function Study() {
       <p>
         Card {currentCardIndex + 1} of {flashcards.length}
       </p>
+
+      <div className="jeopardy-toggle slider">
+        <label>
+          <input
+        type="checkbox"
+        checked={jeopardyMode}
+        // onChange={() => setJeopardyMode(!jeopardyMode)}
+        //   />
+        onChange={() => jeopardyModeToggle()}
+          />
+          Jeopardy! Mode (Show Answer First)
+        </label>
+      </div>
 
       <div ref={cardRef}>
         <Flashcard

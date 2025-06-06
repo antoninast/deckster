@@ -18,7 +18,10 @@ const seedDatabase = async (): Promise<void> => {
     const hashedProfiles = await Promise.all(
       profileData.map(async (user) => ({
         ...user,
-        password: await hashPassword(user.password)
+        username: user.username.toLowerCase(),
+        email: user.email.toLowerCase(),
+        password: await hashPassword(user.password),
+        securityAnswer: await hashPassword(user.securityAnswer),
       }))
     );
 
