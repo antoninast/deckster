@@ -1,5 +1,6 @@
 import "./Flashcard.css";
 
+
 interface FlashcardProps {
   question: string;
   answer: string;
@@ -22,14 +23,15 @@ export default function Flashcard({
       >
         <div className="flashcard-inner">
           <div className="flashcard-front">
-            <div className="card-content">
-              <h3>Question</h3>
+            <div className="card-content indie-flower-regular">
+              {/* <h3>Question</h3> */}
+              {/* <div className="gap">123</div> */}
               <p>{question}</p>
             </div>
           </div>
           <div className="flashcard-back">
-            <div className="card-content">
-              <h3>Answer</h3>
+            <div className="card-content indie-flower-regular">
+              {/* <h3>Answer</h3> */}
               <p>{answer}</p>
             </div>
           </div>
