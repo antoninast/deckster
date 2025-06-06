@@ -51,13 +51,11 @@ const resolvers = {
         return await Profile.findOne({ _id: profileRef.profileId });
       } else if (profileRef.username) {
         // return await Profile.findOne({ username: profileRef.username });
-        return await Profile.findOne({$expr: {
-          $eq: [
-            { $toLower: "$username" },
-            profileRef.username.toLowerCase()
-          ]
-        }
-      });
+        return await Profile.findOne({
+          $expr: {
+            $eq: [{ $toLower: "$username" }, profileRef.username.toLowerCase()],
+          },
+        });
       } else {
         throw new Error("You must provide either a profileId or username");
       }
@@ -80,10 +78,9 @@ const resolvers = {
       _parent: any,
       { username, securityAnswer }: { username: string; securityAnswer: string }
     ): Promise<boolean> => {
-
       const profile = await Profile.findOne({ username });
       if (!profile) {
-        throw new AuthenticationError('Username not found.');
+        throw new AuthenticationError("Username not found.");
       } else {
         return await bcrypt.compare(securityAnswer, profile.securityAnswer);
       }
@@ -174,33 +171,16 @@ const resolvers = {
         throw AuthenticationError;
       }
 
-      // Convert user ID to ObjectId
-      const userId = new mongoose.Types.ObjectId(context.user._id);
-
       const sessions = await StudySession.find({
-        userId: userId,
+        userId: context.user._id,
         status: { $in: ["completed", "abandoned"] },
       })
         .sort({ endTime: -1 })
         .select(
           "_id userId deckId startTime endTime totalAttempts correctAttempts status clientDuration sessionAccuracy"
-        )
-        .lean();
+        );
 
-      // Transform the documents and ensure all required fields are present
-      return sessions.map((session) => ({
-        ...session,
-        _id: session._id.toString(),
-        userId: session.userId.toString(),
-        deckId: session.deckId.toString(),
-        startTime: session.startTime.toISOString(),
-        endTime: session.endTime ? session.endTime.toISOString() : null,
-        totalAttempts: session.totalAttempts || 0,
-        correctAttempts: session.correctAttempts || 0,
-        clientDuration: session.clientDuration || 0,
-        status: session.status || "completed",
-        sessionAccuracy: session.sessionAccuracy || 0,
-      }));
+      return sessions;
     },
 
     recentStudySessions: async (
@@ -219,10 +199,11 @@ const resolvers = {
         status: { $in: ["completed", "abandoned"] },
         ...(deckId && { deckId: new mongoose.Types.ObjectId(deckId) }),
       })
+        .populate("deckTitle")
         .sort({ endTime: -1 })
         .limit(limit)
         .select(
-          "startTime endTime totalAttempts correctAttempts status clientDuration sessionAccuracy"
+          "_id userId deckId startTime endTime totalAttempts correctAttempts status clientDuration sessionAccuracy deckTitle"
         );
 
       return sessions;
@@ -266,11 +247,8 @@ const resolvers = {
 
       const profile = await Profile.findOne({
         $expr: {
-          $eq: [
-            { $toLower: "$username" },
-            username.toLowerCase()
-          ]
-        }
+          $eq: [{ $toLower: "$username" }, username.toLowerCase()],
+        },
       });
 
       if (!profile) {
@@ -294,7 +272,8 @@ const resolvers = {
         username: string;
         newPassword: string;
         securityAnswer: string;
-      }): Promise<boolean> => {
+      }
+    ): Promise<boolean> => {
       const profile = await Profile.findOne({ username });
       if (!profile) {
         throw new AuthenticationError("Username not found.");
@@ -302,16 +281,18 @@ const resolvers = {
       const isAnswerCorrect = await bcrypt.compare(
         securityAnswer,
         profile.securityAnswer
-      );  
+      );
       if (!isAnswerCorrect) {
         throw new AuthenticationError("Security answer is incorrect.");
       }
       // Hash the new password
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       // Update the profile with the new password
-      await Profile.findByIdAndUpdate(profile._id,{ password: hashedPassword });
+      await Profile.findByIdAndUpdate(profile._id, {
+        password: hashedPassword,
+      });
       return true;
-    },  
+    },
 
     addCardDeck: async (
       _parent: any,

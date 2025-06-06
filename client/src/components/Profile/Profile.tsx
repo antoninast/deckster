@@ -37,17 +37,21 @@ const Profile = () => {
   const { data: myDecksData } = useQuery(QUERY_MY_DECKS);
   const myDecks = myDecksData?.myCardDecks || [];
 
-  const { data: myStudySessionsData } = useQuery(QUERY_MY_STUDY_SESSIONS);
+  const { data: myStudySessionsData } = useQuery(QUERY_MY_STUDY_SESSIONS, {
+    fetchPolicy: "cache-and-network",
+  });
   const myStudySessions = myStudySessionsData?.myStudySessions || [];
 
   const { data: recentStudySessionsData } = useQuery(
     QUERY_RECENT_STUDY_SESSIONS,
     {
       variables: { limit: 5 },
+      fetchPolicy: "cache-and-network",
     }
   );
   const recentStudySessions =
     recentStudySessionsData?.recentStudySessions || [];
+  console.log("recentStudySessions", recentStudySessions);
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
@@ -71,7 +75,7 @@ const Profile = () => {
       </div>
     );
   }
-
+  console.log("mystudySessions", myStudySessions);
   // Profile statistics
   const stats = {
     totalDecks: myDecks.length,
@@ -94,6 +98,7 @@ const Profile = () => {
         (total: number, session: any) => total + (session.clientDuration || 0),
         0
       );
+      console.log("totalSeconds", totalSeconds);
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const days = Math.floor(hours / 24);
@@ -284,7 +289,10 @@ const Profile = () => {
                           Number(session.startTime)
                         ).toLocaleString(DateTime.DATETIME_FULL)}
                       </span>
-                      <span className="activity-deck">{session.deckTitle}</span>
+                      <span className="activity-deck">
+                        {" "}
+                        {session.deckTitle}
+                      </span>
                       <span className="activity-score">
                         {session.sessionAccuracy}% accuracy
                       </span>

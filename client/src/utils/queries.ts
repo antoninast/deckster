@@ -37,7 +37,7 @@ export const COMPARE_SECURITY_ANSWERS = gql`
 // export const COMPARE_SECURITY_ANSWERS = gql`
 //   query compareSecurityAnswer($username: String!, $securityAnswer: String!) {
 //     security(username: $username, securityAnswer: $securityAnswer) {
-//       _id  
+//       _id
 //       username
 //       securityQuestion
 //       securityAnswer
@@ -160,6 +160,7 @@ export const QUERY_RECENT_STUDY_SESSIONS = gql`
       totalAttempts
       correctAttempts
       sessionAccuracy
+      deckTitle
       clientDuration
       status
       createdAt
