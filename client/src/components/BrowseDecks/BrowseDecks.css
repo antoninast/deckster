@@ -40,6 +40,7 @@
     border: none;
     border-radius: 16px;
     height: 40%;
+    padding: 0;
     width: 20%;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -47,7 +48,8 @@
 }
 
 .browse-page .decks-container .deck.card:hover {
-    transform: translateY(-1px) !important;
+    /* transform: translateY(-1px) !important; */
+    transform: scale(1.02) !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -73,11 +75,6 @@
     display: block;
 }
 
-/* Delete Button */
-.deck-delete-button-wrapper:hover svg {
-    fill: red;
-}
-
 /* Card Body */
 .deck-details {
     width: 100%;
@@ -88,21 +85,76 @@
     text-align: center;
 }
 
-.deck-details div.deck-stat {
-    display: block;
-    line-height: 2;
-    padding: 0.25rem;
+.deck-stat {
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  position: relative;
+  transform: rotate(-1deg);
+}
+
+.deck-stat:hover {
+  transform: rotate(0deg) scale(1.02);
 }
 
 .deck-stat-label {
-    font-weight: 600;
-    color: var(--text-primary);
+  font-weight: bold;
+  margin-right: 0.5rem;
+  color: #444;
 }
 
 .deck-stat-value {
+  color: #222;
+}
+
+/* 🎨 Individual Styles */
+.stat-category {
+  background-color: #fff8a3; /* yellow */
+  border: 1px solid #e6dc7a;
+}
+
+.stat-accuracy {
+  background-color: #d1f7c4; /* soft green */
+  border: 1px solid #9fdea2;
+}
+
+.stat-total {
+  background-color: #cce5ff; /* light blue */
+  border: 1px solid #a4c6e1;
+}
+
+.stat-proficiency {
+  background-color: #f7d6e0; /* pinkish */
+  border: 1px solid #e7a8b7;
+}
+
+.stat-visibility {
+  background-color: #fdf1c2; /* soft peach */
+  border: 1px solid #e6d093;
+}
+
+.stat-creator {
+  background-color: #e0e0e0; /* neutral gray */
+  border: 1px solid #b0b0b0;
+}
+
+/* .deck-details div.deck-stat {
+    display: block;
+    line-height: 2;
+    padding: 0.25rem;
+} */
+
+/* .deck-stat-label {
+    font-weight: 600;
+    color: var(--text-primary);
+} */
+
+/* .deck-stat-value {
     color: var(--text-secondary);
     margin-left: 0.25rem;
-}
+} */
 
 /* Proficiency Badges */
 .proficiency-badge {
@@ -150,8 +202,14 @@
     display: flex;
     gap: 0.5rem;
     margin-top: auto;
+    margin-right: 0.4em;
     justify-content: center;
     align-items: center;
+    flex-direction: row;
+}
+
+.action-buttons button {
+    margin-right: 0.4em;
 }
 
 .deck-action-btn {
@@ -348,7 +406,7 @@
     }
 
     .deck-stat-label {
-        width: 70px;
+        width: 80%;
     }
 
     .deck-action-btn {

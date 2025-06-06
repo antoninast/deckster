@@ -1,3 +1,7 @@
+.deck-delete-button-wrapper svg:hover {
+    stroke: red;
+}
+
 .deck-details div.deck-stat.visibility {
     display: flex;
     flex-direction: row;
@@ -7,6 +11,7 @@
 
 .deck-stat.visibility .dropdown {
     margin-left: 0.5rem;
+    width: 100%;
 }
 
 .dropdown-toggle.visibility {
@@ -16,6 +21,14 @@
     outline: none;
     box-shadow: none;
     transition: transform 0.2s linear;
+}
+
+.deck.card .dropdown-menu.show {
+    transform: translate3d(34.5px, 13px, 0px) !important;
+}
+
+.deck.card .dropdown-menu.show .dropdown-item {
+    font-size: 0.9rem;
 }
 
 .dropdown-toggle.visibility:focus,
@@ -29,9 +42,4 @@
 .dropdown-toggle.visibility:hover {
     color: var(--color-tan);
     transform: scale(1.1);
-}
-
-.visibility .dropdown-menu {
-    width: 6em;
-    height: 5em;
 }
