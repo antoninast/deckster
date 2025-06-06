@@ -1,5 +1,7 @@
-/* import card-front from "../../assets/Index_Card_Front.jpg";
-import card-back from "../../assets/Index_Card_Back.jpg"; */
+/* @import card-front from "../../assets/Index_Card_Front.jpg"; */
+/* @import card-back from "../../assets/Index_Card_Back.jpg"; */
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
 
 .flashcard-container {
   display: flex;
@@ -73,11 +75,17 @@ import card-back from "../../assets/Index_Card_Back.jpg"; */
   transform: rotateY(180deg);
 }
 
+.gap {
+  line-height: 30px;
+}
+
 .card-content {
   width: 100%;
   padding: 1.5rem;
-  background-color: rgba(255, 255, 255, 0.55);
+  /* background-color: rgba(255, 255, 255, 0.55); */
   border-radius: 8px;
+  margin-top: -15px;
+  font-family: 'Indie Flower', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .card-content h3 {
@@ -89,9 +97,15 @@ import card-back from "../../assets/Index_Card_Back.jpg"; */
 }
 
 .card-content p {
-  font-size: 1.3rem;
-  line-height: 1.5;
+  font-size: 1.8rem;
+  line-height: 2.2;
   color: #333;
+}
+
+.indie-flower-regular {
+  font-family: "Indie Flower", cursive;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .controls {
