@@ -5,19 +5,19 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-        "build": "npx tsc",
-        "start": "npm run build && node dist/server.js --ignore client",
-        "dev": "npx nodemon",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "seed": "node dist/seeds/seed.js"
-    },
-    "nodemonConfig": {
-        "watch": [
-            "src"
-        ],
-        "ext": "ts,json,js",
-        "exec": "npx tsc && node dist/server.js"
-    },
+    "build": "npx tsc",
+    "start": "npm run build && node dist/server.js --ignore client",
+    "dev": "npx nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node dist/seeds/seed.js"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts,json,js",
+    "exec": "npx tsc && node dist/server.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -28,7 +28,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "graphql": "^16.9.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.3"
   },
   "devDependencies": {

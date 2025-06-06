@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
-import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
+import { QUERY_FLASHCARDS_BY_DECK, QUERY_CARD_DECKS } from "../../utils/queries";
 import { REMOVE_FLASHCARD, UPDATE_FLASHCARD } from "../../utils/mutations";
 import type { Flashcard } from "../../interfaces/Flashcard";
 import "./ManageFlashcards.css";
@@ -29,6 +29,10 @@ export default function Flashcards() {
         onCompleted: () => {
             refetch();
         }
+    });
+
+    const decks = useQuery(QUERY_CARD_DECKS, {
+        fetchPolicy: "cache-and-network"
     });
 
     const removeFlashcard = async () => {
