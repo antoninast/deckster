@@ -50,14 +50,9 @@ export const signToken = (username: string, email: string, _id: unknown) => {
  * Hashes a password using bcrypt with salt rounds of 10
  * Used during user registration and password updates
  */
-export const hashPassword = async (password: string): Promise<string> => {
+export const hashInput = async (password: string): Promise<string> => {
   const saltRounds = 10;
   return await bcrypt.hash(password, saltRounds);
-};
-
-export const hashSecurityAnswer = async (securityAnswer: string): Promise<string> => {
-  const saltRounds = 10;
-  return await bcrypt.hash(securityAnswer, saltRounds);
 };
 
 /**
