@@ -1,9 +1,11 @@
 const typeDefs = `
+  # User authentication and profile types
   type Profile {
     _id: ID
-    username: String  # Changed from 'name'
+    username: String
     email: String
     password: String
+    securityQuestion: String
     studyAttempts: [StudyAttempt]
   }
 
@@ -13,13 +15,14 @@ const typeDefs = `
   }
 
   input ProfileInput {
-    username: String!  # Changed from 'name'
+    username: String!
     email: String!
     password: String!
     securityQuestion: String!
     securityAnswer: String!
   }
 
+  # Study tracking types
   type StudyAttempt {
     _id: ID
     userId: ID
@@ -27,7 +30,7 @@ const typeDefs = `
     deckId: ID
     isCorrect: Boolean
     timestamp: String
-    studySessionId: String
+    studySessionId: ID
   }
 
   type StudyAttemptStats {
@@ -37,14 +40,38 @@ const typeDefs = `
     proficiency: String!
   }
 
+  enum SessionStatus {
+    active
+    completed
+    abandoned
+  }
+
+  type StudySession {
+    _id: ID!
+    userId: ID!
+    deckId: ID!
+    startTime: String!
+    endTime: String
+    clientDuration: Int!
+    calculatedDuration: Int
+    totalAttempts: Int!
+    correctAttempts: Int!
+    status: SessionStatus!
+    sessionAccuracy: Float!
+    deckTitle: String
+    createdAt: String
+    updatedAt: String
+  }
+
+  # Core content types
   type CardDeck {
     _id: ID
     name: String
     lastReview: String
     image_url: String
     categoryName: String
-    userId: ID
-    flashcardIds: [ID]
+    userId: ID!
+    user: Profile
     numberOfCards: Int
     userStudyAttemptStats: StudyAttemptStats
     isPublic: Boolean
@@ -59,26 +86,12 @@ const typeDefs = `
     userStudyAttemptStats: StudyAttemptStats
   }
 
-  type SessionStats {
-  totalAttempts: Int!
-  correctAttempts: Int!
-  sessionAccuracy: Float!
-  }
-
-  type RecentSessionsStats {
-  studySessionId: String!
-  timestamp: String!
-  totalAttempts: Int!
-  correctAttempts: Int!
-  sessionAccuracy: Float!
-  }
-
+  # Input types
   input CardDeckInput {
     name: String!
     image_url: String
     categoryName: String
     userId: ID!
-    flashcardIds: [ID]
     isPublic: Boolean
   }
 
@@ -87,38 +100,63 @@ const typeDefs = `
     answer: String!
   }
 
+  # Queries
   type Query {
+    # User queries
     profiles: [Profile]!
-    profile(profileId: ID!): Profile
+    profile(profileId: ID, username: String): Profile
     me: Profile
-    
+    compareSecurityAnswers(username: String!, securityAnswer: String!): Boolean
+
+    # Deck queries
     cardDecks(isPublic: Boolean): [CardDeck]!
     cardDecksByUser(userId: ID!): [CardDeck]!
     myCardDecks: [CardDeck]!
     cardDeck(deckId: ID!): CardDeck
 
+    # Flashcard queries
     flashcards: [Flashcard]!
     flashcardsByDeck(deckId: ID!): [Flashcard]!
     flashcard(flashcardId: ID!): Flashcard
 
-    sessionStats(studySessionId: String!): SessionStats
-    recentSessionsStats(deckId: ID!, limit: Int): [RecentSessionsStats]!
+    # Study statistics queries
+    studySession(studySessionId: ID!): StudySession
+    myStudySessions: [StudySession]!
+    recentStudySessions(deckId: ID, limit: Int): [StudySession]
   }
 
+  # Mutations
   type Mutation {
+    # Authentication mutations
     addProfile(input: ProfileInput!): Auth
-    login(email: String!, password: String!): Auth
+    login(username: String!, password: String!): Auth
+    resetPassword(
+      username: String!
+      newPassword: String!
+      securityAnswer: String!
+    ): Boolean
 
+    # Deck management mutations
     addCardDeck(input: CardDeckInput!): CardDeck
     updateCardDeck(deckId: ID!, input: CardDeckInput!): CardDeck
     removeCardDeck(deckId: ID!): CardDeck
 
+    # Flashcard management mutations
     addFlashcard(input: FlashcardInput!): Flashcard
     updateFlashcard(flashcardId: ID!, input: FlashcardInput!): Flashcard
     removeFlashcard(flashcardId: ID!): Flashcard
-    reviewFlashcard(flashcardId: ID!, correct: Boolean!, studySessionId: String!): Flashcard
+    reviewFlashcard(flashcardId: ID!, correct: Boolean!, studySessionId: ID!): Flashcard
 
-    addMultipleFlashcards(flashcards: [FlashcardInput!]!): [Flashcard]
+    # Bulk operations
+    addMultipleFlashcards(deckId: ID!, flashcards: [FlashcardInput!]!): [Flashcard]
+
+    # Study session mutations
+    startStudySession(deckId: ID!): StudySession!
+    endStudySession(
+      sessionId: ID!
+      clientDuration: Int!
+      status: SessionStatus!
+    ): StudySession!
   }
 `;
 

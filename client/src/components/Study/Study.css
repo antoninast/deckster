@@ -117,3 +117,30 @@
 .end-session-btn:active {
   transform: translateY(0);
 }
+
+
+
+/* Jeopardy toggle slider */
+/* .jeopardy-toggle {
+
+}
+
+.jeopardy-toggle input {
+
+}
+
+.slider {
+
+}
+
+.slider:before {
+
+}
+
+.jeopardy-toggle input:checked + .slider {
+
+}
+
+.jeopardy-toggle input:checked + .slider:before {
+
+} */

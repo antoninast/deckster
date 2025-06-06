@@ -1,11 +1,11 @@
 {
   "name": "project3",
   "version": "1.0.0",
-  "description": "",
+  "description": "Flashcard study application",
   "main": "index.js",
   "scripts": {
     "start": "node server/dist/server.js",
-    "start:dev": "concurrently \"cd server && npm run watch\" \"wait-on tcp:3001 && cd client && npm run dev\"",
+    "start:dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3001 && npm run client:dev\"",
     "server": "cd server && npm start",
     "server:dev": "cd server && npm run dev",
     "install": "cd server && npm i && cd ../client && npm i",
@@ -14,38 +14,44 @@
     "seed": "cd server && npm run build && npm run seed",
     "build": "concurrently \"cd server && npm run build\" \"cd client && npm run build\"",
     "render-build": "npm install && npm run build",
-    "potato": "npm install && npm run build && npm run start:dev",
+    "dev": "npm install && npm run build && npm run start:dev",
     "test": "echo \"No tests specified\" && exit 0",
     "lint": "echo \"No linting specified\" && exit 0"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "flashcards",
+    "study",
+    "education",
+    "mern",
+    "graphql"
+  ],
+  "author": "Project 3 Team",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
+    "@apollo/client": "^3.8.10",
+    "@reduxjs/toolkit": "^2.8.2",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
-    "@types/multer": "^1.4.12",
     "@types/node": "^22.15.18",
     "apollo-server-express": "^3.13.0",
+    "bootstrap-icons": "^1.13.1",
+    "chart.js": "^4.4.9",
+    "concurrently": "^8.2.2",
     "express": "^4.21.2",
     "graphql": "^16.11.0",
     "graphql-upload": "^17.0.0",
     "mongodb": "^6.16.0",
-    "multer": "^1.4.5-lts.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3",
-    "wait-on": "^7.2.0"
-  },
-  "dependencies": {
-    "@reduxjs/toolkit": "^2.8.2",
-    "bootstrap-icons": "^1.13.1",
-    "chart.js": "^4.4.9",
-    "concurrently": "^8.2.2",
     "mongoose": "^8.15.1",
+    "multer": "^1.4.5-lts.2",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.2.0",
-    "uuid": "^11.1.0"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "wait-on": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/multer": "^1.4.12"
   }
 }

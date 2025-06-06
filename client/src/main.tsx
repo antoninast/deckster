@@ -8,6 +8,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 
 import App from "./App.jsx";
 import Home from "./components/HomePage/Home.js";
@@ -17,10 +18,14 @@ import Login from "./components/Login/Login.js";
 import Error from "./components/Error/Error.js";
 import BrowseDecks from "./components/BrowseDecks/BrowseDecks.js";
 import Study from "./components/Study/Study.js";
-import { store } from "./app/store";
 import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
+import ImportPage from "./pages/ImportPage.js";
+import ResetPassword from "./components/ResetPassword/ResetPassword.js";
+import { store } from "./app/store";
 import "./styles/variables.css";
+import "./styles/animations.css";
 
+// Apollo Client configuration
 const httpLink = createHttpLink({
   uri: "/graphql",
 });
@@ -35,6 +40,27 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+// Handle GraphQL errors (401, etc.)
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    for (let err of graphQLErrors) {
+      if (err.message === "Invalid or expired token") {
+        // Remove token and redirect
+        localStorage.removeItem("id_token");
+        localStorage.removeItem("userId");
+        window.location.href = "/login";
+      }
+    }
+  }
+
+  if (networkError) {
+    localStorage.removeItem("id_token");
+    localStorage.removeItem("userId");
+    window.location.href = "/login";
+  }
+});
+
+// Route configuration
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,7 +69,6 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        // path: '/home',
         element: <Home />,
       },
       {
@@ -74,16 +99,29 @@ const router = createBrowserRouter([
         path: "/browse-decks/:deckId",
         element: <ManageFlashcards />,
       },
+      {
+        path: "/import",
+        element: <ImportPage />,
+      },
+      {
+        path: "/deck/:deckId/import",
+        element: <ImportPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ResetPassword />,
+      }
+
     ],
   },
 ]);
 
 const client = new ApolloClient({
-  // Set up our client to execute the `authLink` middleware prior to making the request to our GraphQL API
-  link: authLink.concat(httpLink),
+  link: errorLink.concat(authLink.concat(httpLink)),
   cache: new InMemoryCache(),
 });
 
+// Application root
 const rootElement = document.getElementById("root");
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(

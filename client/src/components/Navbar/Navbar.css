@@ -1,19 +1,227 @@
+/* Base Navbar */
 .navbar {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    background-color: rgba(117, 165, 117, 0.517);
-    vertical-align: middle;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 60px;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-sage);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: none;
 }
 
-.navbar a {
-    margin-left: 2em;
+/* Container Layout */
+.navbar .container {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.navbar-collapse {
+    display: flex !important;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.navbar-links {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.navbar-links-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Logo */
+.navbar-brand {
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .brand-logo {
-    margin: 2em,2em,2em,2em;
-    font-size: 2em;
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.brand-logo:hover {
+    transform: scale(1.02);
+}
+
+/* Navigation Links */
+.nav-link-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.6rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
     text-decoration: none;
-    justify-content: left;
-    width: 200px;
+    white-space: nowrap;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav-link-with-icon:link,
+.nav-link-with-icon:visited,
+.nav-link-with-icon:hover,
+.nav-link-with-icon:active {
+    text-decoration: none !important;
+}
+
+.nav-icon {
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.logout-link {
+    cursor: pointer;
+}
+
+/* Responsive Breakpoints */
+
+/* Extra small screens (up to 396px) */
+@media (max-width: 396px) {
+    .navbar {
+        padding: 0.5rem 0.5rem;
+    }
+
+    .brand-logo {
+        height: 35px;
+    }
+
+    .navbar-links-container {
+        gap: 0.25rem;
+    }
+
+    .nav-link-with-icon {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 0.4rem;
+        border-radius: 50%;
+        justify-content: center;
+    }
+
+    .nav-link-with-icon span {
+        display: none;
+    }
+
+    .nav-icon {
+        font-size: 0.85rem;
+    }
+}
+
+/* Small screens (397px to 608px) */
+@media (min-width: 397px) and (max-width: 608px) {
+    .nav-link-with-icon {
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.6rem;
+        border-radius: 50%;
+    }
+
+    .nav-link-with-icon span {
+        display: none;
+    }
+
+    .nav-icon {
+        font-size: 1rem;
+    }
+}
+
+/* Medium screens (609px to 889px) */
+@media (min-width: 609px) and (max-width: 889px) {
+    .navbar-links-container {
+        gap: 0.4rem;
+    }
+
+    .nav-link-with-icon {
+        gap: 0.2rem;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .nav-icon {
+        font-size: 1rem;
+    }
+}
+
+/* Desktop (890px+) */
+@media (min-width: 890px) {
+    .navbar {
+        height: 70px;
+        padding: 0.5rem 2rem;
+    }
+
+    .brand-logo {
+        height: 50px;
+    }
+
+    .navbar-links-container {
+        gap: 1rem;
+    }
+
+    .nav-link-with-icon {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+
+    .nav-icon {
+        font-size: 1.1rem;
+    }
+}
+
+/* Interactive States */
+@media (hover: hover) {
+    .nav-link-with-icon {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-link-with-icon::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0);
+        transition: background 0.3s ease;
+        border-radius: 6px;
+    }
+
+    .nav-link-with-icon:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .logout-link:hover {
+        background-color: rgba(212, 163, 115, 0.2);
+        color: var(--color-tan);
+    }
+}
+
+.nav-link-with-icon:focus-visible {
+    outline: 2px solid var(--color-tan);
+    outline-offset: 2px;
+}
+
+.nav-link-with-icon:active {
+    transform: scale(0.98);
 }

@@ -1,13 +1,17 @@
 :root {
-  /* Primary Colors */
-  --color-sage: #ccd5ae;
+  /* Primary Colors - Updated for better contrast */
+  --color-sage: #d4e4bc;
+  /* Slightly darker sage */
   --color-beige: #edeae879;
   --color-cream: #e9edc9;
   --color-vanilla: #fefae0;
   --color-peach: #faedcd;
-  --color-tan: #ead5ae80;
-  --black-text: #100f0f;
-  --gray-text: #555050;
+  --color-tan: #b8860b;
+  /* Much darker gold/tan for better contrast */
+  --black-text: #1a1a1a;
+  /* Slightly softer than pure black */
+  --gray-text: #4a4a4a;
+  /* Darker gray for better readability */
 
   /* Semantic Variables */
   --color-primary: var(--color-sage);
@@ -21,10 +25,20 @@
   --card-bg: var(--color-vanilla);
   --button-primary: var(--color-tan);
   --button-secondary: var(--color-cream);
-  --text-dark: #333333;
+  --text-dark: #2d3436;
+  --text-secondary: #636e72;
   --text-light: #ffffff;
 
   /* Layout dimensions */
-  --header-height: 64px; /* Adjust this to match your actual header height */
-  --footer-height: 64px; /* Adjust this to match your actual footer height */
+  --header-height: 64px;
+  --footer-height: 64px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* Border colors */
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-color-dark: rgba(0, 0, 0, 0.12);
 }

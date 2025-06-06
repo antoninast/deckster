@@ -1,17 +1,20 @@
-import { Profile, SecurityQuestion } from "../models/index.js";
+import { CardDeck, Flashcard, Profile, SecurityQuestion } from "../models/index.js";
 
 const cleanDB = async (): Promise<void> => {
   try {
-    // Drop the entire collection (removes indexes too)
-    await Profile.collection.drop().catch(() => {
-      console.log("Profile collection does not exist, creating new one.");
-    });
-
-    await SecurityQuestion.deleteMany({});
-    console.log("Collections cleaned.");
+    const collections = [Profile, CardDeck, Flashcard, SecurityQuestion];
     
+    for (const model of collections) {
+      try {
+        await model.collection.drop();
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    console.log("All collections dropped.");
   } catch (err) {
-    console.error("Error cleaning collections:", err);
+    console.error("Error dropping collections:", err);
     process.exit(1);
   }
 };

@@ -2,19 +2,18 @@ import { Schema, model, Document, Types } from "mongoose";
 
 export interface IFlashcard extends Document {
   _id: Types.ObjectId;
-  question: string; // front of the flashcard
-  answer: string; // back of the flashcard
-  image_url: string;
-  deckId: Types.ObjectId; // flashcard can only belong ton one deck
+  question: string;
+  answer: string;
+  image_url: string | null;
+  deckId: Types.ObjectId;
 }
 
+/**
+ * Flashcard model represents a single study flashcard
+ * Each flashcard belongs to a specific deck and contains a question/answer pair
+ */
 const flashcardSchema = new Schema<IFlashcard>(
   {
-    _id: {
-      type: Schema.Types.ObjectId,
-      ref: "",
-      required: true,
-    },
     question: {
       type: String,
       required: true,

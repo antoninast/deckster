@@ -2,31 +2,43 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FaBookOpen, FaPlus } from "react-icons/fa";
 import { QUERY_MY_DECKS, QUERY_CARD_DECKS } from "../../utils/queries";
-import { CardDeck } from "../../interfaces/CardDeck";
 import { REMOVE_CARDDECK } from "../../utils/mutations";
+import { CardDeck } from "../../interfaces/CardDeck";
 import "./BrowseDecks.css";
+import IndividualDeck from "../IndividualDeck/IndividualDeck";
 
 const BrowseDecks = () => {
   const navigate = useNavigate();
-  const user = useSelector((state: any) => {
-    return state.user.value;
-  });
+  const user = useSelector((state: any) => state.user.value);
 
   const [openModal, setOpenModal] = useState(false);
-  const [deckIdToRemove, setDeckIdToRemove] = useState('');
+  const [deckIdToRemove, setDeckIdToRemove] = useState("");
 
-  const { loading, data, refetch } = useQuery(
-    !user ? QUERY_CARD_DECKS : QUERY_MY_DECKS,
-    !user ? { variables: { isPublic: true } } : {}
+  const { loading, data: personalDecks, refetch: refetchPersonalDecks } = useQuery(QUERY_MY_DECKS,
+    {
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
+    }
   );
 
-  const decks = !user ? data?.cardDecks || [] : data?.myCardDecks || [];
+  const { data: publicDecks, refetch: refetchPublicDecks } = useQuery(QUERY_CARD_DECKS,
+    {
+      variables: { isPublic: true },
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
+    }
+  );
+
+  const personalDecksArr = personalDecks?.myCardDecks || [];
+  const publicDecksArr = publicDecks?.cardDecks.filter((deck: CardDeck) => deck.user?._id !== user?._id) || [];
 
   const [removeCardDeckMutation] = useMutation(REMOVE_CARDDECK, {
     onCompleted: () => {
-      refetch();
-    }
+      refetchPersonalDecks();
+      refetchPublicDecks();
+    },
   });
 
   const removeDeck = async () => {
@@ -35,15 +47,17 @@ const BrowseDecks = () => {
         variables: { deckId: deckIdToRemove },
       });
       setOpenModal(false);
-    } catch (error) {
-      throw new Error(`Failed to remove the deck, ${error}`);
+    } catch (error: any) {
+      setOpenModal(false);
+      console.error(error.message);
+      alert(error);
     }
-  }
+  };
 
   const cancelRemoveDeck = () => {
-    setDeckIdToRemove('');
+    setDeckIdToRemove("");
     setOpenModal(false);
-  }
+  };
 
   const handleRemoveCardDeck = async (deckId: string) => {
     setDeckIdToRemove(deckId);
@@ -58,63 +72,121 @@ const BrowseDecks = () => {
     navigate(`/study-deck/${deckId}`);
   };
 
-  if (loading) {
-    return <div>Loading available decks...</div>;
-  }
+  const handleImportFlashcard = (deckId: string) => {
+    navigate(`/deck/${deckId}/import`)
+  };
 
-  if (!decks.length) {
-    return <div>You don't have decks.</div>;
+  const getProficiencyClass = (proficiency: string | undefined) => {
+    if (!proficiency || proficiency === "No Data") return "";
+    return proficiency.toLowerCase();
+  };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div>Loading available decks...</div>
+      </div>
+    );
   }
 
   return (
     <div className="browse-page">
-      <div className={openModal ? "modal show" : "modal hide"}>
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-body">
-              Do you want to permanently delete this card deck and the associated flashcards?
-            </div>
-            <div className="modal-footer">
-              <button onClick={cancelRemoveDeck} type="button" className="btn btn-secondary btn-sm">Cancel</button>
-              <button onClick={removeDeck} type="button" className="btn btn-danger btn-sm">Delete</button>
+      {openModal && (
+        <div className="modal show">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-body">
+                <h3 style={{ marginBottom: "1rem" }}>Delete Deck?</h3>
+                <p>
+                  This will permanently delete this deck and all associated
+                  flashcards. This action cannot be undone.
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  onClick={cancelRemoveDeck}
+                  type="button"
+                  className="modal-btn btn-cancel"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={removeDeck}
+                  type="button"
+                  className="modal-btn btn-danger"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <h2>Browse decks</h2>
-      <div className="decks-container">
-        {decks.map((deck: CardDeck) =>
-          <div key={deck._id} className="deck card">
-            <div className="deck-details">
-              <div className="delete-button-wrapper" onClick={() => handleRemoveCardDeck(deck._id)}>
-                <svg xmlns="http://www.w3.org/2000/svg"
-                  width="17" height="17" fill="gray" className="bi bi-x-square delete-icon" viewBox="0 0 16 16">
-                  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-                </svg>
+      )}
+
+      {user ?
+        <div className="personal-decks">
+          <h2>My Decks</h2>
+          <div className="decks-container">
+            {!personalDecksArr.length ?
+              <div className="browse-page">
+                <div className="empty-state">
+                  <div className="empty-state-content">
+                    <div className="empty-state-icon">
+                      <FaBookOpen />
+                    </div>
+                    <h3>No Decks Available</h3>
+                    <p>
+                      {user ? (
+                        <>
+                          You haven't created any decks yet.
+                          <br />
+                          Start building your knowledge! 🌱
+                        </>
+                      ) : (
+                        "Sign in to create your own decks or browse public decks."
+                      )}
+                    </p>
+                    {user && (
+                      <button
+                        className="empty-state-btn"
+                        onClick={() => navigate("/import")}
+                      >
+                        <FaPlus className="btn-icon" />
+                        Create Your First Deck
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-              <p><b>Name:</b> {deck.name}</p>
-              <p><b>Category:</b> {deck.categoryName}</p>
-              <p>
-                <b>Accuracy:</b> {deck.userStudyAttemptStats?.attemptAccuracy?.toFixed(1)}%
-              </p>
-              <p>
-                <b>Proficiency:</b> {deck.userStudyAttemptStats?.proficiency || "No Data"}
-              </p>
-            </div>
-            {/* <img src={deck.image_url} alt={deck.name}></img> */}
-            <div className="action-buttons">
-              <button
-                onClick={() => handleManageDeck(deck._id)}
-                type="button" className="btn btn-outline-warning btn-sm"
-              >⚙️ Manage</button>
-              <button
-                onClick={() => handleStudyDeck(deck._id)}
-                type="button" className="btn btn-outline-success btn-sm"
-              >📗 Study</button>
-            </div>
+              : personalDecks.myCardDecks.map((deck: CardDeck) => (
+                <IndividualDeck
+                  deck={deck}
+                  user={user}
+                  handleRemoveCardDeck={handleRemoveCardDeck}
+                  handleManageDeck={handleManageDeck}
+                  handleStudyDeck={handleStudyDeck}
+                  handleImportFlashcard={handleImportFlashcard}
+                  getProficiencyClass={getProficiencyClass}
+                />
+            ))}
           </div>
-        )}
+        </div> : null
+      }
+      <div className="public-decks">
+        <h2>Public Decks</h2>
+        <div className="decks-container">
+          {publicDecksArr.map((deck: CardDeck) => (
+            <IndividualDeck
+              deck={deck}
+              user={user}
+              handleRemoveCardDeck={handleRemoveCardDeck}
+              handleManageDeck={handleManageDeck}
+              handleStudyDeck={handleStudyDeck}
+              handleImportFlashcard={handleImportFlashcard}
+              getProficiencyClass={getProficiencyClass}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

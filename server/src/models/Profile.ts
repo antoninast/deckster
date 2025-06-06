@@ -11,9 +11,9 @@ export interface IProfile extends Document {
   fullName?: string;
   profilePicture?: string;
   lastLogin?: Date;
-  securityQuestion?: string;
-  securityAnswer?: string;
-  isCorrectPassword(password: string): Promise<boolean>;
+  securityQuestion: string;
+  securityAnswer: string;
+  isCorrectPassword(password: string): Promise<boolean>; //This is a "shallow abstraction" that we should have just put directly on the resolver
   studyAttempts: IStudyAttempt[];
   createdAt: Date;
   updatedAt: Date;
@@ -43,9 +43,11 @@ const profileSchema = new Schema<IProfile>(
     },
     securityQuestion: {
       type: String,
+      required: true,
     },
     securityAnswer: {
       type: String,
+      required: true,
     },
   },
   {
@@ -61,6 +63,11 @@ profileSchema.pre<IProfile>("save", async function (next) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
+  // Hash the security answer if it is modified or new
+  if (this.isNew || this.isModified("securityAnswer")) {
+    const saltRounds = 10;
+    this.securityAnswer = await bcrypt.hash(this.securityAnswer, saltRounds);
+  }
   next();
 });
 
@@ -74,3 +81,4 @@ profileSchema.methods.isCorrectPassword = async function (
 const Profile = model<IProfile>("Profile", profileSchema);
 
 export default Profile;
+

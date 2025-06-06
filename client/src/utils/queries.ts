@@ -18,6 +18,33 @@ export const QUERY_SINGLE_PROFILE = gql`
   }
 `;
 
+export const QUERY_SINGLE_PROFILE_BY_USERNAME = gql`
+  query singleProfile($username: String!) {
+    profile(username: $username) {
+      _id
+      username
+      securityQuestion
+    }
+  }
+`;
+
+export const COMPARE_SECURITY_ANSWERS = gql`
+  query compareSecurityAnswers($username: String!, $securityAnswer: String!) {
+    compareSecurityAnswers(username: $username, securityAnswer: $securityAnswer)
+  }
+`;
+
+// export const COMPARE_SECURITY_ANSWERS = gql`
+//   query compareSecurityAnswer($username: String!, $securityAnswer: String!) {
+//     security(username: $username, securityAnswer: $securityAnswer) {
+//       _id
+//       username
+//       securityQuestion
+//       securityAnswer
+//     }
+//   }
+// `;
+
 export const QUERY_ME = gql`
   query me {
     me {
@@ -45,23 +72,32 @@ export const QUERY_MY_DECKS = gql`
       name
       categoryName
       image_url
-      isPublic
+      numberOfCards
+      user {
+        _id
+        username
+      }
       userStudyAttemptStats {
         attemptAccuracy
         proficiency
       }
+      isPublic
     }
   }
 `;
 
 export const QUERY_CARD_DECKS = gql`
-  query GetCardDecks($isPublic: Boolean!) {
+  query cardDecks($isPublic: Boolean!) {
     cardDecks(isPublic: $isPublic) {
       _id
       name
       categoryName
       image_url
       isPublic
+      user {
+        _id
+        username
+      }
       userStudyAttemptStats {
         attemptAccuracy
         proficiency
@@ -71,7 +107,7 @@ export const QUERY_CARD_DECKS = gql`
 `;
 
 export const QUERY_FLASHCARDS_BY_DECK = gql`
-  query FlashcardsByDeck($deckId: ID!) {
+  query flashcardsByDeck($deckId: ID!) {
     flashcardsByDeck(deckId: $deckId) {
       _id
       question
@@ -81,24 +117,54 @@ export const QUERY_FLASHCARDS_BY_DECK = gql`
   }
 `;
 
-export const GET_SESSION_STATS = gql`
-  query GetSessionStats($studySessionId: String!) {
-    sessionStats(studySessionId: $studySessionId) {
+export const QUERY_STUDY_SESSION = gql`
+  query studySession($studySessionId: ID!) {
+    studySession(studySessionId: $studySessionId) {
+      _id
+      startTime
       totalAttempts
       correctAttempts
       sessionAccuracy
+      clientDuration
+      status
     }
   }
 `;
 
-export const GET_RECENT_SESSION_STATS = gql`
-  query GetRecentSessionsStats($deckId: ID!, $limit: Int) {
-    recentSessionsStats(deckId: $deckId, limit: $limit) {
-      studySessionId
-      timestamp
+export const QUERY_MY_STUDY_SESSIONS = gql`
+  query myStudySessions {
+    myStudySessions {
+      _id
+      userId
+      deckId
+      startTime
+      endTime
+      clientDuration
+      calculatedDuration
+      totalAttempts
+      correctAttempts
+      status
+      sessionAccuracy
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const QUERY_RECENT_STUDY_SESSIONS = gql`
+  query recentStudySessions($deckId: ID, $limit: Int) {
+    recentStudySessions(deckId: $deckId, limit: $limit) {
+      _id
+      startTime
+      endTime
       totalAttempts
       correctAttempts
       sessionAccuracy
+      deckTitle
+      clientDuration
+      status
+      createdAt
+      updatedAt
     }
   }
 `;

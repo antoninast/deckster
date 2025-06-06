@@ -1,3 +1,15 @@
+.search-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 2em auto 2em auto;
+}
+
+.search-bar input {
+    width: 70%;
+}
+
 .flashcards-container {
     display: flex;
     flex-direction: row;
@@ -14,15 +26,23 @@
     justify-content: center;
     background-color: var(--color-beige);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
 }
 
 .card:hover {
-    transform: scale(1.05);
+    box-shadow: 0 0px 12px 1px var(--color-sage);
 }
 
-.delete-button-wrapper svg {
+.flashcard-delete-button-wrapper {
     margin: 0.1em 0.5em 0 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5em;
+    margin: 0;
+}
+
+.flashcard-delete-button-wrapper:hover svg {
+    fill: red;
 }
 
 .view-mode,
@@ -41,6 +61,23 @@
 
 .card-answer {
     color: var(--gray-text);
+    max-height: 6em;
+    overflow-y: auto;
+}
+
+.card-answer::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.card-answer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.card-answer::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
 }
 
 .edit-mode textarea {
@@ -51,6 +88,29 @@
     background-color: var(--tea-green-lighter);
     width: 90%;
     color: var(--black-text);
+}
+
+.edit-mode textarea:focus {
+    background-color: var(--tea-green-lighter);
+    box-shadow: none;
+}
+
+.edit-mode textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.edit-mode textarea::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.edit-mode textarea::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.edit-mode textarea::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
 }
 
 .view-mode p {
@@ -76,14 +136,9 @@ hr {
 }
 
 .modal.show {
-    display: block;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal.hide {
     display: none;
-}
-
-.modal-dialog {
-    margin: 20em;
 }

@@ -8,7 +8,7 @@ export interface IStudyAttempt extends Document {
   timestamp: Date;
   // adding this in case we want to track eprformance over time
   // client side can generate a Universal unique identifier for each study session
-  studySessionId: string | null;
+  studySessionId: Types.ObjectId;
   createdAt: Date;
   // updatedAt probably wont be needed
   updatedAt: Date;
@@ -40,10 +40,9 @@ const studyAttemptSchema = new Schema<IStudyAttempt>(
       default: Date.now,
     },
     studySessionId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "StudySession",
-      default: null,
-      required: false,
+      required: true,
     },
   },
   {
