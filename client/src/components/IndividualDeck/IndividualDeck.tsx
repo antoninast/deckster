@@ -1,5 +1,7 @@
-import { FaCog, FaBookOpen, FaFileImport } from "react-icons/fa";
+import { FaCog, FaBookOpen, FaFileImport, FaLock } from "react-icons/fa";
+import { MdPublic } from "react-icons/md";
 import { CardDeck } from "../../interfaces/CardDeck";
+import "./IndividualDeck.css";
 
 interface Props {
     deck: CardDeck;
@@ -9,6 +11,7 @@ interface Props {
     handleStudyDeck: (id: string) => void;
     handleImportFlashcard: (id: string) => void;
     getProficiencyClass: (proficiency: string | undefined) => void;
+    handleVisibility: (id: string, isPublic: boolean) => void;
 }
 
 const IndividualDeck = ({
@@ -18,7 +21,8 @@ const IndividualDeck = ({
     handleManageDeck,
     handleStudyDeck,
     handleImportFlashcard,
-    getProficiencyClass
+    getProficiencyClass,
+    handleVisibility,
 }: Props) => {
     return (
         <div className="deck card">
@@ -65,9 +69,20 @@ const IndividualDeck = ({
                 {deck.userStudyAttemptStats?.proficiency || "No Data"}
               </span>
             </p>
-            <p className="deck-stat">
+            <p className="deck-stat visibility">
               <span className="deck-stat-label">Visibility:</span>
-              <span className="deck-stat-value">{deck.isPublic ? 'Public' : 'Only you'}</span>
+              <div className="dropdown">
+                {deck.isPublic ? <MdPublic /> : <FaLock />}
+                {user._id === deck.user._id ?
+                  <>
+                    <button className="btn dropdown-toggle visibility" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                    <ul className="dropdown-menu">
+                      <li onClick={() => handleVisibility(deck._id, false)} id="only-me"><a className="dropdown-item" href="#">Only me</a></li>
+                      <li onClick={() => handleVisibility(deck._id, true)} id="public"><a className="dropdown-item" href="#">Public</a></li>
+                    </ul>
+                  </> : null
+                }
+              </div>
             </p>
             {deck?.user?.username ?
               <p className="deck-stat">

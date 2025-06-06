@@ -319,7 +319,11 @@ const resolvers = {
           "You must be logged in to perform this action"
         );
       }
-      return await CardDeck.findByIdAndUpdate(deckId, input, {
+
+      const objectId = new ObjectId(deckId);
+      const userId = new ObjectId(input.userId);
+      input.userId = userId;
+      return await CardDeck.findByIdAndUpdate(objectId, input, {
         new: true,
         runValidators: true,
       });
