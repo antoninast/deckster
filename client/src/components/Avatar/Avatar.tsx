@@ -2,26 +2,17 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
-import {
-  FaUserCircle,
-  FaTrophy,
-  FaChartLine,
-  FaClock,
-  FaLayerGroup,
-  FaGraduationCap,
-  FaEdit,
-  // FaCog,
-  // FaSignOutAlt,
-} from "react-icons/fa";
+
 import {
   QUERY_SINGLE_PROFILE,
   QUERY_ME,
   QUERY_MY_DECKS,
   QUERY_MY_STUDY_SESSIONS,
   QUERY_RECENT_STUDY_SESSIONS,
+
 } from "../../utils/queries";
+import "./Avatar.css";
 import auth from "../../utils/auth";
-import "./Profile.css";
 import { CardDeck } from "../../interfaces/CardDeck";
 
 const Profile = () => {
@@ -132,7 +123,7 @@ const Profile = () => {
             {isOwnProfile && (
               <button className="edit-avatar-btn">
                 <Link to="/me">
-                  <FaEdit /> <Link to="/profile/avatars">Edit</Link>
+                  <FaEdit /> Edit
                 </Link>
               </button>
             )}
@@ -146,83 +137,9 @@ const Profile = () => {
             </p>
           </div>
 
-          {/* {isOwnProfile && (
-            <div className="profile-actions">
-              <button
-                className="profile-action-btn"
-                onClick={() => navigate("/settings")}
-              >
-                <FaCog /> Settings
-              </button>
-              <button
-                className="profile-action-btn logout-btn"
-                onClick={() => auth.logout()}
-              >
-                <FaSignOutAlt /> Logout
-              </button>
-            </div>
-          )} */}
         </div>
       </div>
 
-      {/* Stats Overview */}
-      <div className="profile-stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon">
-            <FaLayerGroup />
-          </div>
-          <div className="stat-content">
-            <h3>{stats.totalDecks}</h3>
-            <p>Total Decks</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon">
-            <FaGraduationCap />
-          </div>
-          <div className="stat-content">
-            <h3>{stats.totalCards}</h3>
-            <p>Total Cards</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon">
-            <FaChartLine />
-          </div>
-          <div className="stat-content">
-            <h3>{stats.averageAccuracy}%</h3>
-            <p>Average Accuracy</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon">
-            <FaClock />
-          </div>
-          <div className="stat-content">
-            <h3>{stats.totalStudyTime}</h3>
-            <p>Total Study Time</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Achievements Section */}
-      <div className="achievements-section">
-        <h2 className="section-title">
-          <FaTrophy /> Achievements
-        </h2>
-        <div className="achievements-grid">
-          {achievements.map((achievement, index) => (
-            <div key={index} className="achievement-card">
-              <span className="achievement-icon">{achievement.icon}</span>
-              <h4>{achievement.title}</h4>
-              <p>{achievement.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Tabs Section */}
       <div className="profile-tabs">

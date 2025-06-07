@@ -19,7 +19,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 
 import "./Navbar.css";
-import logo from "../../../../assets/deckster-logo-concept.png";
+import logo from "../../assets/deckster-logo.png";
 
 const AppNavbar = () => {
   // Fixed: Component name should be capitalized
