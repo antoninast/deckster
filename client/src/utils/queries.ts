@@ -93,6 +93,7 @@ export const QUERY_CARD_DECKS = gql`
       name
       categoryName
       image_url
+      numberOfCards
       isPublic
       user {
         _id
