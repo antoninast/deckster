@@ -1,11 +1,12 @@
 import "./Flashcard.css";
 
-
 interface FlashcardProps {
   question: string;
   answer: string;
   isFlipped: boolean;
   onFlip: () => void;
+  currentCard: number;
+  totalCards: number;
 }
 
 export default function Flashcard({
@@ -13,6 +14,8 @@ export default function Flashcard({
   answer,
   isFlipped,
   onFlip,
+  currentCard,
+  totalCards,
 }: FlashcardProps) {
   return (
     <div className="flashcard-container">
@@ -24,15 +27,18 @@ export default function Flashcard({
         <div className="flashcard-inner">
           <div className="flashcard-front">
             <div className="card-content indie-flower-regular">
-              {/* <h3>Question</h3> */}
-              {/* <div className="gap">123</div> */}
               <p>{question}</p>
+              <div className="card-counter">
+                {currentCard} of {totalCards}
+              </div>
             </div>
           </div>
           <div className="flashcard-back">
             <div className="card-content indie-flower-regular">
-              {/* <h3>Answer</h3> */}
               <p>{answer}</p>
+              <div className="card-counter">
+                {currentCard} of {totalCards}
+              </div>
             </div>
           </div>
         </div>
