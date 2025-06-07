@@ -113,6 +113,12 @@ export const QUERY_FLASHCARDS_BY_DECK = gql`
       question
       answer
       image_url
+      userStudyAttemptStats {
+        totalAttempts
+        correctAttempts
+        attemptAccuracy
+        proficiency
+      }
     }
   }
 `;

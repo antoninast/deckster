@@ -15,6 +15,7 @@ export default function Flashcards() {
   const { deckId } = useParams();
   const [editMode, setEditMode] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [flashcardIdToRemove, setFlashcardIdToRemove] = useState("");
   const [updatedFlashcard, setUpdatedFlashcard] = useState({
     question: "",
@@ -94,18 +95,23 @@ export default function Flashcards() {
       setUpdatedFlashcard({ question, answer });
       setEditMode(true);
     } else {
-      try {
-        await updateFlashcard({
-          variables: {
-            flashcardId,
-            input: updatedFlashcard,
-          },
-        });
-        setCurrentlyEditedCardId("");
-        setUpdatedFlashcard({ question: "", answer: "" });
-        setEditMode(false);
-      } catch (error) {
-        throw new Error(`Failed to remove the deck, ${error}`);
+      if (!updatedFlashcard.question || !updatedFlashcard.answer) {
+        alert(`${updatedFlashcard.question ? 'answer' : 'question'} cannot be empty`);
+      } else {
+        try {
+          await updateFlashcard({
+            variables: {
+              flashcardId,
+              input: updatedFlashcard,
+            },
+          });
+          setCurrentlyEditedCardId("");
+          setUpdatedFlashcard({ question: "", answer: "" });
+          setEditMode(false);
+        } catch (error) {
+          alert('Failed to update the deck')
+          throw new Error(`Failed to update the deck, ${error}`);
+        }
       }
     }
   };
@@ -191,8 +197,21 @@ export default function Flashcards() {
           onChange={handleSearch}
           type="text"
           className="form-control"
-          placeholder="Search by keyword"
+          placeholder="Search by keyword..."
         />
+      </div>
+      <div className="flashcard-toggle">
+        <label className="toggle-label" htmlFor="showStatsToggle">
+          <input
+            type="checkbox"
+            id="showStatsToggle"
+            className="hidden-checkbox"
+            checked={showStats}
+            onChange={(e) => setShowStats(e.target.checked)}
+          />
+          <span className="styled-toggle"></span>
+          Show stats
+        </label>
       </div>
       <div className="flashcards-container">
         {flashcardList.map((flashcard: Flashcard) => (
@@ -221,6 +240,22 @@ export default function Flashcards() {
                 <p className="card-question">{flashcard.question}</p>
                 <hr></hr>
                 <p className="card-answer">{flashcard.answer}</p>
+                {flashcard.userStudyAttemptStats && showStats && (
+                  <div className="flashcard-stats">
+                    <div className="deck-stat stat-total">
+                      <span className="deck-stat-label">Attempts:</span>
+                      <span className="deck-stat-value">
+                        {flashcard.userStudyAttemptStats.totalAttempts}
+                      </span>
+                    </div>
+                    <div className="deck-stat stat-accuracy">
+                      <span className="deck-stat-label">Correct:</span>
+                      <span className="deck-stat-value">
+                        {flashcard.userStudyAttemptStats.correctAttempts}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             <div
