@@ -158,7 +158,7 @@ export default function Flashcards() {
 
   // Update the h2 element to safely access deck.name
   return (
-    <div>
+    <div className="manage-flashcards">
       <div className={openModal ? "modal show" : "modal hide"}>
         <div className="modal-dialog">
           <div className="modal-content">
@@ -185,7 +185,7 @@ export default function Flashcards() {
           </div>
         </div>
       </div>
-      <h2>{deck?.name || "Unknown Deck"}</h2>
+      <h2>{deck?.name || "Deck not found"}</h2>
       <div className="search-bar">
         <input
           onChange={handleSearch}
