@@ -20,8 +20,13 @@ const seedDatabase = async (): Promise<void> => {
         ...user,
         username: user.username.toLowerCase(),
         email: user.email.toLowerCase(),
+        fullName: user.fullName.trim(),
         password: await hashInput(user.password),
+        securityQuestion: user.securityQuestion,
         securityAnswer: await hashInput(user.securityAnswer),
+        //TODO Creation date should be set to current date
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }))
     );
 

@@ -10,6 +10,7 @@ import {
   FaLayerGroup,
   FaGraduationCap,
   FaEdit,
+  FaSave,
   // FaCog,
   // FaSignOutAlt,
 } from "react-icons/fa";
@@ -245,6 +246,12 @@ const Profile = () => {
           >
             Progress
           </button>
+          <button
+            className={`tab-btn ${activeTab === "account" ? "active" : ""}`}
+            onClick={() => setActiveTab("account")}
+          >
+            Account Settings
+          </button>
         </div>
 
         <div className="tabs-content">
@@ -309,6 +316,62 @@ const Profile = () => {
               <div className="progress-chart">
                 <p>Progress visualization coming soon...</p>
               </div>
+            </div>
+          )}
+
+          {activeTab === "account" && (
+            <div className="tab-panel">
+              <h3>My Account</h3>
+              <div className="account-settings">
+                <p>You can make changes to your account in the fields below</p>
+              </div>
+              <div className="account-info">
+                <div className="account-field">
+                  <label htmlFor="fullName">Name:</label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    value={profile.fullName}
+                    readOnly
+                  />
+                </div>
+                <div className="account-field">
+                  <label htmlFor="username">Username:</label>
+                  <input
+                    type="text"
+                    id="username"
+                    value={profile.username}
+                    readOnly
+                  />
+                </div>
+                <div className="account-field">
+                  <label htmlFor="email">Email:</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={profile.email}
+                    readOnly
+                  />
+                </div>
+                <div className="account-field">
+                  <label htmlFor="email">Password:</label>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    value=""
+                    readOnly
+                  />
+                </div>
+
+              </div>
+              <div className="action-buttons">
+                  <button
+                    className="action-btn primary"
+                    onClick={() => navigate("/browse-decks")}
+                  >
+                    <FaSave /> Save Changes
+                  </button>
+                </div>
             </div>
           )}
         </div>

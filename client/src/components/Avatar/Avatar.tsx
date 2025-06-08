@@ -15,34 +15,15 @@ import "./Avatar.css";
 import auth from "../../utils/auth";
 import { CardDeck } from "../../interfaces/CardDeck";
 
-const Profile = () => {
+const Avatars = () => {
   const { profileId } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [avatarSelection, setAvatarSelection] = useState("");
 
   const { loading, data } = useQuery(
     profileId ? QUERY_SINGLE_PROFILE : QUERY_ME,
     { variables: { profileId: profileId } }
   );
-
-  const { data: myDecksData } = useQuery(QUERY_MY_DECKS);
-  const myDecks = myDecksData?.myCardDecks || [];
-
-  const { data: myStudySessionsData } = useQuery(QUERY_MY_STUDY_SESSIONS, {
-    fetchPolicy: "cache-and-network",
-  });
-  const myStudySessions = myStudySessionsData?.myStudySessions || [];
-
-  const { data: recentStudySessionsData } = useQuery(
-    QUERY_RECENT_STUDY_SESSIONS,
-    {
-      variables: { limit: 5 },
-      fetchPolicy: "cache-and-network",
-    }
-  );
-  const recentStudySessions =
-    recentStudySessionsData?.recentStudySessions || [];
-  console.log("recentStudySessions", recentStudySessions);
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
@@ -50,7 +31,7 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="profile-loading">
-        <div className="loading-spinner">Loading profile...</div>
+        <div className="loading-spinner">Loading Avatars...</div>
       </div>
     );
   }
@@ -59,57 +40,14 @@ const Profile = () => {
     return (
       <div className="profile-error">
         <h3>Profile Not Found</h3>
-        <p>You need to be logged in to see your profile page.</p>
+        <p>You need to be logged in to see the Avatars...dems the rules.</p>
         <button className="btn-primary" onClick={() => navigate("/login")}>
           Sign In
         </button>
       </div>
     );
   }
-  console.log("mystudySessions", myStudySessions);
-  // Profile statistics
-  const stats = {
-    totalDecks: myDecks.length,
-    totalCards: myDecks.reduce(
-      (total: number, deck: CardDeck) => total + (deck.numberOfCards || 0),
-      0
-    ),
-    // studySessions: 45,
-    averageAccuracy:
-      Math.round(
-        myDecks.reduce(
-          (total: number, deck: CardDeck) =>
-            total + (deck.userStudyAttemptStats?.attemptAccuracy || 0),
-          0
-        ) / (myDecks.length || 1)
-      ) || 0,
-    currentStreak: 7,
-    totalStudyTime: (() => {
-      const totalSeconds = myStudySessions.reduce(
-        (total: number, session: any) => total + (session.clientDuration || 0),
-        0
-      );
-      console.log("totalSeconds", totalSeconds);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const days = Math.floor(hours / 24);
 
-      if (days < 1 && hours < 1) {
-        return `${minutes}m`;
-      } else if (days < 1 && hours >= 1) {
-        return `${hours}h ${minutes}m`;
-      }
-      return `${days}d ${hours}h ${minutes}m`;
-    })(),
-  };
-
-  // User achievements
-  const achievements = [
-    { icon: "🔥", title: "On Fire", description: "7 day streak" },
-    { icon: "🎯", title: "Sharp Shooter", description: "90%+ accuracy" },
-    { icon: "📚", title: "Bookworm", description: "200+ cards studied" },
-    { icon: "⚡", title: "Speed Learner", description: "5 decks mastered" },
-  ];
 
   return (
     <div className="profile-page">
@@ -234,4 +172,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Avatars;

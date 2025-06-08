@@ -14,6 +14,11 @@ export const QUERY_SINGLE_PROFILE = gql`
     profile(profileId: $profileId) {
       _id
       username
+      fullName
+      email
+      securityQuestion
+      securityAnswer
+      avatarURL
     }
   }
 `;
