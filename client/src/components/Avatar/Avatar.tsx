@@ -14,6 +14,7 @@ import {
 import "./Avatar.css";
 import auth from "../../utils/auth";
 import { CardDeck } from "../../interfaces/CardDeck";
+import { FaEdit, FaLayerGroup, FaUserCircle } from "react-icons/fa";
 
 const Avatars = () => {
   const { profileId } = useParams();

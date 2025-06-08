@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
@@ -20,6 +21,7 @@ import { FaSignOutAlt, FaGamepad } from "react-icons/fa";
 export default function Study() {
   const { deckId } = useParams();
   const navigate = useNavigate();
+  const user = useSelector((state: any) => state.user.value);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [sessionId, setSessionId] = useState<string>("");
   const [isSessionComplete, setIsSessionComplete] = useState(false);
@@ -73,6 +75,7 @@ export default function Study() {
   useEffect(() => {
     let isSubscribed = true;
 
+    if (user) {
     const initializeSession = async () => {
       try {
         if (!sessionId) {
@@ -88,6 +91,7 @@ export default function Study() {
     return () => {
       isSubscribed = false;
     };
+    }
   }, [deckId, sessionId, startStudySession]);
 
   // Cleanup effect for abandoned sessions
@@ -227,6 +231,7 @@ export default function Study() {
         }
       } catch (err) {
         console.error("Error recording flashcard review:", err);
+        alert(err);
         setSelectedAnswer(null);
         setIsAnimating(false);
       }
@@ -268,6 +273,20 @@ export default function Study() {
       setHelpStep(1); // Open help
     }
   };
+
+  const handlePrevCard = () => {
+    if (currentCardIndex > 0) {
+      const index = currentCardIndex - 1;
+      setCurrentCardIndex(index);
+    }
+  }
+
+  const handleNextCard = () => {
+    if (currentCardIndex < data?.flashcardsByDeck.length - 1) {
+      const index = currentCardIndex + 1;
+      setCurrentCardIndex(index);
+    }
+  }
 
   // Loading and empty states - MOVED AFTER ALL HOOKS
   if (loading) return <div>Loading...</div>;
@@ -328,6 +347,7 @@ export default function Study() {
         />
       </div>
 
+      {user ? 
       <div className="study-controls">
         <div className="controls">
           <button
@@ -389,7 +409,13 @@ export default function Study() {
           <FaSignOutAlt className="btn-icon" />
           End Session
         </button>
-      </div>
+      </div> :
+      <div>
+        <div className="study-buttons-non-users">
+          {currentCardIndex > 0 ? <button id="prevBtn" onClick={handlePrevCard}>Previous</button> : null}
+          {currentCardIndex < data?.flashcardsByDeck.length - 1  ? <button id="nextBtn" onClick={handleNextCard}>Next</button> : null}
+        </div>
+      </div>}
 
       {/* Add Jeopardy Mode Toggle Button */}
       <button
@@ -397,12 +423,13 @@ export default function Study() {
         onClick={jeopardyModeToggle}
         title="Jeopardy Mode - Show answers first"
       >
-        <FaGamepad />
+        <FaGamepad/>
+        <span className="tooltip-text">Show answers first</span>
       </button>
 
-      <button className="help-button" onClick={handleToggleHelp}>
-        ?
-      </button>
+      {user ? 
+        <button className="help-button" onClick={handleToggleHelp}>?</button> : null
+      }
 
       <HelpModal
         step={helpStep}

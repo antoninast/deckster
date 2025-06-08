@@ -147,6 +147,11 @@
     line-height: 1.6;
 }
 
+.success-message h3 {
+    color: #638037;
+    font-weight: 600;
+}
+
 .success-message a {
     color: var(--color-tan);
     text-decoration: none;

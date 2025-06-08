@@ -8,7 +8,7 @@ import {
   QUERY_CARD_DECKS,
   QUERY_FLASHCARDS_BY_DECK,
 } from "../utils/queries";
-import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import auth from "../utils/auth";
 import "./ImportPage.css";
 import ManualImport from "../components/ManualImport/ManualImport";

@@ -1,5 +1,6 @@
 import { useState, type FormEvent, type ChangeEvent, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FaCheckCircle } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
 import { ADD_PROFILE } from "../../utils/mutations";
 import Auth from "../../utils/auth";
@@ -111,16 +112,19 @@ const Signup = () => {
       <div className="signup-container">
         <div className="signup-card">
           <div className="signup-header">
-            <h1 className="signup-title">Create Account</h1>
-            <p className="signup-subtitle">
+            {!data ? <h1 className="signup-title">Create Account</h1> : null}
+            {!data ? <p className="signup-subtitle">
               Already have an account? <Link to="/login">Sign in</Link>
-            </p>
+            </p> : null}
           </div>
 
           {data ? (
             <p className="success-message">
-              Success! You may now head{" "}
-              <Link to="/">back to the homepage.</Link>
+              <div className="success-animation">
+                <FaCheckCircle className="success-icon" />
+              </div>
+              <h3>Your account was created!</h3>
+              <Link to="/login">Go to login page</Link>
             </p>
           ) : (
             <>
