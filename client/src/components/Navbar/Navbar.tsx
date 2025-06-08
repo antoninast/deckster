@@ -1,5 +1,5 @@
 // client/src/components/Navbar/Navbar.tsx
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, MouseEvent } from "react";
 import auth from "../../utils/auth";
 
@@ -19,11 +19,14 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 
 import "./Navbar.css";
-import logo from "../../../../assets/deckster-logo-concept.png";
+import logo from "../../assets/deckster-logo.png";
 
 const AppNavbar = () => {
   // Fixed: Component name should be capitalized
   const navigate = useNavigate();
+  const location = useLocation();
+  const isActive = (path: string) => location.pathname === path;
+  console.log(isActive("/browse-decks"));
   const [loginCheck, setLoginCheck] = useState(false);
 
   const logout = (event: MouseEvent<HTMLDivElement>) => {
@@ -64,19 +67,25 @@ const AppNavbar = () => {
               {loginCheck ? (
                 <>
                   <div>
-                    <Link to="/browse-decks" className="nav-link-with-icon">
+                    <Link
+                      to="/browse-decks"
+                      className={`nav-link-with-icon ${isActive("/browse-decks") ? "active" : ""}`}>
                       <FaLayerGroup className="nav-icon" />
                       <span>Browse Decks</span>
                     </Link>
                   </div>
                   <div>
-                    <Link to="/import" className="nav-link-with-icon">
+                    <Link
+                      to="/import"
+                      className={`nav-link-with-icon ${isActive("/import") ? "active" : ""}`}>
                       <FaFileImport className="nav-icon" />
                       <span>Create Deck</span>
                     </Link>
                   </div>
                   <div>
-                    <Link to="/me" className="nav-link-with-icon">
+                    <Link
+                      to="/me"
+                      className={`nav-link-with-icon ${isActive("/me") ? "active" : ""}`}>
                       <FaUserCircle className="nav-icon" />
                       <span>View My Profile</span>
                     </Link>
@@ -91,15 +100,21 @@ const AppNavbar = () => {
                 </>
               ) : (
                 <>
-                  <Link to="/browse-decks" className="nav-link-with-icon">
+                  <Link
+                    to="/browse-decks"
+                    className={`nav-link-with-icon ${isActive("/browse-decks") ? "active" : ""}`}>
                     <FaLayerGroup className="nav-icon" />
                     <span>Browse Public Decks</span>
                   </Link>
-                  <Link to="/login" className="nav-link-with-icon">
+                  <Link
+                    to="/login"
+                    className={`nav-link-with-icon ${isActive("/login") ? "active" : ""}`}>
                     <FaSignInAlt className="nav-icon" />
                     <span>Login</span>
                   </Link>
-                  <Link to="/signup" className="nav-link-with-icon">
+                  <Link
+                    to="/signup"
+                    className={`nav-link-with-icon ${isActive("/signup") ? "active" : ""}`}>
                     <FaUserPlus className="nav-icon" />
                     <span>Sign Up</span>
                   </Link>

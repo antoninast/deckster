@@ -91,7 +91,9 @@ const resolvers = {
       { isPublic }: { isPublic?: boolean }
     ): Promise<ICardDeck[]> => {
       const query = isPublic === true ? { isPublic: true } : {};
-      return await CardDeck.find(query).populate("userId", "_id username");
+      return await CardDeck.find(query)
+        .populate("userId", "_id username")
+        .populate("numberOfCards");
     },
 
     cardDecksByUser: async (

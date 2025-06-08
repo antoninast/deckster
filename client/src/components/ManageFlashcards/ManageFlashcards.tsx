@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   QUERY_FLASHCARDS_BY_DECK,
-  //   QUERY_CARD_DECKS,
+  QUERY_CARD_DECKS,
 } from "../../utils/queries";
 import { REMOVE_FLASHCARD, UPDATE_FLASHCARD } from "../../utils/mutations";
+import { GrEdit, GrTrash } from "react-icons/gr";
+import { RiSave3Line } from "react-icons/ri";
 import type { Flashcard } from "../../interfaces/Flashcard";
 import "./ManageFlashcards.css";
 
@@ -13,6 +15,7 @@ export default function Flashcards() {
   const { deckId } = useParams();
   const [editMode, setEditMode] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [flashcardIdToRemove, setFlashcardIdToRemove] = useState("");
   const [updatedFlashcard, setUpdatedFlashcard] = useState({
     question: "",
@@ -45,9 +48,12 @@ export default function Flashcards() {
     }
   );
 
-  // TODO: const decks = useQuery(QUERY_CARD_DECKS, {
-  //     fetchPolicy: "cache-and-network"
-  // });
+  // Add loading state for the decks query
+  const { data: decks, loading: decksLoading } = useQuery(QUERY_CARD_DECKS, {
+    variables: { isPublic: false },
+  });
+
+  const deck = decks?.cardDecks.find((deck: any) => deck._id === deckId);
 
   const removeFlashcard = async () => {
     try {
@@ -89,18 +95,23 @@ export default function Flashcards() {
       setUpdatedFlashcard({ question, answer });
       setEditMode(true);
     } else {
-      try {
-        await updateFlashcard({
-          variables: {
-            flashcardId,
-            input: updatedFlashcard,
-          },
-        });
-        setCurrentlyEditedCardId("");
-        setUpdatedFlashcard({ question: "", answer: "" });
-        setEditMode(false);
-      } catch (error) {
-        throw new Error(`Failed to remove the deck, ${error}`);
+      if (!updatedFlashcard.question || !updatedFlashcard.answer) {
+        alert(`${updatedFlashcard.question ? 'answer' : 'question'} cannot be empty`);
+      } else {
+        try {
+          await updateFlashcard({
+            variables: {
+              flashcardId,
+              input: updatedFlashcard,
+            },
+          });
+          setCurrentlyEditedCardId("");
+          setUpdatedFlashcard({ question: "", answer: "" });
+          setEditMode(false);
+        } catch (error) {
+          alert('Failed to update the deck')
+          throw new Error(`Failed to update the deck, ${error}`);
+        }
       }
     }
   };
@@ -137,16 +148,23 @@ export default function Flashcards() {
     }
   }, [flashcards]);
 
-  if (queryLoading || removeLoading || updateLoading) {
+  // Update the loading condition to include decksLoading
+  if (queryLoading || removeLoading || updateLoading || decksLoading) {
     return <div>Loading cards ...</div>;
   }
 
+  // Add a check for deck existence
   if (!flashcards) {
     return <div>No flashcards in this deck</div>;
   }
 
+  if (!deck) {
+    return <div>Deck not found</div>;
+  }
+
+  // Update the h2 element to safely access deck.name
   return (
-    <div>
+    <div className="manage-flashcards">
       <div className={openModal ? "modal show" : "modal hide"}>
         <div className="modal-dialog">
           <div className="modal-content">
@@ -173,14 +191,27 @@ export default function Flashcards() {
           </div>
         </div>
       </div>
-      <h2>Flashcards with - DECK ID - {deckId}</h2>
+      <h2>{deck?.name || "Deck not found"}</h2>
       <div className="search-bar">
         <input
           onChange={handleSearch}
           type="text"
           className="form-control"
-          placeholder="Search by keyword"
+          placeholder="Search by keyword..."
         />
+      </div>
+      <div className="flashcard-toggle">
+        <label className="toggle-label" htmlFor="showStatsToggle">
+          <input
+            type="checkbox"
+            id="showStatsToggle"
+            className="hidden-checkbox"
+            checked={showStats}
+            onChange={(e) => setShowStats(e.target.checked)}
+          />
+          <span className="styled-toggle"></span>
+          Show stats
+        </label>
       </div>
       <div className="flashcards-container">
         {flashcardList.map((flashcard: Flashcard) => (
@@ -189,17 +220,7 @@ export default function Flashcards() {
               className="flashcard-delete-button-wrapper"
               onClick={() => handleRemoveFlashcard(flashcard._id)}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="17"
-                height="17"
-                fill="gray"
-                className="bi bi-x-square delete-icon"
-                viewBox="0 0 16 16"
-              >
-                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
-                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
-              </svg>
+              <GrTrash />
             </div>
             {flashcard._id === currentlyEditedCardId ? (
               <div className="edit-mode">
@@ -219,31 +240,38 @@ export default function Flashcards() {
                 <p className="card-question">{flashcard.question}</p>
                 <hr></hr>
                 <p className="card-answer">{flashcard.answer}</p>
+                {flashcard.userStudyAttemptStats && showStats && (
+                  <div className="flashcard-stats">
+                    <div className="deck-stat stat-total">
+                      <span className="deck-stat-label">Attempts:</span>
+                      <span className="deck-stat-value">
+                        {flashcard.userStudyAttemptStats.totalAttempts}
+                      </span>
+                    </div>
+                    <div className="deck-stat stat-accuracy">
+                      <span className="deck-stat-label">Correct:</span>
+                      <span className="deck-stat-value">
+                        {flashcard.userStudyAttemptStats.correctAttempts}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-            <div className="action-buttons">
-              <div
-                onClick={() =>
+            <div
+              className="flashcard-action-buttons"
+              onClick={() =>
                   handleUpdateFlashcard(
                     flashcard._id,
                     flashcard.question,
                     flashcard.answer
                   )
-                }
-              >
+                }>
                 {flashcard._id === currentlyEditedCardId ? (
-                  <button type="button" className="btn btn-outline-info btn-sm">
-                    💾 Save
-                  </button>
+                  <RiSave3Line className="save-btn"/>
                 ) : (
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-sm"
-                  >
-                    ✏️ Edit
-                  </button>
+                  <GrEdit />
                 )}
-              </div>
             </div>
           </div>
         ))}

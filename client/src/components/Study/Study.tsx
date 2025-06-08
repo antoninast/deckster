@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_FLASHCARDS_BY_DECK } from "../../utils/queries";
@@ -15,10 +16,12 @@ import Flashcard from "../Flashcard/Flashcard";
 import { HelpModal } from "../HelpModal/HelpModal";
 import RecentSessionsChart from "../RecentSessionsChart/RecentSessionsChart";
 import "./Study.css";
+import { FaSignOutAlt, FaGamepad } from "react-icons/fa";
 
 export default function Study() {
   const { deckId } = useParams();
   const navigate = useNavigate();
+  const user = useSelector((state: any) => state.user.value);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [sessionId, setSessionId] = useState<string>("");
   const [isSessionComplete, setIsSessionComplete] = useState(false);
@@ -26,6 +29,15 @@ export default function Study() {
   const [helpStep, setHelpStep] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [jeopardyMode, setJeopardyMode] = useState(false);
+
+  // Add new state for animations
+  const [selectedAnswer, setSelectedAnswer] = useState<
+    "correct" | "incorrect" | null
+  >(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Add new state for forcing modal position updates
+  const [_modalUpdateTrigger, setModalUpdateTrigger] = useState(0);
 
   // Mutations
   const [startStudySession] = useMutation(START_STUDY_SESSION);
@@ -63,6 +75,7 @@ export default function Study() {
   useEffect(() => {
     let isSubscribed = true;
 
+    if (user) {
     const initializeSession = async () => {
       try {
         if (!sessionId) {
@@ -78,6 +91,7 @@ export default function Study() {
     return () => {
       isSubscribed = false;
     };
+    }
   }, [deckId, sessionId, startStudySession]);
 
   // Cleanup effect for abandoned sessions
@@ -106,6 +120,56 @@ export default function Study() {
     isSessionAbandoned,
   ]);
 
+  // Keyboard event handlers
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (isSessionComplete) return;
+
+      switch (e.code) {
+        case "ArrowUp":
+        case "ArrowDown":
+          e.preventDefault(); // Prevent default scroll behavior
+          setIsFlipped((prev) => !prev);
+          break;
+        case "ArrowLeft":
+          e.preventDefault(); // Optional: prevent horizontal scroll too
+          handleResponse(false);
+          break;
+        case "ArrowRight":
+          e.preventDefault(); // Optional: prevent horizontal scroll too
+          handleResponse(true);
+          break;
+        case "Space":
+          e.preventDefault(); // Prevent default page scroll
+          handleSessionComplete(true);
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [isSessionComplete, currentCardIndex, sessionId]);
+
+  // Add scroll handling for help modal positioning
+  useEffect(() => {
+    const handleScroll = () => {
+      // Force re-render of help modal to recalculate position
+      if (helpStep > 0) {
+        setModalUpdateTrigger(Date.now());
+      }
+    };
+
+    if (helpStep > 0) {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll, { passive: true });
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [helpStep]);
+
   // Handle session completion
   const handleSessionComplete = async (abandonedEarly = false) => {
     try {
@@ -116,8 +180,6 @@ export default function Study() {
       const clientDuration = startTimeMs
         ? Math.floor((Date.now() - startTimeMs) / 1000)
         : 0;
-
-      // console.log("Calculated duration (seconds):", clientDuration);
 
       await endStudySession({
         variables: {
@@ -133,98 +195,51 @@ export default function Study() {
     }
   };
 
-  // Handle flashcard response
+  // Update the handleResponse function
   const handleResponse = async (correct: boolean) => {
-    if (!flashcards[currentCardIndex]) return;
+    if (!data?.flashcardsByDeck?.[currentCardIndex] || isAnimating) return;
 
-    // consider updating resolver to handle an array of flashcardIds?
-    // then save responses locally in an array
-    // and batch fetch the reslts when the session is over
-    // console.log("Session Stats:", statsData.studySession);
-    // console.log("typeof sessionId:", typeof sessionId);
-    try {
-      await reviewFlashcard({
-        variables: {
-          flashcardId: flashcards[currentCardIndex]._id,
-          correct,
-          studySessionId: sessionId,
-        },
-      });
+    setIsAnimating(true);
+    setSelectedAnswer(correct ? "correct" : "incorrect");
 
-      // maybe we only fetchd session stats when session ends?
-      // otherwise this could be a problem for scalability
+    // Wait for animation to complete
+    setTimeout(async () => {
+      try {
+        await reviewFlashcard({
+          variables: {
+            flashcardId: data.flashcardsByDeck[currentCardIndex]._id,
+            correct,
+            studySessionId: sessionId,
+          },
+        });
 
-      if (currentCardIndex === flashcards.length - 1) {
-        await handleSessionComplete(false);
-        setIsSessionComplete(true);
-        await refetchStudySession();
-        console.log("statsData:", statsData);
-        await refetchRecentStudySessions();
-      } else {
-        setCurrentCardIndex((prev) => prev + 1);
-        if (jeopardyMode) {
-          setIsFlipped(true); // Show answer first in Jeopardy mode
+        if (currentCardIndex === data.flashcardsByDeck.length - 1) {
+          await handleSessionComplete(false);
+          setIsSessionComplete(true);
+          await refetchStudySession();
+          await refetchRecentStudySessions();
         } else {
-          setIsFlipped(false);
+          setCurrentCardIndex((prev) => prev + 1);
+          if (jeopardyMode) {
+            setIsFlipped(true);
+          } else {
+            setIsFlipped(false);
+          }
+          // Reset animation states
+          setSelectedAnswer(null);
+          setIsAnimating(false);
         }
+      } catch (err) {
+        console.error("Error recording flashcard review:", err);
+        alert(err);
+        setSelectedAnswer(null);
+        setIsAnimating(false);
       }
-    } catch (err) {
-      console.error("Error recording flashcard review:", err);
-    }
+    }, 500);
   };
 
-  // Keyboard event handlers
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (isSessionComplete) return;
-
-      switch (e.code) {
-        case "ArrowUp":
-        case "ArrowDown":
-          setIsFlipped((prev) => !prev);
-          break;
-        case "ArrowLeft":
-          handleResponse(false);
-          break;
-        case "ArrowRight":
-          handleResponse(true);
-          break;
-        case "Space":
-          handleSessionComplete(true);
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isSessionComplete, currentCardIndex, sessionId]);
-
-  // Help modal steps
-  const helpSteps = [
-    {
-      message:
-        "To flip the flashcard over, either click on the flashcard or push the down/up arrows on the keyboard.",
-      targetRef: cardRef,
-    },
-    {
-      message:
-        "To record the flashcard answered correctly, either click the correct button or push the right arrow on the keyboard.",
-      targetRef: correctBtnRef,
-    },
-    {
-      message:
-        "To record the flashcard answered incorrectly, either click the incorrect button or push the left arrow on the keyboard.",
-      targetRef: incorrectBtnRef,
-    },
-    {
-      message:
-        "To end the study session without reviewing all of the flashcards, either click the end session button or press the spacebar on the keyboard.",
-      targetRef: endSessionRef,
-    },
-  ];
-
   const handleHelpNext = () => {
-    if (helpStep < helpSteps.length) {
+    if (helpStep < 4) {
       setHelpStep((prev) => prev + 1);
     } else {
       setHelpStep(0);
@@ -233,15 +248,8 @@ export default function Study() {
 
   const jeopardyModeToggle = () => {
     setJeopardyMode(!jeopardyMode);
-    setIsFlipped((prev) => !prev)
-  }
-
-  // Loading and empty states
-  if (loading) return <div>Loading...</div>;
-  if (!data?.flashcardsByDeck?.length)
-    return <div>No flashcards found in this deck.</div>;
-
-  const flashcards = data.flashcardsByDeck;
+    setIsFlipped((prev) => !prev);
+  };
 
   const startNewSession = () => {
     setCurrentCardIndex(0);
@@ -250,11 +258,53 @@ export default function Study() {
     setIsFlipped(false);
     setSessionId("");
     setJeopardyMode(false);
+    setSelectedAnswer(null);
+    setIsAnimating(false);
   };
 
   const handleEndSessionClick = () => {
     handleSessionComplete(true);
   };
+
+  const handleToggleHelp = () => {
+    if (helpStep > 0) {
+      setHelpStep(0); // Close help
+    } else {
+      setHelpStep(1); // Open help
+    }
+  };
+
+  const handlePrevCard = () => {
+    if (currentCardIndex > 0) {
+      const index = currentCardIndex - 1;
+      setCurrentCardIndex(index);
+    }
+  }
+
+  const handleNextCard = () => {
+    if (currentCardIndex < data?.flashcardsByDeck.length - 1) {
+      const index = currentCardIndex + 1;
+      setCurrentCardIndex(index);
+    }
+  }
+
+  // Loading and empty states - MOVED AFTER ALL HOOKS
+  if (loading) return <div>Loading...</div>;
+  if (!data?.flashcardsByDeck?.length)
+    return <div>No flashcards found in this deck.</div>;
+
+  const flashcards = data.flashcardsByDeck;
+
+  // Add safety check for currentCardIndex
+  if (currentCardIndex >= flashcards.length) {
+    return <div>Loading next card...</div>;
+  }
+
+  // Add safety check for current flashcard
+  const currentFlashcard = flashcards[currentCardIndex];
+  if (!currentFlashcard) {
+    return <div>Loading flashcard...</div>;
+  }
 
   // Session complete view
   if (isSessionComplete) {
@@ -273,6 +323,7 @@ export default function Study() {
             Back to Decks
           </button>
         </div>
+        <RecentSessionsChart deckId={deckId || ""} />
       </div>
     );
   }
@@ -284,54 +335,69 @@ export default function Study() {
         <h2>Study Session</h2>
       </div>
 
-      <p>
-        Card {currentCardIndex + 1} of {flashcards.length}
-      </p>
-
-      <div className="jeopardy-toggle slider">
-        <label>
-          <input
-        type="checkbox"
-        checked={jeopardyMode}
-        // onChange={() => setJeopardyMode(!jeopardyMode)}
-        //   />
-        onChange={() => jeopardyModeToggle()}
-          />
-          Jeopardy! Mode (Show Answer First)
-        </label>
-      </div>
-
       <div ref={cardRef}>
         <Flashcard
           key={currentCardIndex}
-          question={flashcards[currentCardIndex].question}
-          answer={flashcards[currentCardIndex].answer}
+          question={currentFlashcard.question}
+          answer={currentFlashcard.answer}
           isFlipped={isFlipped}
           onFlip={() => setIsFlipped((prev) => !prev)}
+          currentCard={currentCardIndex + 1}
+          totalCards={flashcards.length}
         />
       </div>
 
+      {user ? 
       <div className="study-controls">
         <div className="controls">
           <button
             ref={incorrectBtnRef}
-            className="incorrect-btn"
+            className="checkbox-button"
             onClick={(e) => {
               e.stopPropagation();
               handleResponse(false);
             }}
+            disabled={isAnimating}
           >
-            ❌ Incorrect
+            <div
+              className={`checkbox-container ${
+                selectedAnswer === "incorrect" ? "selected-incorrect" : ""
+              }`}
+            >
+              <span
+                className={`checkbox-icon incorrect ${
+                  selectedAnswer === "incorrect" ? "animate-in" : ""
+                }`}
+              >
+                ✗
+              </span>
+            </div>
+            <span className="checkbox-label">Incorrect</span>
           </button>
+
           <button
             ref={correctBtnRef}
-            className="correct-btn"
+            className="checkbox-button"
             onClick={(e) => {
               e.stopPropagation();
               handleResponse(true);
             }}
+            disabled={isAnimating}
           >
-            ✅ Correct
+            <div
+              className={`checkbox-container ${
+                selectedAnswer === "correct" ? "selected-correct" : ""
+              }`}
+            >
+              <span
+                className={`checkbox-icon correct ${
+                  selectedAnswer === "correct" ? "animate-in" : ""
+                }`}
+              >
+                ✓
+              </span>
+            </div>
+            <span className="checkbox-label">Correct</span>
           </button>
         </div>
 
@@ -340,23 +406,42 @@ export default function Study() {
           className="end-session-btn"
           onClick={handleEndSessionClick}
         >
+          <FaSignOutAlt className="btn-icon" />
           End Session
         </button>
-      </div>
+      </div> :
+      <div>
+        <div className="study-buttons-non-users">
+          {currentCardIndex > 0 ? <button id="prevBtn" onClick={handlePrevCard}>Previous</button> : null}
+          {currentCardIndex < data?.flashcardsByDeck.length - 1  ? <button id="nextBtn" onClick={handleNextCard}>Next</button> : null}
+        </div>
+      </div>}
 
-      <RecentSessionsChart deckId={deckId || ""} />
-
-      <button className="help-button" onClick={() => setHelpStep(1)}>
-        ?
+      {/* Add Jeopardy Mode Toggle Button */}
+      <button
+        className={`jeopardy-toggle-button ${jeopardyMode ? "active" : ""}`}
+        onClick={jeopardyModeToggle}
+        title="Jeopardy Mode - Show answers first"
+      >
+        <FaGamepad/>
+        <span className="tooltip-text">Show answers first</span>
       </button>
+
+      {user ? 
+        <button className="help-button" onClick={handleToggleHelp}>?</button> : null
+      }
 
       <HelpModal
         step={helpStep}
-        totalSteps={helpSteps.length}
-        message={helpSteps[helpStep - 1]?.message || ""}
-        targetRef={helpSteps[helpStep - 1]?.targetRef || cardRef}
+        targetRefs={{
+          cardRef,
+          correctBtnRef,
+          incorrectBtnRef,
+          endSessionRef,
+        }}
         onNext={handleHelpNext}
         isVisible={helpStep > 0}
+        onToggleHelp={handleToggleHelp}
       />
     </div>
   );

@@ -4,4 +4,10 @@ export interface Flashcard {
   answer: string;
   image_url: string | null;
   deckId: string;
+  userStudyAttemptStats: {
+    attemptAccuracy: number;
+    correctAttempts: number;
+    proficiency: string;
+    totalAttempts: number;
+  }
 }

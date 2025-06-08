@@ -11,19 +11,20 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 
 import App from "./App.jsx";
-import Home from "./components/HomePage/Home.js";
-import Profile from "./components/Profile/Profile.js";
-import Signup from "./components/Signup/Signup.js";
-import Login from "./components/Login/Login.js";
-import Error from "./components/Error/Error.js";
+import Avatar from "./components/Avatar/Avatar.js";
 import BrowseDecks from "./components/BrowseDecks/BrowseDecks.js";
-import Study from "./components/Study/Study.js";
-import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
+import Error from "./components/Error/Error.js";
+import Home from "./components/HomePage/Home.js";
 import ImportPage from "./pages/ImportPage.js";
+import Login from "./components/Login/Login.js";
+import ManageFlashcards from "./components/ManageFlashcards/ManageFlashcards.js";
+import Profile from "./components/Profile/Profile.js";
 import ResetPassword from "./components/ResetPassword/ResetPassword.js";
+import Signup from "./components/Signup/Signup.js";
+import Study from "./components/Study/Study.js";
 import { store } from "./app/store";
-import "./styles/variables.css";
 import "./styles/animations.css";
+import "./styles/variables.css";
 
 // Apollo Client configuration
 const httpLink = createHttpLink({
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
       {
         path: "/me",
         element: <Profile />,
+      },
+      {
+        path: "/profile/avatars",
+        element: <Avatar />,
       },
       {
         path: "/browse-decks",

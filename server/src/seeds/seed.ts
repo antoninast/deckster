@@ -6,7 +6,7 @@ import profileData from './profileData.json' with { type: "json" };
 import securityQuestionsData from './securityQuestions.json' with { type: "json" };
 import cleanDB from './cleanDB.js';
 import { Types } from 'mongoose';
-import { hashPassword } from '../utils/auth.js';
+import { hashInput } from '../utils/auth.js';
 
 const seedDatabase = async (): Promise<void> => {
   console.log('Seeding database...');
@@ -20,8 +20,8 @@ const seedDatabase = async (): Promise<void> => {
         ...user,
         username: user.username.toLowerCase(),
         email: user.email.toLowerCase(),
-        password: await hashPassword(user.password),
-        securityAnswer: await hashPassword(user.securityAnswer),
+        password: await hashInput(user.password),
+        securityAnswer: await hashInput(user.securityAnswer),
       }))
     );
 

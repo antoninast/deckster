@@ -1,20 +1,20 @@
 /* Common styles */
 .study-page {
-  width: 100%;
-  background-color: var(--color-vanilla);
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem 0 1rem; /* Remove bottom padding */
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
-  display: flex;
-  flex-direction: column;
+  position: relative;
 }
 
-/* Button base styles */
+.study-header h2 {
+  font-size: 1.5rem; /* Base mobile size */
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Button base styles - exclude checkbox-buttons for proper hover effect*/
 .button-base,
 .session-controls button,
-.controls button,
-.end-session-btn {
+.controls button:not(.checkbox-button) {
   padding: 12px 24px;
   font-size: 1rem;
   border: none;
@@ -26,7 +26,7 @@
 /* Session complete styles */
 .session-complete {
   text-align: center;
-  padding: 2rem;
+  padding: 2rem 2rem 0 2rem; /* Remove bottom padding */
   max-width: 600px;
   margin: 0 auto;
   background-color: var(--color-background);
@@ -48,7 +48,7 @@
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .session-controls button:first-child {
@@ -65,82 +65,519 @@
 .study-controls {
   width: 100%;
   max-width: 600px;
-  margin: 1rem auto;
+  margin: 0.25rem auto; /* Reduced from 0.5rem */
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+}
+
+.study-buttons-non-users {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* Styled buttons */
+.study-buttons-non-users button {
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 0.85rem;
+  background-color: var(--color-vanilla);
+  color: var(--text-primary);
+  border: none;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  position: relative;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* Hover and disabled states */
+.study-buttons-non-users button:hover {
+  background-color: var(--color-tan);
+  transform: rotate(0deg) scale(1.05);
+}
+
+.study-buttons-non-users button:disabled {
+  background-color: #ddd;
+  color: #aaa;
+  cursor: not-allowed;
+  transform: rotate(-1deg);
 }
 
 .controls {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: center;
+  gap: 1.5rem; /* Reduced base gap for mobile */
   width: 100%;
 }
 
-.controls button {
-  flex: 1;
-  min-width: 150px;
-  color: var(--text-dark);
+/* Update base sizes to be smaller */
+.checkbox-container {
+  position: relative;
+  width: 40px; /* Reduced from 45px */
+  height: 40px; /* Reduced from 45px */
+  border: 2px solid #ddd; /* Reduced border from 3px */
+  border-radius: 8px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
-.controls button.incorrect-btn {
-  background-color: var(--color-tan);
+.controls .checkbox-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  gap: 0.75rem; /* Reduced from 1rem */
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: none;
 }
 
-.controls button.correct-btn {
-  background-color: var(--color-sage);
+/* prevent hover effects on checkbox buttons */
+.controls .checkbox-button:hover {
+  transform: none;
+  background: none;
+  box-shadow: none;
+}
+
+.checkbox-icon {
+  font-size: 1.3rem; /* Reduced from 1.5rem */
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.checkbox-icon.animate-in {
+  opacity: 1;
+  transform: scale(1);
+  animation: bounceIn 0.5s ease;
+}
+
+.checkbox-icon.correct {
+  color: #2d5016;
+}
+
+.checkbox-icon.incorrect {
+  color: #8b3226;
+}
+
+.checkbox-label {
+  font-size: 0.9rem; /* Reduced from 1rem */
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  min-width: 70px; /* Reduced from 80px */
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* End session button */
-.end-session-btn {
+.study-page .end-session-btn {
   width: 100%;
-  max-width: 600px;
-  margin: 1rem auto;
-  background-color: var(--text-dark);
-  color: var(--text-light);
+  max-width: 400px !important; /* Force override */
+  margin: 1.5rem auto;
+  background: #d6e7f0;
+  color: var(--text-primary);
+  padding: 10px 20px !important; /* Force override */
+  font-size: 0.9rem !important; /* Force override */
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-/* Hover states */
-.button-base:hover,
-.session-controls button:hover,
-.controls button:hover,
 .end-session-btn:hover {
-  opacity: 0.9;
-}
-
-.end-session-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #c1d9e8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(214, 231, 240, 0.5);
 }
 
 .end-session-btn:active {
   transform: translateY(0);
 }
 
-
-
-/* Jeopardy toggle slider */
-/* .jeopardy-toggle {
-
+.help-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  width: 30px; /* Reduced from 35px */
+  height: 30px; /* Reduced from 35px */
+  border-radius: 50%;
+  background: var(--button-primary);
+  color: var(--text-light);
+  border: none;
+  font-size: 0.9rem; /* Reduced from 1rem */
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 900;
 }
 
-.jeopardy-toggle input {
-
+.jeopardy-toggle-button {
+  position: absolute;
+  top: 0.5rem; /* Back to same row as help button */
+  right: 3.5rem; /* Position to the left of help button */
+  width: 30px; /* Reduced from 35px */
+  height: 30px; /* Reduced from 35px */
+  border-radius: 50%;
+  background: var(--button-secondary);
+  color: var(--text-dark);
+  border: 2px solid var(--border-color);
+  font-size: 0.9rem; /* Reduced from 1rem */
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 900;
 }
 
-.slider {
-
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
-.slider:before {
-
+.tooltip-text {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.3s;
+  pointer-events: none;
 }
 
-.jeopardy-toggle input:checked + .slider {
-
+.tooltip-wrapper:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
-.jeopardy-toggle input:checked + .slider:before {
+/* Responsive styles */
 
-} */
+/* Small tablets and large phones (landscape) */
+@media (min-width: 576px) {
+  .study-page .end-session-btn {
+    max-width: 450px !important;
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+    margin: 1.75rem auto;
+  }
+
+  .study-controls {
+    margin-top: 0.75rem; /* Reduced from 1.5rem */
+  }
+
+  .controls {
+    gap: 1.75rem; /* Slightly increased */
+  }
+
+  .checkbox-button {
+    padding: 0.6rem 0.8rem; /* Reduced padding */
+    gap: 0.8rem; /* Reduced gap */
+  }
+
+  .checkbox-container {
+    width: 45px; /* Reduced from 50px */
+    height: 45px;
+  }
+
+  .checkbox-icon {
+    font-size: 1.6rem; /* Reduced from 1.8rem */
+  }
+
+  .checkbox-label {
+    font-size: 0.95rem; /* Reduced from 1rem */
+  }
+
+  .end-session-btn {
+    max-width: 450px; /* Slightly increased */
+    padding: 12px 24px; /* Slightly increased */
+    font-size: 1rem;
+    margin: 1.75rem auto; /* Slightly increased */
+  }
+
+  .study-header h2 {
+    font-size: 1.8rem;
+  }
+
+  .help-button {
+    width: 32px; /* Smaller than before */
+    height: 32px;
+    font-size: 1rem;
+    top: 0.75rem;
+  }
+
+  .jeopardy-toggle-button {
+    width: 32px; /* Smaller than before */
+    height: 32px;
+    font-size: 1rem;
+    top: 0.75rem;
+    right: 4rem; /* Keep side-by-side */
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+  .study-page .end-session-btn {
+    max-width: 500px !important;
+    padding: 14px 28px !important;
+    font-size: 1.1rem !important;
+    margin: 2rem auto;
+  }
+
+  .study-controls {
+    margin-top: 1rem; /* Reduced from 2rem */
+  }
+
+  .controls {
+    gap: 2rem; /* Increased */
+  }
+
+  .checkbox-button {
+    padding: 0.8rem 1.2rem; /* Reduced padding */
+    gap: 0.9rem; /* Reduced gap */
+  }
+
+  .checkbox-container {
+    width: 48px; /* Reduced from 55px */
+    height: 48px;
+  }
+
+  .checkbox-icon {
+    font-size: 1.7rem; /* Reduced from 2rem */
+  }
+
+  .checkbox-label {
+    font-size: 1rem; /* Reduced from 1.1rem */
+  }
+
+  .end-session-btn {
+    max-width: 500px; /* Increased */
+    padding: 14px 28px; /* Increased */
+    font-size: 1.1rem;
+    margin: 2rem auto; /* Increased */
+  }
+
+  .btn-icon {
+    font-size: 1.1rem;
+  }
+
+  .study-header h2 {
+    font-size: 2rem;
+  }
+
+  .help-button {
+    width: 35px; /* Smaller than before */
+    height: 35px;
+    font-size: 1.1rem;
+    top: 1rem;
+  }
+
+  .jeopardy-toggle-button {
+    width: 35px; /* Smaller than before */
+    height: 35px;
+    font-size: 1.1rem;
+    top: 1rem;
+    right: 4.5rem; /* Keep side-by-side */
+  }
+}
+
+/* Laptops and small desktops */
+@media (min-width: 992px) {
+  .study-page .end-session-btn {
+    max-width: 550px !important;
+    padding: 16px 32px !important;
+    font-size: 1.2rem !important;
+    margin: 2.5rem auto;
+  }
+
+  .study-controls {
+    margin-top: 1.25rem; /* Reduced from 2.5rem */
+  }
+
+  .controls {
+    gap: 2.5rem; /* Increased */
+  }
+
+  .checkbox-button {
+    padding: 1rem 1.5rem; /* Reduced padding */
+    gap: 1rem; /* Reduced gap */
+  }
+
+  .checkbox-container {
+    width: 52px; /* Reduced from 60px */
+    height: 52px;
+  }
+
+  .checkbox-icon {
+    font-size: 1.9rem; /* Reduced from 2.2rem */
+  }
+
+  .checkbox-label {
+    font-size: 1.1rem; /* Reduced from 1.2rem */
+  }
+
+  .end-session-btn {
+    max-width: 550px; /* Increased */
+    padding: 16px 32px; /* Increased */
+    font-size: 1.2rem;
+    margin: 2.5rem auto; /* Increased */
+  }
+
+  .study-header h2 {
+    font-size: 2.5rem; /* Scale up appropriately */
+  }
+}
+
+/* Large desktops */
+@media (min-width: 1200px) {
+  .study-page .end-session-btn {
+    max-width: 600px !important;
+    padding: 18px 36px !important;
+    font-size: 1.3rem !important;
+    margin: 3rem auto;
+  }
+
+  .study-controls {
+    margin-top: 1.5rem; /* Reduced from 3rem */
+  }
+
+  .controls {
+    gap: 3rem; /* Maximum gap for large screens */
+  }
+
+  .checkbox-button {
+    padding: 1.2rem 2rem; /* Reduced padding */
+    gap: 1.1rem; /* Reduced gap */
+  }
+
+  .checkbox-container {
+    width: 55px; /* Reduced from 65px */
+    height: 55px;
+  }
+
+  .checkbox-icon {
+    font-size: 2.1rem; /* Reduced from 2.5rem */
+  }
+
+  .checkbox-label {
+    font-size: 1.2rem; /* Reduced from 1.3rem */
+  }
+
+  .end-session-btn {
+    max-width: 600px; /* Maximum width for large screens */
+    padding: 18px 36px; /* Maximum padding */
+    font-size: 1.3rem;
+    margin: 3rem auto; /* Maximum margin */
+  }
+
+  .study-header h2 {
+    font-size: 2.5rem; /* 48px equivalent - matches other pages */
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+  .study-page .end-session-btn {
+    max-width: 280px !important;
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+    margin: 1rem auto;
+  }
+
+  .study-controls {
+    margin-top: 0.5rem; /* Reduced from 1rem */
+  }
+
+  .controls {
+    gap: 1rem; /* Smallest gap for tiny screens */
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .checkbox-button {
+    padding: 0.4rem; /* Reduced padding */
+    gap: 0.6rem; /* Reduced gap */
+    width: auto;
+    max-width: none;
+  }
+
+  .checkbox-container {
+    width: 38px; /* Reduced from 45px */
+    height: 38px;
+  }
+
+  .checkbox-icon {
+    font-size: 1.2rem; /* Reduced from 1.5rem */
+  }
+
+  .checkbox-label {
+    font-size: 0.85rem; /* Reduced from 0.9rem */
+    min-width: 60px; /* Reduced from 70px */
+  }
+
+  .end-session-btn {
+    max-width: 280px; /* Much smaller for tiny screens */
+    padding: 8px 16px; /* Smallest padding */
+    font-size: 0.85rem;
+    margin: 1rem auto; /* Smallest margin */
+  }
+
+  .study-header h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .help-button {
+    width: 28px; /* Even smaller for tiny screens */
+    height: 28px;
+    font-size: 0.8rem;
+    top: 0.5rem;
+    right: 0.75rem;
+  }
+
+  .jeopardy-toggle-button {
+    width: 28px; /* Even smaller for tiny screens */
+    height: 28px;
+    font-size: 0.8rem;
+    top: 0.5rem; /* Same row, not stacked */
+    right: 3.25rem; /* Keep side-by-side even on small screens */
+  }
+}

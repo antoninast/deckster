@@ -132,7 +132,7 @@ const Profile = () => {
             {isOwnProfile && (
               <button className="edit-avatar-btn">
                 <Link to="/me">
-                  <FaEdit /> Edit
+                  <FaEdit /> <Link to="/profile/avatars">Edit</Link>
                 </Link>
               </button>
             )}

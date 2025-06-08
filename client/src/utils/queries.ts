@@ -93,6 +93,7 @@ export const QUERY_CARD_DECKS = gql`
       name
       categoryName
       image_url
+      numberOfCards
       isPublic
       user {
         _id
@@ -113,6 +114,12 @@ export const QUERY_FLASHCARDS_BY_DECK = gql`
       question
       answer
       image_url
+      userStudyAttemptStats {
+        totalAttempts
+        correctAttempts
+        attemptAccuracy
+        proficiency
+      }
     }
   }
 `;

@@ -8,7 +8,7 @@ import {
   QUERY_CARD_DECKS,
   QUERY_FLASHCARDS_BY_DECK,
 } from "../utils/queries";
-import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import auth from "../utils/auth";
 import "./ImportPage.css";
 import ManualImport from "../components/ManualImport/ManualImport";
@@ -198,7 +198,7 @@ const ImportPage: React.FC = () => {
 
   return (
     <div className="import-page">
-      <div className="import-header">
+      {/* <div className="import-header">
         <button
           className="back-button"
           onClick={() => navigate(-1)}
@@ -207,7 +207,7 @@ const ImportPage: React.FC = () => {
           <FaArrowLeft className="back-icon" />
           <span>Back</span>
         </button>
-      </div>
+      </div> */}
 
       {showDeckForm ? (
         <div className="deck-form-container">
