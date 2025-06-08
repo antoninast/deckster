@@ -14,6 +14,7 @@ import {
 import "./Avatar.css";
 import auth from "../../utils/auth";
 import { CardDeck } from "../../interfaces/CardDeck";
+import { FaEdit, FaLayerGroup, FaUserCircle } from "react-icons/fa";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -104,12 +105,12 @@ const Profile = () => {
   };
 
   // User achievements
-  const achievements = [
-    { icon: "🔥", title: "On Fire", description: "7 day streak" },
-    { icon: "🎯", title: "Sharp Shooter", description: "90%+ accuracy" },
-    { icon: "📚", title: "Bookworm", description: "200+ cards studied" },
-    { icon: "⚡", title: "Speed Learner", description: "5 decks mastered" },
-  ];
+  // const achievements = [
+  //   { icon: "🔥", title: "On Fire", description: "7 day streak" },
+  //   { icon: "🎯", title: "Sharp Shooter", description: "90%+ accuracy" },
+  //   { icon: "📚", title: "Bookworm", description: "200+ cards studied" },
+  //   { icon: "⚡", title: "Speed Learner", description: "5 decks mastered" },
+  // ];
 
   return (
     <div className="profile-page">
