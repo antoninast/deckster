@@ -115,8 +115,9 @@ const resolvers = {
 
       // Fetch from a static directory or a database
       // Use Node's fs module to read files from the static avatars directory
-      const avatarsDir = path.resolve(process.cwd(), "public/avatars");
-            try {
+      const avatarsDir = path.resolve(process.cwd(), "server/public/avatars");
+
+      try {
         const files = fs.readdirSync(avatarsDir);
         // Filter for image files (png, jpg, jpeg, gif, svg)
         const avatarFiles = files.filter((file) =>
