@@ -12,6 +12,8 @@ import { signToken, AuthenticationError } from "../utils/auth.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
+import fs from "fs";
+import path from "path";
 
 
 // Making it so that the ProfileArgs can be either profileId or username, but not both at the same time -JH
@@ -106,10 +108,28 @@ const resolvers = {
     },
 
     availableAvatars: async (): Promise<string[]> => {
-      return [
-        "/avatars/Abraham Baker.png",
-      ];
-      // Add more avatar URLs as needed
+      // Test data for available avatars      
+      // return [
+      //   "/avatars/Abraham Baker.png",
+      //   "/avatars/Adriana O'Sullivan.png",
+      // ];
+
+
+      // Fetch from a static directory or a database
+      // Use Node's fs module to read files from the static avatars directory
+      const avatarsDir = path.resolve(process.cwd(), "public/avatars");
+      try {
+        const files = fs.readdirSync(avatarsDir);
+        // Filter for image files (png, jpg, jpeg, gif, svg)
+        const avatarFiles = files.filter((file) =>
+          /\.(png|jpe?g|gif|svg)$/i.test(file)
+        );
+        // Return as relative paths for frontend usage
+        return avatarFiles.map((file) => `/avatars/${file}`);
+      } catch (err) {
+        console.error("Error reading avatars directory:", err);
+        return [];
+      }
     },
 
 
@@ -408,13 +428,14 @@ const resolvers = {
       if (!username || !avatar) {
         throw new Error("Username and avatar are required");
       }
-      const profile = await Profile.findOneAndUpdate(
-        { username: username.toLowerCase() },
-        { profilePicture: avatar },
-      );
+      const profile = await Profile.findOne({ username });
+      // console.log("Found profile:", profile);
       if (!profile) {
         throw new Error("Profile not found");
       }
+      await Profile.findByIdAndUpdate(profile._id, {
+        profilePicture: avatar,
+      });
       return true;
     },
 

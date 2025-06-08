@@ -166,6 +166,7 @@ const Profile = () => {
                 <img
                   src={profile.profilePicture}
                   alt="Profile picture"
+                  className="profile-avatar"
                 />
               ) : (
                 <FaUserCircle />
@@ -189,7 +190,7 @@ const Profile = () => {
             <p className="profile-joined">
               Member since {new Date().toLocaleDateString()}
             </p>
-            <p className="profile-profilePicture">Pic: {profile.profilePicture}</p>
+            {/* <p className="profile-profilePicture">Pic: {profile.profilePicture}</p> */}
           </div>
         </div>
       </div>

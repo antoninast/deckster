@@ -56,13 +56,30 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
+.avatar-description {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
 .avatar-header-content {
     display: flex;
     align-items: flex-start;
     gap: 2rem;
 }
 
-.avatar-avatar-section {
+.avatar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: center;
+}
+
+.avatar-section {
     position: relative;
 }
 
@@ -216,7 +233,7 @@
         font-size: 3rem;
     }
 
-    .avatar-avatar-edit {
+    .avatar-edit {
         text-decoration: none;
     }
 

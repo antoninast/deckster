@@ -58,12 +58,14 @@ export const RESET_PASSWORD = gql`
 `;
 
 export const UPDATE_AVATAR = gql`
-  mutation updateAvatar($username: String!, $avatar: String!) {
-    updateAvatar(username: $username, avatar: $avatar) {
-      _id
-      username
-      profilePicture
-    }
+  mutation updateAvatar(
+    $username: String!, 
+    $avatar: String!
+  ) {
+    updateAvatar(
+      username: $username, 
+      avatar: $avatar
+    )
   }
 `;
 

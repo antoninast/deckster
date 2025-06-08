@@ -66,9 +66,11 @@ const Avatars = () => {
       // Call the mutation to update the avatar in the database
       updateAvatar({
         variables: { username: profile.username, avatar: avatar },
+        refetchQueries: [{query: QUERY_ME}]
       });
       console.log("Avatar updated successfully");
       navigate("/me");
+      setTimeout(() => window.scrollTo(0, 0), 0);
     } catch (error) {
       console.error("Error updating avatar:", error);
     }
@@ -76,23 +78,30 @@ const Avatars = () => {
 
   return (
     <div className="avatar-page">
-        <div className="avatar-avatar-section">
+        <div className="avatar-section">
           {isOwnProfile && <button className="edit-avatar-btn"></button>}
         </div>
 
         <div className="avatar-info">
           <h1 className="avatar-username">{profile.username}</h1>
-          <p className="avatar-email">{profile.email}</p>
+          {/* <p className="avatar-email">{profile.email}</p> */}
         </div>
 
         <div>
-          <h2 className="avatar-avatar-title">Available Avatars</h2>
-          <p className="avatar-avatar-description">
+          <h2 className="avatar-title">Available Avatars</h2>
+          <p className="avatar-description">
             Select an avatar to represent you in the app.
           </p>
+          <div className="avatar-container">
           {avatarList.availableAvatars.map((avatar: string) => {
-            return <img className="avatar-image" src={avatar} alt={avatar} />;
+            return <img 
+              className="avatar-image" 
+              src={avatar} 
+              alt={avatar}
+              onClick={() => handleAvatarSelection(avatar)}
+              />;
           })}
+          </div>
         </div>
     </div>
   );
