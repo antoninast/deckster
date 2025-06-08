@@ -1,8 +1,8 @@
 // client/src/components/Navbar/Navbar.tsx
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, MouseEvent } from "react";
-import { QUERY_SINGLE_PROFILE_BY_USERNAME } from "../../utils/queries";
-import { useLazyQuery } from "@apollo/client";
+// import { QUERY_SINGLE_PROFILE_BY_USERNAME } from "../../utils/queries";
+// import { useLazyQuery } from "@apollo/client";
 import auth from "../../utils/auth";
 
 // Add icon imports
@@ -26,11 +26,11 @@ import logo from "../../assets/deckster-logo.png";
 const AppNavbar = () => {
   // Fixed: Component name should be capitalized
   const navigate = useNavigate();
-  const [fetchProfile] = useLazyQuery(QUERY_SINGLE_PROFILE_BY_USERNAME)
+  // const [fetchProfile] = useLazyQuery(QUERY_SINGLE_PROFILE_BY_USERNAME)
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
   const [loginCheck, setLoginCheck] = useState(false);
-  const [avatar, setAvatar] = useState<string | null>(null);
+  // const [avatar, setAvatar] = useState<string | null>(null);
 
   const logout = (event: MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -111,7 +111,6 @@ const AppNavbar = () => {
                       className={`nav-link-with-icon ${isActive("/me") ? "active" : ""}`}>
                       <div className="nav-icon">
                         <FaUserCircle />
-                        {/* {avatarHandler} */}
                       </div>
                       <span>View My Profile</span>
                     </Link>
