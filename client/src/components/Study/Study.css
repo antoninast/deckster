@@ -70,6 +70,41 @@
   flex-direction: column;
 }
 
+.study-buttons-non-users {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* Styled buttons */
+.study-buttons-non-users button {
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 0.85rem;
+  background-color: var(--color-vanilla);
+  color: var(--text-primary);
+  border: none;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  position: relative;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* Hover and disabled states */
+.study-buttons-non-users button:hover {
+  background-color: var(--color-tan);
+  transform: rotate(0deg) scale(1.05);
+}
+
+.study-buttons-non-users button:disabled {
+  background-color: #ddd;
+  color: #aaa;
+  cursor: not-allowed;
+  transform: rotate(-1deg);
+}
+
 .controls {
   display: flex;
   justify-content: center;
@@ -223,6 +258,35 @@
   justify-content: center;
   transition: all 0.2s ease;
   z-index: 900;
+}
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.tooltip-wrapper:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 /* Responsive styles */
