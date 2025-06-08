@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
@@ -11,8 +11,6 @@ import {
   FaGraduationCap,
   FaEdit,
   FaSave,
-  // FaCog,
-  // FaSignOutAlt,
 } from "react-icons/fa";
 import {
   QUERY_SINGLE_PROFILE,
@@ -34,7 +32,6 @@ const Profile = () => {
   const { loading, data } = useQuery(
     profileId ? QUERY_SINGLE_PROFILE : QUERY_ME,
     { variables: { profileId: profileId } }
-    // { variables: { username: username } }
   );
 
   const { data: myDecksData } = useQuery(QUERY_MY_DECKS);
@@ -85,7 +82,7 @@ const Profile = () => {
       </div>
     );
   }
-  console.log("mystudySessions", myStudySessions);
+
   // Profile statistics
   const stats = {
     totalDecks: myDecks.length,
@@ -108,7 +105,6 @@ const Profile = () => {
         (total: number, session: any) => total + (session.clientDuration || 0),
         0
       );
-      console.log("totalSeconds", totalSeconds);
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const days = Math.floor(hours / 24);
@@ -121,6 +117,7 @@ const Profile = () => {
       return `${days}d ${hours}h ${minutes}m`;
     })(),
   };
+
   // User achievements
   const achievements = achievementStatsData?.userAchievementStats
     ? [
@@ -168,10 +165,12 @@ const Profile = () => {
               <FaUserCircle />
             </div>
             {isOwnProfile && (
-              <button className="edit-avatar-btn">
-                <Link to="/me">
-                  <FaEdit /> <Link to="/profile/avatars">Edit</Link>
-                </Link>
+              <button
+                className="edit-avatar-btn"
+                title="Edit Avatar"
+                onClick={() => navigate("/profile/avatars")}
+              >
+                <FaEdit />
               </button>
             )}
           </div>
@@ -183,23 +182,6 @@ const Profile = () => {
               Member since {new Date().toLocaleDateString()}
             </p>
           </div>
-
-          {/* {isOwnProfile && (
-            <div className="profile-actions">
-              <button
-                className="profile-action-btn"
-                onClick={() => navigate("/settings")}
-              >
-                <FaCog /> Settings
-              </button>
-              <button
-                className="profile-action-btn logout-btn"
-                onClick={() => auth.logout()}
-              >
-                <FaSignOutAlt /> Logout
-              </button>
-            </div>
-          )} */}
         </div>
       </div>
 
@@ -289,12 +271,6 @@ const Profile = () => {
             Recent Activity
           </button>
           <button
-            className={`tab-btn ${activeTab === "progress" ? "active" : ""}`}
-            onClick={() => setActiveTab("progress")}
-          >
-            Progress
-          </button>
-          <button
             className={`tab-btn ${activeTab === "account" ? "active" : ""}`}
             onClick={() => setActiveTab("account")}
           >
@@ -361,68 +337,86 @@ const Profile = () => {
             </div>
           )}
 
-          {activeTab === "progress" && (
-            <div className="tab-panel">
-              <h3>Learning Progress</h3>
-              <div className="progress-chart">
-                <p>Progress visualization coming soon...</p>
-              </div>
-            </div>
-          )}
-
           {activeTab === "account" && (
             <div className="tab-panel">
-              <h3>My Account</h3>
-              <div className="account-settings">
-                <p>You can make changes to your account in the fields below</p>
-              </div>
-              <div className="account-info">
-                <div className="account-field">
-                  <label htmlFor="fullName">Name:</label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    value={profile.fullName}
-                    readOnly
-                  />
-                </div>
-                <div className="account-field">
-                  <label htmlFor="username">Username:</label>
-                  <input
-                    type="text"
-                    id="username"
-                    value={profile.username}
-                    readOnly
-                  />
-                </div>
-                <div className="account-field">
-                  <label htmlFor="email">Email:</label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={profile.email}
-                    readOnly
-                  />
-                </div>
-                <div className="account-field">
-                  <label htmlFor="email">Password:</label>
-                  <input
-                    type="password"
-                    id="currentPassword"
-                    value=""
-                    readOnly
-                  />
-                </div>
+              <div className="account-section">
+                <h3>Account Information</h3>
+                <p className="account-description">
+                  Update your account details below
+                </p>
 
+                <form className="account-form">
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="fullName">Full Name</label>
+                      <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter your full name"
+                        defaultValue={profile.fullName || ""}
+                        className="account-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="username">Username</label>
+                      <input
+                        type="text"
+                        id="username"
+                        value={profile.username}
+                        className="account-input readonly"
+                        readOnly
+                        disabled
+                      />
+                      <span className="field-note">
+                        Username cannot be changed
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="email">Email Address</label>
+                      <input
+                        type="email"
+                        id="email"
+                        defaultValue={profile.email}
+                        className="account-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="currentPassword">Password</label>
+                      <input
+                        type="password"
+                        id="currentPassword"
+                        placeholder="••••••••"
+                        className="account-input"
+                      />
+                      <span className="field-note">
+                        Leave blank to keep current password
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="form-actions">
+                    <button
+                      type="button"
+                      className="btn-save-changes"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        alert("Account update functionality coming soon!");
+                      }}
+                    >
+                      <FaSave /> Save Changes
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div className="action-buttons">
-                  <button
-                    className="action-btn primary"
-                    onClick={() => navigate("/browse-decks")}
-                  >
-                    <FaSave /> Save Changes
-                  </button>
-                </div>
             </div>
           )}
         </div>
