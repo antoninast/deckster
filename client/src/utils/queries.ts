@@ -5,6 +5,10 @@ export const QUERY_PROFILES = gql`
     profiles {
       _id
       username
+      email
+      fullName
+      securityQuestion
+      profilePicture
     }
   }
 `;
@@ -14,11 +18,10 @@ export const QUERY_SINGLE_PROFILE = gql`
     profile(profileId: $profileId) {
       _id
       username
-      fullName
       email
+      fullName
       securityQuestion
-      securityAnswer
-      avatarURL
+      profilePicture
     }
   }
 `;
@@ -28,7 +31,10 @@ export const QUERY_SINGLE_PROFILE_BY_USERNAME = gql`
     profile(username: $username) {
       _id
       username
+      email
+      fullName
       securityQuestion
+      profilePicture
     }
   }
 `;
@@ -55,6 +61,10 @@ export const QUERY_ME = gql`
     me {
       _id
       username
+      email
+      fullName
+      securityQuestion
+      profilePicture
     }
   }
 `;

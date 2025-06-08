@@ -33,9 +33,11 @@ const startApolloServer = async () => {
   const PORT = process.env.PORT || 3001;
 
   // Middleware
+
   app.use(cors());
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
+  app.use(express.static('public'))
 
   // REST endpoint for security questions
   app.get("/api/security-questions", async (_req: Request, res: Response) => {

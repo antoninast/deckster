@@ -13,6 +13,7 @@ import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 
+
 // Making it so that the ProfileArgs can be either profileId or username, but not both at the same time -JH
 type ProfileArgs =
   | { profileId: string; username: undefined }

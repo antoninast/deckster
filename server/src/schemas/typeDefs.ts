@@ -5,6 +5,8 @@ const typeDefs = `
     username: String
     email: String
     password: String
+    fullName: String
+    profilePicture: String
     securityQuestion: String
     studyAttempts: [StudyAttempt]
   }

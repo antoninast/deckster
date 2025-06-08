@@ -55,14 +55,9 @@ const Avatars = () => {
       <div className="profile-header">
         <div className="profile-header-content">
           <div className="profile-avatar-section">
-            <div className="profile-avatar">
-              <FaUserCircle />
-            </div>
             {isOwnProfile && (
               <button className="edit-avatar-btn">
-                <Link to="/me">
-                  <FaEdit /> Edit
-                </Link>
+
               </button>
             )}
           </div>
@@ -75,97 +70,6 @@ const Avatars = () => {
             </p>
           </div>
 
-        </div>
-      </div>
-
-
-      {/* Tabs Section */}
-      <div className="profile-tabs">
-        <div className="tabs-header">
-          <button
-            className={`tab-btn ${activeTab === "overview" ? "active" : ""}`}
-            onClick={() => setActiveTab("overview")}
-          >
-            Overview
-          </button>
-          <button
-            className={`tab-btn ${activeTab === "activity" ? "active" : ""}`}
-            onClick={() => setActiveTab("activity")}
-          >
-            Recent Activity
-          </button>
-          <button
-            className={`tab-btn ${activeTab === "progress" ? "active" : ""}`}
-            onClick={() => setActiveTab("progress")}
-          >
-            Progress
-          </button>
-        </div>
-
-        <div className="tabs-content">
-          {activeTab === "overview" && (
-            <div className="tab-panel">
-              <div className="study-streak-banner">
-                <h3>🔥 Current Streak: {stats.currentStreak} days</h3>
-                <p>Keep it up! You're on fire!</p>
-              </div>
-
-              <div className="quick-actions">
-                <h3>Quick Actions</h3>
-                <div className="action-buttons">
-                  <button
-                    className="action-btn primary"
-                    onClick={() => navigate("/browse-decks")}
-                  >
-                    <FaLayerGroup /> Browse My Decks
-                  </button>
-                  <button
-                    className="action-btn secondary"
-                    onClick={() => navigate("/import")}
-                  >
-                    Create New Deck
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "activity" && (
-            <div className="tab-panel">
-              <h3>Recent Study Sessions</h3>
-              <div className="activity-list">
-                {recentStudySessions.length === 0 ? (
-                  <p>No recent study sessions found.</p>
-                ) : (
-                  recentStudySessions.map((session: any, index: number) => (
-                    <div key={index} className="activity-item">
-                      <span className="activity-date">
-                        {DateTime.fromMillis(
-                          Number(session.startTime)
-                        ).toLocaleString(DateTime.DATETIME_FULL)}
-                      </span>
-                      <span className="activity-deck">
-                        {" "}
-                        {session.deckTitle}
-                      </span>
-                      <span className="activity-score">
-                        {session.sessionAccuracy}% accuracy
-                      </span>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
-
-          {activeTab === "progress" && (
-            <div className="tab-panel">
-              <h3>Learning Progress</h3>
-              <div className="progress-chart">
-                <p>Progress visualization coming soon...</p>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

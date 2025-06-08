@@ -26,7 +26,6 @@ const AppNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
-  console.log(isActive("/browse-decks"));
   const [loginCheck, setLoginCheck] = useState(false);
 
   const logout = (event: MouseEvent<HTMLDivElement>) => {

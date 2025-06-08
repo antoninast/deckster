@@ -33,6 +33,7 @@ const Profile = () => {
   const { loading, data } = useQuery(
     profileId ? QUERY_SINGLE_PROFILE : QUERY_ME,
     { variables: { profileId: profileId } }
+    // { variables: { username: username } }
   );
 
   const { data: myDecksData } = useQuery(QUERY_MY_DECKS);
@@ -52,7 +53,6 @@ const Profile = () => {
   );
   const recentStudySessions =
     recentStudySessionsData?.recentStudySessions || [];
-  console.log("recentStudySessions", recentStudySessions);
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
