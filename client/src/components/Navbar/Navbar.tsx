@@ -50,7 +50,6 @@ const AppNavbar = () => {
       // console.log("User data fetched:", userData);
       // await setAvatar(userData.data?.profile?.profilePicture || null);
       // console.log("Avatar set to:", avatar);
-
     } else {
       setLoginCheck(false);
     }
@@ -59,7 +58,7 @@ const AppNavbar = () => {
   useEffect(() => {
     checkLoginStatus();
     // eslint-disable-next-line
-  }, []);
+  });
 
   // const avatarHandler = async () => {
   //   console.log("Avatar handler called with avatar:", avatar);
@@ -90,7 +89,10 @@ const AppNavbar = () => {
                   <div>
                     <Link
                       to="/browse-decks"
-                      className={`nav-link-with-icon ${isActive("/browse-decks") ? "active" : ""}`}>
+                      className={`nav-link-with-icon ${
+                        isActive("/browse-decks") ? "active" : ""
+                      }`}
+                    >
                       <FaLayerGroup className="nav-icon" />
                       <span>Browse Decks</span>
                     </Link>
@@ -98,7 +100,10 @@ const AppNavbar = () => {
                   <div>
                     <Link
                       to="/import"
-                      className={`nav-link-with-icon ${isActive("/import") ? "active" : ""}`}>
+                      className={`nav-link-with-icon ${
+                        isActive("/import") ? "active" : ""
+                      }`}
+                    >
                       <FaFileImport className="nav-icon" />
                       <span>Create Deck</span>
                     </Link>
@@ -106,7 +111,10 @@ const AppNavbar = () => {
                   <div>
                     <Link
                       to="/me"
-                      className={`nav-link-with-icon ${isActive("/me") ? "active" : ""}`}>
+                      className={`nav-link-with-icon ${
+                        isActive("/me") ? "active" : ""
+                      }`}
+                    >
                       <div className="nav-icon">
                         <FaUserCircle />
                       </div>
@@ -125,19 +133,28 @@ const AppNavbar = () => {
                 <>
                   <Link
                     to="/browse-decks"
-                    className={`nav-link-with-icon ${isActive("/browse-decks") ? "active" : ""}`}>
+                    className={`nav-link-with-icon ${
+                      isActive("/browse-decks") ? "active" : ""
+                    }`}
+                  >
                     <FaLayerGroup className="nav-icon" />
                     <span>Browse Public Decks</span>
                   </Link>
                   <Link
                     to="/login"
-                    className={`nav-link-with-icon ${isActive("/login") ? "active" : ""}`}>
+                    className={`nav-link-with-icon ${
+                      isActive("/login") ? "active" : ""
+                    }`}
+                  >
                     <FaSignInAlt className="nav-icon" />
                     <span>Login</span>
                   </Link>
                   <Link
                     to="/signup"
-                    className={`nav-link-with-icon ${isActive("/signup") ? "active" : ""}`}>
+                    className={`nav-link-with-icon ${
+                      isActive("/signup") ? "active" : ""
+                    }`}
+                  >
                     <FaUserPlus className="nav-icon" />
                     <span>Sign Up</span>
                   </Link>
