@@ -43,7 +43,6 @@ const AppNavbar = () => {
     if (auth.loggedIn()) {
       setLoginCheck(true);
 
-
       // // Fetch user profile to get avatar
       // const userData = await fetchProfile({
       //   variables: { username: auth.getProfile().data.username },
@@ -51,7 +50,6 @@ const AppNavbar = () => {
       // console.log("User data fetched:", userData);
       // await setAvatar(userData.data?.profile?.profilePicture || null);
       // console.log("Avatar set to:", avatar);
-
 
     } else {
       setLoginCheck(false);
