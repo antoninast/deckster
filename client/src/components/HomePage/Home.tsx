@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { QUERY_PROFILES } from "../../utils/queries";
 import {
   FaPlay,
@@ -17,6 +18,7 @@ const Home = () => {
   const { loading, data } = useQuery(QUERY_PROFILES);
   const profiles = data?.profiles || [];
   const isLoggedIn = auth.loggedIn();
+  const user = useSelector((state: any) => state.user.value);
 
   return (
     <main className="home-page">
@@ -28,11 +30,15 @@ const Home = () => {
               Master Any Subject with
               <span className="hero-highlight"> Smart Flashcards ✨</span>
             </h1>
-            <p className="hero-subtitle">
-              🎯 Join {loading ? "..." : profiles.length} learners already using
-              Deckster to ace their studies
-            </p>
-
+            {!user? <>
+              <p className="hero-subtitle">
+                🎯 Join {loading ? "..." : profiles.length} learners already using
+                Deckster to ace their studies
+              </p>
+              <p className="hero-subtitle">
+                🚀 Unlock access to all features and <strong>sign up NOW</strong>!
+              </p>
+            </> : null}
             <div className="hero-buttons">
               {isLoggedIn ? (
                 <button
