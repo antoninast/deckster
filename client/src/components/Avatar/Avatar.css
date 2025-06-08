@@ -30,6 +30,24 @@
 }
 
 /* Avatar Header */
+.avatar-image{
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-direction: row;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-sage);
+    color: white;
+    margin: 0 0.5rem;
+    padding: 0.5rem;
+    object-fit: cover;
+}
+
 .avatar-header {
     background: white;
     border-radius: 16px;

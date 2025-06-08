@@ -305,6 +305,23 @@ const resolvers = {
       return true;
     },
 
+    updateAvatar: async (
+      _parent: any,
+      { username, avatar }: { username: string; avatar: string }): Promise<boolean> => {
+      console.log("Updating avatar for:", username, "to", avatar);
+      if (!username || !avatar) {
+        throw new Error("Username and avatar are required");
+      }
+      const profile = await Profile.findOneAndUpdate(
+        { username: username.toLowerCase() },
+        { profilePicture: avatar },
+      );
+      if (!profile) {
+        throw new Error("Profile not found");
+      }
+      return true;
+    },
+
     addCardDeck: async (
       _parent: any,
       { input }: { input: ICardDeck },

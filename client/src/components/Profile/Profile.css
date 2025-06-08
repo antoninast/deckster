@@ -439,6 +439,13 @@
         gap: 1rem;
     }
 
+    .profile-fullName {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        font-style: italic;
+        color: var(--text-secondary);
+    }
+
     .stat-card {
         flex-direction: column;
         text-align: center;

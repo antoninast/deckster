@@ -128,7 +128,14 @@ const Profile = () => {
         <div className="profile-header-content">
           <div className="profile-avatar-section">
             <div className="profile-avatar">
-              <FaUserCircle />
+              {profile.profilePicture ? (
+                <img
+                  src={profile.profilePicture}
+                  alt="Profile picture"
+                />
+              ) : (
+                <FaUserCircle />
+              )}
             </div>
             {isOwnProfile && (
               <button className="edit-avatar-btn">
@@ -141,10 +148,12 @@ const Profile = () => {
 
           <div className="profile-info">
             <h1 className="profile-username">{profile.username}</h1>
+            <p className="profile-fullName">{profile.fullName}</p>
             <p className="profile-email">{profile.email}</p>
             <p className="profile-joined">
               Member since {new Date().toLocaleDateString()}
             </p>
+            <p className="profile-profilePicture">Pic: {profile.profilePicture}</p>
           </div>
 
           {/* {isOwnProfile && (

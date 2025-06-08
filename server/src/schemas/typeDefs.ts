@@ -140,6 +140,7 @@ const typeDefs = `
       newPassword: String!
       securityAnswer: String!
     ): Boolean
+    updateAvatar(username: String!, avatar: String!): Profile
 
     # Deck management mutations
     addCardDeck(input: CardDeckInput!): CardDeck
