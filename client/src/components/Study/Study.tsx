@@ -17,6 +17,7 @@ import { HelpModal } from "../HelpModal/HelpModal";
 import RecentSessionsChart from "../RecentSessionsChart/RecentSessionsChart";
 import "./Study.css";
 import { FaSignOutAlt, FaGamepad } from "react-icons/fa";
+import { useAchievements } from "../../contexts/AchievementContext";
 
 export default function Study() {
   const { deckId } = useParams();
@@ -29,6 +30,7 @@ export default function Study() {
   const [helpStep, setHelpStep] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [jeopardyMode, setJeopardyMode] = useState(false);
+  const { checkAchievements } = useAchievements();
 
   // Add new state for animations
   const [selectedAnswer, setSelectedAnswer] = useState<
@@ -190,6 +192,13 @@ export default function Study() {
       });
       setIsSessionComplete(true);
       await refetchRecentStudySessions();
+
+      // Check for new achievements!
+      if (!abandonedEarly) {
+        setTimeout(() => {
+          checkAchievements();
+        }, 1000);
+      }
     } catch (err) {
       console.error("Error ending session:", err);
     }
@@ -202,7 +211,6 @@ export default function Study() {
     setIsAnimating(true);
     setSelectedAnswer(correct ? "correct" : "incorrect");
 
-    // Wait for animation to complete
     setTimeout(async () => {
       try {
         await reviewFlashcard({
@@ -218,6 +226,11 @@ export default function Study() {
           setIsSessionComplete(true);
           await refetchStudySession();
           await refetchRecentStudySessions();
+
+          // Add achievement check here too!
+          setTimeout(() => {
+            checkAchievements();
+          }, 2000);
         } else {
           setCurrentCardIndex((prev) => prev + 1);
           if (jeopardyMode) {
@@ -225,7 +238,6 @@ export default function Study() {
           } else {
             setIsFlipped(false);
           }
-          // Reset animation states
           setSelectedAnswer(null);
           setIsAnimating(false);
         }

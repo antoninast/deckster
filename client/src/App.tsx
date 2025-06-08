@@ -1,9 +1,15 @@
-import { Outlet } from 'react-router-dom';
-import Footer from './components/Footer/Footer';
-import Navbar from './components/Navbar/Navbar';
-import './App.css';
+import { Outlet } from "react-router-dom";
+import Footer from "./components/Footer/Footer";
+import Navbar from "./components/Navbar/Navbar";
+import { AchievementProvider } from "./contexts/AchievementContext";
+import AchievementNotification from "./components/AchievementNotification/AchievementNotification";
+import { useAchievements } from "./contexts/AchievementContext";
+import "./App.css";
 
-function App() {
+// Create a separate component for the content
+function AppContent() {
+  const { newAchievements, clearNotifications } = useAchievements();
+
   return (
     <div className="viewport">
       <Navbar />
@@ -11,7 +17,20 @@ function App() {
         <Outlet />
       </main>
       <Footer />
+      <AchievementNotification
+        achievements={newAchievements}
+        onClose={clearNotifications}
+      />
     </div>
+  );
+}
+
+// Main App wraps everything with the provider
+function App() {
+  return (
+    <AchievementProvider>
+      <AppContent />
+    </AchievementProvider>
   );
 }
 

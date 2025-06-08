@@ -5,11 +5,9 @@ import { QUERY_AVAILABLE_AVATARS } from "../../utils/queries";
 import { useMutation } from "@apollo/client";
 import { UPDATE_AVATAR } from "../../utils/mutations";
 
-import {
-  QUERY_SINGLE_PROFILE,
-  QUERY_ME,
-} from "../../utils/queries";
+import { QUERY_SINGLE_PROFILE, QUERY_ME } from "../../utils/queries";
 import "./Avatar.css";
+import auth from "../../utils/auth";
 // import auth from "../../utils/auth";
 
 
@@ -19,7 +17,9 @@ const Avatars = () => {
   const [_avatarSelection, setAvatarSelection] = useState("");
   const [updateAvatar] = useMutation(UPDATE_AVATAR);
 
-  const { loading: loadingAvatars, data: avatarList } = useQuery(QUERY_AVAILABLE_AVATARS)
+  const { loading: loadingAvatars, data: avatarList } = useQuery(
+    QUERY_AVAILABLE_AVATARS
+  );
   console.log("Avatar List:", avatarList);
 
   // Load profile data
@@ -28,7 +28,7 @@ const Avatars = () => {
     { variables: { profileId: profileId } }
     // { variables: { username: username } }
   );
-  
+
   const profile = profileQuery?.me || profileQuery?.profile || {};
   // const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
 
@@ -76,6 +76,29 @@ const Avatars = () => {
   };
 
   return (
+    <div className="profile-page">
+      {/* Profile Header */}
+      <div className="profile-header">
+        <div className="profile-header-content">
+          <div className="profile-avatar-section">
+            {isOwnProfile && <button className="edit-avatar-btn"></button>}
+          </div>
+
+          <div className="profile-info">
+            <h1 className="profile-username">{profile.username}</h1>
+            <p className="profile-email">{profile.email}</p>
+          </div>
+
+          <div>
+            <h2 className="profile-avatar-title">Available Avatars</h2>
+            <p className="profile-avatar-description">
+              Select an avatar to represent you in the app.
+            </p>
+            {avatarList.availableAvatars.map((avatar: string) => {
+              return <img src={avatar} alt={avatar} />;
+            })}
+          </div>
+        </div>
     <div className="avatar-page">
       <div className="avatar-info">
         <h1 className="avatar-username">{profile.username}</h1>
