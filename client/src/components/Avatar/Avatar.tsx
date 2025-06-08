@@ -58,13 +58,13 @@ const Avatars = () => {
     );
   }
 
-  const handleAvatarSelection = (avatar: string) => {
+  const handleAvatarSelection = async (avatar: string) => {
     console.log("Updating avatar for profile:", profile.username, " to ", avatar);
 
     try {
       setAvatarSelection(avatar);
       // Call the mutation to update the avatar in the database
-      updateAvatar({
+      await updateAvatar({
         variables: { username: profile.username, avatar: avatar },
         refetchQueries: [{query: QUERY_ME}]
       });
