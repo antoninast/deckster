@@ -185,8 +185,8 @@ const CSVImport: React.FC<CSVImportProps> = ({
             </button>
           </div>
 
-          {/* File Input */}
-          <label htmlFor="csvFileInput" className="hidden-label">
+          {/* File Input - Hidden */}
+          <label htmlFor="csvFileInput" className="hidden-input-label">
             Upload CSV File
           </label>
           <input
@@ -195,9 +195,9 @@ const CSVImport: React.FC<CSVImportProps> = ({
             type="file"
             accept=".csv"
             onChange={handleChange}
+            className="hidden-input"
             title="Upload a CSV file"
             placeholder="Choose a file"
-            className="hidden-input"
             disabled={isProcessing}
           />
 
