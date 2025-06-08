@@ -37,7 +37,7 @@ const startApolloServer = async () => {
   app.use(cors());
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
-  app.use(express.static('public'))
+  app.use(express.static('server/public'))
 
   // REST endpoint for security questions
   app.get("/api/security-questions", async (_req: Request, res: Response) => {

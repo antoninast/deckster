@@ -15,7 +15,6 @@ import bcrypt from "bcrypt";
 import fs from "fs";
 import path from "path";
 
-
 // Making it so that the ProfileArgs can be either profileId or username, but not both at the same time -JH
 type ProfileArgs =
   | { profileId: string; username: undefined }
@@ -108,17 +107,16 @@ const resolvers = {
     },
 
     availableAvatars: async (): Promise<string[]> => {
-      // Test data for available avatars      
+      // Test data for available avatars
       // return [
       //   "/avatars/Abraham Baker.png",
       //   "/avatars/Adriana O'Sullivan.png",
       // ];
 
-
       // Fetch from a static directory or a database
       // Use Node's fs module to read files from the static avatars directory
       const avatarsDir = path.resolve(process.cwd(), "public/avatars");
-      try {
+            try {
         const files = fs.readdirSync(avatarsDir);
         // Filter for image files (png, jpg, jpeg, gif, svg)
         const avatarFiles = files.filter((file) =>
@@ -131,7 +129,6 @@ const resolvers = {
         return [];
       }
     },
-
 
     myCardDecks: async (
       _parent: any,
@@ -423,7 +420,8 @@ const resolvers = {
 
     updateAvatar: async (
       _parent: any,
-      { username, avatar }: { username: string; avatar: string }): Promise<boolean> => {
+      { username, avatar }: { username: string; avatar: string }
+    ): Promise<boolean> => {
       console.log("Updating avatar for:", username, "to", avatar);
       if (!username || !avatar) {
         throw new Error("Username and avatar are required");

@@ -7,8 +7,6 @@ import { UPDATE_AVATAR } from "../../utils/mutations";
 
 import { QUERY_SINGLE_PROFILE, QUERY_ME } from "../../utils/queries";
 import "./Avatar.css";
-import auth from "../../utils/auth";
-
 
 const Avatars = () => {
   const { profileId } = useParams();
@@ -29,7 +27,6 @@ const Avatars = () => {
   );
 
   const profile = profileQuery?.me || profileQuery?.profile || {};
-  const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
 
   if (loadingProfile) {
     return (
@@ -59,14 +56,13 @@ const Avatars = () => {
   }
 
   const handleAvatarSelection = async (avatar: string) => {
-    console.log("Updating avatar for profile:", profile.username, " to ", avatar);
 
     try {
       setAvatarSelection(avatar);
       // Call the mutation to update the avatar in the database
       await updateAvatar({
         variables: { username: profile.username, avatar: avatar },
-        refetchQueries: [{query: QUERY_ME}]
+        refetchQueries: [{ query: QUERY_ME }],
       });
       console.log("Avatar updated successfully");
       navigate("/me");
@@ -78,31 +74,29 @@ const Avatars = () => {
 
   return (
     <div className="avatar-page">
-        <div className="avatar-section">
-          {isOwnProfile && <button className="edit-avatar-btn"></button>}
-        </div>
+      <div className="avatar-info">
+        <h1 className="avatar-username">{profile.username}</h1>
+        {/* <p className="avatar-email">{profile.email}</p> */}
+      </div>
 
-        <div className="avatar-info">
-          <h1 className="avatar-username">{profile.username}</h1>
-          {/* <p className="avatar-email">{profile.email}</p> */}
-        </div>
-
-        <div>
-          <h2 className="avatar-title">Available Avatars</h2>
-          <p className="avatar-description">
-            Select an avatar to represent you in the app.
-          </p>
-          <div className="avatar-container">
+      <div>
+        <h2 className="avatar-title">Available Avatars</h2>
+        <p className="avatar-description">
+          Select an avatar to represent you in the app.
+        </p>
+        <div className="avatar-container">
           {avatarList.availableAvatars.map((avatar: string) => {
-            return <img 
-              className="avatar-image" 
+            return (
+              <img
+                className="avatar-image"
               src={avatar} 
-              alt={avatar}
-              onClick={() => handleAvatarSelection(avatar)}
-              />;
+                alt={avatar}
+                onClick={() => handleAvatarSelection(avatar)}
+              />
+            );
           })}
-          </div>
         </div>
+      </div>
     </div>
   );
 };
