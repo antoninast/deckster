@@ -122,6 +122,12 @@ export const QUERY_CARD_DECKS = gql`
   }
 `;
 
+export const QUERY_AVAILABLE_AVATARS = gql`
+  query availableAvatars {
+    availableAvatars
+  }
+`;
+
 export const QUERY_FLASHCARDS_BY_DECK = gql`
   query flashcardsByDeck($deckId: ID!) {
     flashcardsByDeck(deckId: $deckId) {

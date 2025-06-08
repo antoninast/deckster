@@ -125,6 +125,9 @@ const typeDefs = `
     studySession(studySessionId: ID!): StudySession
     myStudySessions: [StudySession]!
     recentStudySessions(deckId: ID, limit: Int): [StudySession]
+
+    # Avatar queries
+    availableAvatars: [String!]!
   }
 
   # Mutations

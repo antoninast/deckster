@@ -1,35 +1,42 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { DateTime } from "luxon";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
+import { QUERY_AVAILABLE_AVATARS } from "../../utils/queries";
 
 import {
   QUERY_SINGLE_PROFILE,
   QUERY_ME,
-  QUERY_MY_DECKS,
-  QUERY_MY_STUDY_SESSIONS,
-  QUERY_RECENT_STUDY_SESSIONS,
-
 } from "../../utils/queries";
 import "./Avatar.css";
 import auth from "../../utils/auth";
-import { CardDeck } from "../../interfaces/CardDeck";
-import { FaEdit, FaLayerGroup, FaUserCircle } from "react-icons/fa";
+
 
 const Avatars = () => {
   const { profileId } = useParams();
   const navigate = useNavigate();
   const [avatarSelection, setAvatarSelection] = useState("");
 
-  const { loading, data } = useQuery(
+  const { loading: loadingAvatars, data: avatarList } = useQuery(QUERY_AVAILABLE_AVATARS)
+  console.log("Avatar List:", avatarList);
+
+  // Load profile data
+  const { loading: loadingProfile, data: profileQuery } = useQuery(
     profileId ? QUERY_SINGLE_PROFILE : QUERY_ME,
     { variables: { profileId: profileId } }
+    // { variables: { username: username } }
   );
-
-  const profile = data?.me || data?.profile || {};
+  
+  const profile = profileQuery?.me || profileQuery?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
 
-  if (loading) {
+  if (loadingProfile) {
+    return (
+      <div className="profile-loading">
+        <div className="loading-spinner">Loading Profile...</div>
+      </div>
+    );
+  }
+  if (loadingAvatars) {
     return (
       <div className="profile-loading">
         <div className="loading-spinner">Loading Avatars...</div>
@@ -49,7 +56,6 @@ const Avatars = () => {
     );
   }
 
-
   return (
     <div className="profile-page">
       {/* Profile Header */}
@@ -66,11 +72,22 @@ const Avatars = () => {
           <div className="profile-info">
             <h1 className="profile-username">{profile.username}</h1>
             <p className="profile-email">{profile.email}</p>
-            <p className="profile-joined">
-              Member since {new Date().toLocaleDateString()}
-            </p>
           </div>
-
+          
+          <div>
+            <h2 className="profile-avatar-title">Available Avatars</h2>
+            <p className="profile-avatar-description">
+              Select an avatar to represent you in the app.
+            </p>
+            {(avatarList.availableAvatars).map((avatar: string) => {
+              return (
+                <img
+                    src={avatar}
+                    alt={avatar}
+                  />
+              );  
+            })}
+          </div>
         </div>
       </div>
     </div>

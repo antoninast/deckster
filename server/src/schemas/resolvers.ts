@@ -105,6 +105,14 @@ const resolvers = {
       return await CardDeck.find({ userId: objectId });
     },
 
+    availableAvatars: async (): Promise<string[]> => {
+      return [
+        "/avatars/Abraham Baker.png",
+      ];
+      // Add more avatar URLs as needed
+    },
+
+
     myCardDecks: async (
       _parent: any,
       _args: any,
