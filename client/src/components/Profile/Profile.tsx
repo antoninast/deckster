@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
@@ -10,8 +10,7 @@ import {
   FaLayerGroup,
   FaGraduationCap,
   FaEdit,
-  // FaCog,
-  // FaSignOutAlt,
+  FaSave,
 } from "react-icons/fa";
 import {
   QUERY_SINGLE_PROFILE,
@@ -23,6 +22,7 @@ import {
 import auth from "../../utils/auth";
 import "./Profile.css";
 import { CardDeck } from "../../interfaces/CardDeck";
+import { QUERY_USER_ACHIEVEMENT_STATS } from "../../utils/queries";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -51,10 +51,17 @@ const Profile = () => {
   );
   const recentStudySessions =
     recentStudySessionsData?.recentStudySessions || [];
-  console.log("recentStudySessions", recentStudySessions);
 
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
+
+  const { data: achievementStatsData } = useQuery(
+    QUERY_USER_ACHIEVEMENT_STATS,
+    {
+      skip: !isOwnProfile,
+      fetchPolicy: "cache-and-network",
+    }
+  );
 
   if (loading) {
     return (
@@ -75,7 +82,7 @@ const Profile = () => {
       </div>
     );
   }
-  console.log("mystudySessions", myStudySessions);
+
   // Profile statistics
   const stats = {
     totalDecks: myDecks.length,
@@ -83,7 +90,6 @@ const Profile = () => {
       (total: number, deck: CardDeck) => total + (deck.numberOfCards || 0),
       0
     ),
-    // studySessions: 45,
     averageAccuracy:
       Math.round(
         myDecks.reduce(
@@ -92,13 +98,13 @@ const Profile = () => {
           0
         ) / (myDecks.length || 1)
       ) || 0,
-    currentStreak: 7,
+    currentStreak:
+      achievementStatsData?.userAchievementStats?.currentStreak || 0,
     totalStudyTime: (() => {
       const totalSeconds = myStudySessions.reduce(
         (total: number, session: any) => total + (session.clientDuration || 0),
         0
       );
-      console.log("totalSeconds", totalSeconds);
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const days = Math.floor(hours / 24);
@@ -113,12 +119,41 @@ const Profile = () => {
   };
 
   // User achievements
-  const achievements = [
-    { icon: "🔥", title: "On Fire", description: "7 day streak" },
-    { icon: "🎯", title: "Sharp Shooter", description: "90%+ accuracy" },
-    { icon: "📚", title: "Bookworm", description: "200+ cards studied" },
-    { icon: "⚡", title: "Speed Learner", description: "5 decks mastered" },
-  ];
+  const achievements = achievementStatsData?.userAchievementStats
+    ? [
+        achievementStatsData.userAchievementStats.totalSessions >= 1 && {
+          icon: "🎯",
+          title: "First Steps",
+          description: "Completed first session",
+        },
+        achievementStatsData.userAchievementStats.bestAccuracy >= 80 && {
+          icon: "🎯",
+          title: "Sharp Mind",
+          description: "80%+ accuracy",
+        },
+        achievementStatsData.userAchievementStats.currentStreak >= 3 && {
+          icon: "🔥",
+          title: "Dedicated Learner",
+          description: `${achievementStatsData.userAchievementStats.currentStreak} day streak`,
+        },
+        achievementStatsData.userAchievementStats.totalCardsStudied >= 100 && {
+          icon: "💯",
+          title: "Century Club",
+          description: "100+ cards studied",
+        },
+        achievementStatsData.userAchievementStats.bestAccuracy >= 90 && {
+          icon: "👑",
+          title: "Deck Master",
+          description: "90%+ accuracy",
+        },
+        achievementStatsData.userAchievementStats.fastestSession &&
+          achievementStatsData.userAchievementStats.fastestSession < 120 && {
+            icon: "⚡",
+            title: "Speed Demon",
+            description: "< 2 min session",
+          },
+      ].filter(Boolean)
+    : [];
 
   return (
     <div className="profile-page">
@@ -127,41 +162,36 @@ const Profile = () => {
         <div className="profile-header-content">
           <div className="profile-avatar-section">
             <div className="profile-avatar">
-              <FaUserCircle />
+              {profile.profilePicture ? (
+                <img
+                  src={profile.profilePicture}
+                  alt="Profile picture"
+                  className="profile-avatar"
+                />
+              ) : (
+                <FaUserCircle />
+              )}
             </div>
             {isOwnProfile && (
-              <button className="edit-avatar-btn">
-                <Link to="/me">
-                  <FaEdit /> <Link to="/profile/avatars">Edit</Link>
-                </Link>
+              <button
+                className="edit-avatar-btn"
+                title="Edit Avatar"
+                onClick={() => navigate("/profile/avatars")}
+              >
+                <FaEdit />
               </button>
             )}
           </div>
 
           <div className="profile-info">
             <h1 className="profile-username">{profile.username}</h1>
+            <p className="profile-fullName">{profile.fullName}</p>
             <p className="profile-email">{profile.email}</p>
             <p className="profile-joined">
               Member since {new Date().toLocaleDateString()}
             </p>
+            {/* <p className="profile-profilePicture">Pic: {profile.profilePicture}</p> */}
           </div>
-
-          {/* {isOwnProfile && (
-            <div className="profile-actions">
-              <button
-                className="profile-action-btn"
-                onClick={() => navigate("/settings")}
-              >
-                <FaCog /> Settings
-              </button>
-              <button
-                className="profile-action-btn logout-btn"
-                onClick={() => auth.logout()}
-              >
-                <FaSignOutAlt /> Logout
-              </button>
-            </div>
-          )} */}
         </div>
       </div>
 
@@ -213,15 +243,26 @@ const Profile = () => {
         <h2 className="section-title">
           <FaTrophy /> Achievements
         </h2>
-        <div className="achievements-grid">
-          {achievements.map((achievement, index) => (
-            <div key={index} className="achievement-card">
-              <span className="achievement-icon">{achievement.icon}</span>
-              <h4>{achievement.title}</h4>
-              <p>{achievement.description}</p>
-            </div>
-          ))}
-        </div>
+        {achievements.length > 0 ? (
+          <div className="achievements-grid">
+            {achievements.map((achievement, index) => (
+              <div key={index} className="achievement-card">
+                <span className="achievement-icon">{achievement.icon}</span>
+                <h4>{achievement.title}</h4>
+                <p>{achievement.description}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="no-achievements">
+            <div className="no-achievements-icon">🎯</div>
+            <h3>No Achievements Yet</h3>
+            <p>Complete study sessions to unlock achievements!</p>
+            <p className="achievement-hint">
+              Try completing your first study session to earn "First Steps" 🌟
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Tabs Section */}
@@ -240,10 +281,10 @@ const Profile = () => {
             Recent Activity
           </button>
           <button
-            className={`tab-btn ${activeTab === "progress" ? "active" : ""}`}
-            onClick={() => setActiveTab("progress")}
+            className={`tab-btn ${activeTab === "account" ? "active" : ""}`}
+            onClick={() => setActiveTab("account")}
           >
-            Progress
+            Account Settings
           </button>
         </div>
 
@@ -252,9 +293,12 @@ const Profile = () => {
             <div className="tab-panel">
               <div className="study-streak-banner">
                 <h3>🔥 Current Streak: {stats.currentStreak} days</h3>
-                <p>Keep it up! You're on fire!</p>
+                <p>
+                  {stats.currentStreak > 0
+                    ? "Keep it up! You're on fire!"
+                    : "Start your streak today!"}
+                </p>
               </div>
-
               <div className="quick-actions">
                 <h3>Quick Actions</h3>
                 <div className="action-buttons">
@@ -303,11 +347,85 @@ const Profile = () => {
             </div>
           )}
 
-          {activeTab === "progress" && (
+          {activeTab === "account" && (
             <div className="tab-panel">
-              <h3>Learning Progress</h3>
-              <div className="progress-chart">
-                <p>Progress visualization coming soon...</p>
+              <div className="account-section">
+                <h3>Account Information</h3>
+                <p className="account-description">
+                  Update your account details below
+                </p>
+
+                <form className="account-form">
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="fullName">Full Name</label>
+                      <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter your full name"
+                        defaultValue={profile.fullName || ""}
+                        className="account-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="username">Username</label>
+                      <input
+                        type="text"
+                        id="username"
+                        value={profile.username}
+                        className="account-input readonly"
+                        readOnly
+                        disabled
+                      />
+                      <span className="field-note">
+                        Username cannot be changed
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="email">Email Address</label>
+                      <input
+                        type="email"
+                        id="email"
+                        defaultValue={profile.email}
+                        className="account-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="account-field">
+                      <label htmlFor="currentPassword">Password</label>
+                      <input
+                        type="password"
+                        id="currentPassword"
+                        placeholder="••••••••"
+                        className="account-input"
+                      />
+                      <span className="field-note">
+                        Leave blank to keep current password
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="form-actions">
+                    <button
+                      type="button"
+                      className="btn-save-changes"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        alert("Account update functionality coming soon!");
+                      }}
+                    >
+                      <FaSave /> Save Changes
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}

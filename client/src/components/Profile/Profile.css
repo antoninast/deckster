@@ -439,6 +439,13 @@
         gap: 1rem;
     }
 
+    .profile-fullName {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        font-style: italic;
+        color: var(--text-secondary);
+    }
+
     .stat-card {
         flex-direction: column;
         text-align: center;
@@ -490,5 +497,181 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* No Achievements State */
+.no-achievements {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--color-vanilla);
+    border-radius: 12px;
+    border: 2px dashed var(--color-sage);
+}
+
+.no-achievements-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.no-achievements h3 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.no-achievements p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.achievement-hint {
+    font-size: 0.9rem;
+    color: var(--color-tan);
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+/* Account Settings Styles */
+
+.account-section h3 {
+    font-size: 1.75rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.account-description {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-row {
+    width: 100%;
+}
+
+.account-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.account-field label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.account-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--color-sage);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.account-input:focus {
+    outline: none;
+    border-color: var(--color-tan);
+    box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
+}
+
+.account-input:disabled,
+.account-input.readonly {
+    background: var(--color-vanilla);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.field-note {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-cream);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.btn-save-changes {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background: var(--color-tan);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(212, 163, 115, 0.3);
+}
+
+.btn-save-changes:hover {
+    background: #996515;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
+}
+
+.btn-save-changes:active {
+    transform: translateY(0);
+}
+
+/* Fix edit avatar button */
+.edit-avatar-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.edit-avatar-btn:hover {
+    text-decoration: none;
+}
+
+.edit-avatar-btn svg {
+    font-size: 1.1rem;
+}
+
+/* Responsive account form */
+@media (max-width: 768px) {
+    .account-section {
+        padding: 0;
+    }
+
+    .account-field label {
+        font-size: 0.8rem;
+    }
+
+    .account-input {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.95rem;
+    }
+
+    .btn-save-changes {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
     }
 }

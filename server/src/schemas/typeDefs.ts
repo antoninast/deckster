@@ -5,6 +5,8 @@ const typeDefs = `
     username: String
     email: String
     password: String
+    fullName: String
+    profilePicture: String
     securityQuestion: String
     studyAttempts: [StudyAttempt]
   }
@@ -86,6 +88,14 @@ const typeDefs = `
     userStudyAttemptStats: StudyAttemptStats
   }
 
+  type UserAchievementStats {
+  totalSessions: Int!
+  totalCardsStudied: Int!
+  bestAccuracy: Float!
+  currentStreak: Int!
+  fastestSession: Int
+}
+
   # Input types
   input CardDeckInput {
     name: String!
@@ -123,6 +133,12 @@ const typeDefs = `
     studySession(studySessionId: ID!): StudySession
     myStudySessions: [StudySession]!
     recentStudySessions(deckId: ID, limit: Int): [StudySession]
+
+    # Avatar queries
+    availableAvatars: [String!]!
+
+    # Achievement query
+    userAchievementStats: UserAchievementStats
   }
 
   # Mutations
@@ -135,6 +151,7 @@ const typeDefs = `
       newPassword: String!
       securityAnswer: String!
     ): Boolean
+    updateAvatar(username: String!, avatar: String!): Boolean
 
     # Deck management mutations
     addCardDeck(input: CardDeckInput!): CardDeck

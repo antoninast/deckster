@@ -5,6 +5,10 @@ export const QUERY_PROFILES = gql`
     profiles {
       _id
       username
+      email
+      fullName
+      securityQuestion
+      profilePicture
     }
   }
 `;
@@ -14,6 +18,10 @@ export const QUERY_SINGLE_PROFILE = gql`
     profile(profileId: $profileId) {
       _id
       username
+      email
+      fullName
+      securityQuestion
+      profilePicture
     }
   }
 `;
@@ -23,7 +31,10 @@ export const QUERY_SINGLE_PROFILE_BY_USERNAME = gql`
     profile(username: $username) {
       _id
       username
+      email
+      fullName
       securityQuestion
+      profilePicture
     }
   }
 `;
@@ -50,6 +61,10 @@ export const QUERY_ME = gql`
     me {
       _id
       username
+      email
+      fullName
+      securityQuestion
+      profilePicture
     }
   }
 `;
@@ -104,6 +119,12 @@ export const QUERY_CARD_DECKS = gql`
         proficiency
       }
     }
+  }
+`;
+
+export const QUERY_AVAILABLE_AVATARS = gql`
+  query availableAvatars {
+    availableAvatars
   }
 `;
 
@@ -172,6 +193,18 @@ export const QUERY_RECENT_STUDY_SESSIONS = gql`
       status
       createdAt
       updatedAt
+    }
+  }
+`;
+
+export const QUERY_USER_ACHIEVEMENT_STATS = gql`
+  query userAchievementStats {
+    userAchievementStats {
+      totalSessions
+      totalCardsStudied
+      bestAccuracy
+      currentStreak
+      fastestSession
     }
   }
 `;

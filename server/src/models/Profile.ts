@@ -49,6 +49,13 @@ const profileSchema = new Schema<IProfile>(
       type: String,
       required: true,
     },
+    profilePicture: {
+      type: String,
+    },
+    fullName: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
