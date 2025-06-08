@@ -194,6 +194,102 @@ const resolvers = {
       return sessions;
     },
 
+    userAchievementStats: async (
+      _parent: any,
+      _args: any,
+      context: Context
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
+
+      const userId = context.user._id;
+
+      // Get total sessions
+      const totalSessions = await StudySession.countDocuments({
+        userId,
+        status: { $in: ["completed", "abandoned"] },
+      });
+
+      // Get total cards studied
+      const totalCardsResult = await StudyAttempt.aggregate([
+        { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+        { $group: { _id: null, total: { $sum: 1 } } },
+      ]);
+      const totalCardsStudied = totalCardsResult[0]?.total || 0;
+
+      // Get best accuracy from any deck
+      const deckStats = await StudyAttempt.aggregate([
+        { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+        {
+          $group: {
+            _id: "$deckId",
+            totalAttempts: { $sum: 1 },
+            correctAttempts: { $sum: { $cond: ["$isCorrect", 1, 0] } },
+          },
+        },
+        {
+          $addFields: {
+            accuracy: {
+              $multiply: [
+                { $divide: ["$correctAttempts", "$totalAttempts"] },
+                100,
+              ],
+            },
+          },
+        },
+        { $sort: { accuracy: -1 } },
+        { $limit: 1 },
+      ]);
+      const bestAccuracy = deckStats[0]?.accuracy || 0;
+
+      // Get fastest session
+      const fastestSession = await StudySession.findOne({
+        userId,
+        status: "completed",
+        clientDuration: { $gt: 0 },
+      }).sort({ clientDuration: 1 });
+
+      // Simple streak calculation (sessions on consecutive days)
+      const recentSessions = await StudySession.find({
+        userId,
+        status: "completed",
+      })
+        .sort({ endTime: -1 })
+        .limit(30);
+
+      let currentStreak = 0;
+      let lastDate: Date | null = null;
+
+      for (const session of recentSessions) {
+        const sessionDate = new Date(session.endTime!);
+        sessionDate.setHours(0, 0, 0, 0);
+
+        if (!lastDate) {
+          currentStreak = 1;
+          lastDate = sessionDate;
+        } else {
+          const dayDiff =
+            (lastDate.getTime() - sessionDate.getTime()) /
+            (1000 * 60 * 60 * 24);
+          if (dayDiff === 1) {
+            currentStreak++;
+            lastDate = sessionDate;
+          } else if (dayDiff > 1) {
+            break;
+          }
+        }
+      }
+
+      return {
+        totalSessions,
+        totalCardsStudied,
+        bestAccuracy,
+        currentStreak,
+        fastestSession: fastestSession?.clientDuration || null,
+      };
+    },
+
     recentStudySessions: async (
       _parent: any,
       { deckId, limit = 5 }: { deckId?: string | ""; limit?: number },

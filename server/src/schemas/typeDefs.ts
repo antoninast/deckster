@@ -88,6 +88,14 @@ const typeDefs = `
     userStudyAttemptStats: StudyAttemptStats
   }
 
+  type UserAchievementStats {
+  totalSessions: Int!
+  totalCardsStudied: Int!
+  bestAccuracy: Float!
+  currentStreak: Int!
+  fastestSession: Int
+}
+
   # Input types
   input CardDeckInput {
     name: String!
@@ -128,6 +136,9 @@ const typeDefs = `
 
     # Avatar queries
     availableAvatars: [String!]!
+
+    # Achievement query
+    userAchievementStats: UserAchievementStats
   }
 
   # Mutations

@@ -196,3 +196,15 @@ export const QUERY_RECENT_STUDY_SESSIONS = gql`
     }
   }
 `;
+
+export const QUERY_USER_ACHIEVEMENT_STATS = gql`
+  query userAchievementStats {
+    userAchievementStats {
+      totalSessions
+      totalCardsStudied
+      bestAccuracy
+      currentStreak
+      fastestSession
+    }
+  }
+`;

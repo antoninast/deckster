@@ -24,6 +24,7 @@ import {
 import auth from "../../utils/auth";
 import "./Profile.css";
 import { CardDeck } from "../../interfaces/CardDeck";
+import { QUERY_USER_ACHIEVEMENT_STATS } from "../../utils/queries";
 
 const Profile = () => {
   const { profileId } = useParams();
@@ -57,6 +58,14 @@ const Profile = () => {
   const profile = data?.me || data?.profile || {};
   const isOwnProfile = !profileId || auth.getProfile().data._id === profileId;
 
+  const { data: achievementStatsData } = useQuery(
+    QUERY_USER_ACHIEVEMENT_STATS,
+    {
+      skip: !isOwnProfile,
+      fetchPolicy: "cache-and-network",
+    }
+  );
+
   if (loading) {
     return (
       <div className="profile-loading">
@@ -84,7 +93,6 @@ const Profile = () => {
       (total: number, deck: CardDeck) => total + (deck.numberOfCards || 0),
       0
     ),
-    // studySessions: 45,
     averageAccuracy:
       Math.round(
         myDecks.reduce(
@@ -93,7 +101,8 @@ const Profile = () => {
           0
         ) / (myDecks.length || 1)
       ) || 0,
-    currentStreak: 7,
+    currentStreak:
+      achievementStatsData?.userAchievementStats?.currentStreak || 0,
     totalStudyTime: (() => {
       const totalSeconds = myStudySessions.reduce(
         (total: number, session: any) => total + (session.clientDuration || 0),
@@ -112,14 +121,42 @@ const Profile = () => {
       return `${days}d ${hours}h ${minutes}m`;
     })(),
   };
-
   // User achievements
-  const achievements = [
-    { icon: "🔥", title: "On Fire", description: "7 day streak" },
-    { icon: "🎯", title: "Sharp Shooter", description: "90%+ accuracy" },
-    { icon: "📚", title: "Bookworm", description: "200+ cards studied" },
-    { icon: "⚡", title: "Speed Learner", description: "5 decks mastered" },
-  ];
+  const achievements = achievementStatsData?.userAchievementStats
+    ? [
+        achievementStatsData.userAchievementStats.totalSessions >= 1 && {
+          icon: "🎯",
+          title: "First Steps",
+          description: "Completed first session",
+        },
+        achievementStatsData.userAchievementStats.bestAccuracy >= 80 && {
+          icon: "🎯",
+          title: "Sharp Mind",
+          description: "80%+ accuracy",
+        },
+        achievementStatsData.userAchievementStats.currentStreak >= 3 && {
+          icon: "🔥",
+          title: "Dedicated Learner",
+          description: `${achievementStatsData.userAchievementStats.currentStreak} day streak`,
+        },
+        achievementStatsData.userAchievementStats.totalCardsStudied >= 100 && {
+          icon: "💯",
+          title: "Century Club",
+          description: "100+ cards studied",
+        },
+        achievementStatsData.userAchievementStats.bestAccuracy >= 90 && {
+          icon: "👑",
+          title: "Deck Master",
+          description: "90%+ accuracy",
+        },
+        achievementStatsData.userAchievementStats.fastestSession &&
+          achievementStatsData.userAchievementStats.fastestSession < 120 && {
+            icon: "⚡",
+            title: "Speed Demon",
+            description: "< 2 min session",
+          },
+      ].filter(Boolean)
+    : [];
 
   return (
     <div className="profile-page">
@@ -214,15 +251,26 @@ const Profile = () => {
         <h2 className="section-title">
           <FaTrophy /> Achievements
         </h2>
-        <div className="achievements-grid">
-          {achievements.map((achievement, index) => (
-            <div key={index} className="achievement-card">
-              <span className="achievement-icon">{achievement.icon}</span>
-              <h4>{achievement.title}</h4>
-              <p>{achievement.description}</p>
-            </div>
-          ))}
-        </div>
+        {achievements.length > 0 ? (
+          <div className="achievements-grid">
+            {achievements.map((achievement, index) => (
+              <div key={index} className="achievement-card">
+                <span className="achievement-icon">{achievement.icon}</span>
+                <h4>{achievement.title}</h4>
+                <p>{achievement.description}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="no-achievements">
+            <div className="no-achievements-icon">🎯</div>
+            <h3>No Achievements Yet</h3>
+            <p>Complete study sessions to unlock achievements!</p>
+            <p className="achievement-hint">
+              Try completing your first study session to earn "First Steps" 🌟
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Tabs Section */}
@@ -259,9 +307,12 @@ const Profile = () => {
             <div className="tab-panel">
               <div className="study-streak-banner">
                 <h3>🔥 Current Streak: {stats.currentStreak} days</h3>
-                <p>Keep it up! You're on fire!</p>
+                <p>
+                  {stats.currentStreak > 0
+                    ? "Keep it up! You're on fire!"
+                    : "Start your streak today!"}
+                </p>
               </div>
-
               <div className="quick-actions">
                 <h3>Quick Actions</h3>
                 <div className="action-buttons">
