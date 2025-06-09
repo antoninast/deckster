@@ -28,29 +28,47 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    perspective: 1000px;
+}
+
+.deck-wrapper {
+  perspective: 1000px;
+  width: 20%;
+  height: 35rem;
+  position: relative;
+  overflow: visible;
+  transform-style: preserve-3d;
+  pointer-events: auto;
 }
 
 /* ========================================
    DECK CARD STYLES
    ======================================== */
-.deck.card {
-  width: 25%;
-  background-color: var(--color-background); /* #fefae0 */
-  border: 2px solid var(--border-color-dark); /* subtle darker border */
+.deck {
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+  transform: rotateY(0deg);
+  background-color: var(--color-background);
+  border: 2px solid var(--border-color-dark);
   border-radius: 12px;
   box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.12),  /* soft shadow */
-    inset 0 0 8px rgba(0, 0, 0, 0.03); /* subtle inner shading */
+    0 4px 6px rgba(0, 0, 0, 0.12),
+    inset 0 0 8px rgba(0, 0, 0, 0.03);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--black-text); /* #1a1a1a */
-  padding: 20px;
+  color: var(--black-text);
+  padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   -webkit-user-select: none; /* Safari compatibility */
   user-select: none;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  pointer-events: auto;
   position: relative;
   background-image:
     linear-gradient(
@@ -66,14 +84,14 @@
   background-size: 20px 20px;
 }
 
-.deck.card:hover {
-  transform: translateY(-8px) scale(1.05);
+.deck:hover {
+  /* transform: translateY(-8px); */
   box-shadow:
     0 10px 15px rgba(0, 0, 0, 0.2),
     inset 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-.deck.card .card-header {
+.deck .card-header {
   font-weight: 700;
   font-size: 1.25rem;
   margin-bottom: 12px;
@@ -82,9 +100,9 @@
   color: var(--color-tan);
 }
 
-.deck.card .card-details {
+.deck .card-details {
   font-size: 1rem;
-  color: var(--gray-text); /* #4a4a4a */
+  color: var(--gray-text);
   line-height: 1.4;
   text-align: center;
   flex-grow: 1;
@@ -94,14 +112,71 @@
   padding: 0 8px;
 }
 
-.browse-page .decks-container .deck.card:hover {
+.browse-page .decks-container .deck:hover {
     /* transform: translateY(-1px) !important; */
-    transform: scale(1.01) !important;
+    /* transform: scale(1.01) !important; */
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
 }
 
+.deck.flipped {
+  transform: rotateY(180deg) !important;
+}
+
+.deck-front,
+.deck-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: center;
+  padding: 20px;
+}
+
+.deck-front {
+  z-index: 2;
+}
+
+.deck-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+  background-color: var(--color-background);
+  background-image:
+  linear-gradient(
+    135deg,
+    transparent 25%,
+    rgba(180, 134, 11, 0.04) 25%,
+    rgba(180, 134, 11, 0.04) 50%,
+    transparent 50%,
+    transparent 75%,
+    rgba(180, 134, 11, 0.04) 75%,
+    rgba(180, 134, 11, 0.04) 100%
+  );
+  background-size: 20px 20px;
+  border: 2px solid var(--border-color-dark);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.12),
+    inset 0 0 8px rgba(0, 0, 0, 0.03);
+}
+
+.deck.flipped .deck-front {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.deck.flipped .deck-back {
+  z-index: 2;
+  pointer-events: auto;
+}
+
 /* Card Header */
-.deck.card .card-header {
+.deck .card-header {
     background: linear-gradient(135deg, var(--color-sage) 0%, #bfcfa7 100%);
     display: flex;
     justify-content: space-between;
@@ -111,7 +186,7 @@
     border-radius: 16px 16px 0 0;
 }
 
-.deck.card .card-title {
+.deck .card-title {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--text-primary);
@@ -261,6 +336,7 @@
 
 .deck-action-btn {
     flex: 1;
+    width: 40%;
     padding: 0.5rem 0.75rem;
     border: none;
     border-radius: 6px;
@@ -298,6 +374,21 @@
     background: #b8c89f;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(204, 213, 174, 0.3);
+}
+
+.btn-leader-board {
+    background-color: #e98a319f;
+}
+
+.btn-leader-board:hover {
+    background: #bd8e5f; 
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(172, 177, 154, 0.3);
+}
+
+.deck-back .btn-leader-board {
+    height: 20%;
+    width: 55%;
 }
 
 .btn-import {
@@ -419,15 +510,19 @@
 
 /* Mobile specific adjustments */
 @media (max-width: 1629px) {
-    .deck.card {
+    .deck-wrapper {
         width: 30%;
     }
 }
 
 @media (max-width: 1290px) {
-    .deck.card {
+    .deck-wrapper {
         width: 40%;
     }
+
+    /* .deck .card-title {
+        font-size: 1.1rem;
+    } */
 }
 
 @media (max-width: 893px) {
@@ -440,11 +535,18 @@
         margin-bottom: 2rem;
     }
 
-    .deck.card {
-        margin-top: 2em;
+    .deck-wrapper {
+        margin-top: 0;
     }
 
-    .deck.card .card-title {
+    .deck {
+        transition: transform 0.8s ease-in-out;
+    }
+
+    .deck-back h5 {
+        font-size: 1rem;
+    }
+    .deck .card-title {
         font-size: 1.1rem;
     }
 
@@ -456,24 +558,32 @@
         width: 80%;
     }
 
+    .stat-creator {
+        display: block;
+        width: 100%;
+    }
+
     .deck-action-btn {
         padding: 0.45rem 0.6rem;
         font-size: 0.75rem;
     }
 
-    .action-buttons {
+    .deck .action-buttons {
         padding: 0.3em;
+        flex-direction: row;
     }
 }
 
 @media (max-width: 770px) {
-    .deck.card {
-        width: 60%;
+    .deck-wrapper {
+      width: 50%;
+      display: flex;
+      justify-content: center;
     }
 }
 
 @media (max-width: 608px) {
-    .deck.card {
+    .deck-wrapper {
         width: 80%;
     }
 }
@@ -494,48 +604,48 @@
 }
 
 /* Staggered animation for cards */
-.deck.card:nth-child(1) {
+.deck:nth-child(1) {
     animation-delay: 0.05s;
 }
 
-.deck.card:nth-child(2) {
+.deck:nth-child(2) {
     animation-delay: 0.1s;
 }
 
-.deck.card:nth-child(3) {
+.deck:nth-child(3) {
     animation-delay: 0.15s;
 }
 
-.deck.card:nth-child(4) {
+.deck:nth-child(4) {
     animation-delay: 0.2s;
 }
 
-.deck.card:nth-child(5) {
+.deck:nth-child(5) {
     animation-delay: 0.25s;
 }
 
-.deck.card:nth-child(6) {
+.deck:nth-child(6) {
     animation-delay: 0.3s;
 }
 
-.deck.card:nth-child(7) {
+.deck:nth-child(7) {
     animation-delay: 0.35s;
 }
 
-.deck.card:nth-child(8) {
+.deck:nth-child(8) {
     animation-delay: 0.4s;
 }
 
-.deck.card:nth-child(9) {
+.deck:nth-child(9) {
     animation-delay: 0.45s;
 }
 
-.deck.card:nth-child(10) {
+.deck:nth-child(10) {
     animation-delay: 0.5s;
 }
 
 /* For cards beyond 10 */
-.deck.card:nth-child(n+11) {
+.deck:nth-child(n+11) {
     animation-delay: 0.5s;
 }
 
@@ -675,7 +785,7 @@
         display: none !important;
     }
 
-    .deck.card {
+    .deck {
         box-shadow: none;
         border: 1px solid #ddd;
         break-inside: avoid;

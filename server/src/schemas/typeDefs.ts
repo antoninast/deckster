@@ -16,6 +16,13 @@ const typeDefs = `
     profile: Profile
   }
 
+  type LeaderBoardEntry {
+    username: String!
+    totalAttempts: Int!
+    correctAttempts: Int!
+    attemptAccuracy: Float!
+  }
+
   input ProfileInput {
     username: String!
     email: String!
@@ -77,6 +84,7 @@ const typeDefs = `
     numberOfCards: Int
     userStudyAttemptStats: StudyAttemptStats
     isPublic: Boolean
+    leaderBoard: [LeaderBoardEntry]
   }
 
   type Flashcard {
