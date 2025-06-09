@@ -433,14 +433,17 @@ export default function Study() {
       <button
         className={`jeopardy-toggle-button ${jeopardyMode ? "active" : ""}`}
         onClick={jeopardyModeToggle}
-        title="Jeopardy Mode - Show answers first"
+        title="Show answers first"
       >
         <FaGamepad/>
-        <span className="tooltip-text">Show answers first</span>
       </button>
 
       {user ? 
-        <button className="help-button" onClick={handleToggleHelp}>?</button> : null
+        <button
+          className="help-button"
+          onClick={handleToggleHelp}
+          title="Help"
+        >?</button> : null
       }
 
       <HelpModal

@@ -242,15 +242,15 @@
 
 .jeopardy-toggle-button {
   position: absolute;
-  top: 0.5rem; /* Back to same row as help button */
-  right: 3.5rem; /* Position to the left of help button */
-  width: 30px; /* Reduced from 35px */
-  height: 30px; /* Reduced from 35px */
+  top: 0.5rem;
+  right: 3.5rem;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--button-secondary);
   color: var(--text-dark);
   border: 2px solid var(--border-color);
-  font-size: 0.9rem; /* Reduced from 1rem */
+  font-size: 0.9rem;
   cursor: pointer;
   box-shadow: var(--shadow-md);
   display: flex;
@@ -258,6 +258,11 @@
   justify-content: center;
   transition: all 0.2s ease;
   z-index: 900;
+}
+
+.jeopardy-toggle-button:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .tooltip-wrapper {
