@@ -143,6 +143,7 @@ export default function Flashcards() {
   };
 
   useEffect(() => {
+    refetch();
     if (flashcards?.flashcardsByDeck) {
       setFlashcardList(flashcards.flashcardsByDeck);
     }

@@ -145,7 +145,7 @@
 }
 
 /* Medium screens (609px to 889px) */
-@media (min-width: 609px) and (max-width: 889px) {
+@media (min-width: 609px) and (max-width: 897px) {
     .navbar-links-container {
         gap: 0.4rem;
     }
