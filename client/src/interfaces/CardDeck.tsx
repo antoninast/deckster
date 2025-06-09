@@ -15,4 +15,10 @@ export interface CardDeck {
     proficiency?: string;
   };
   isPublic: boolean;
+  leaderBoard: {
+      username: string,
+      totalAttempts: number,
+      correctAttempts: number,
+      attemptAccuracy: number,
+    }[];
 }

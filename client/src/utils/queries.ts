@@ -118,6 +118,12 @@ export const QUERY_CARD_DECKS = gql`
         attemptAccuracy
         proficiency
       }
+      leaderBoard {
+        username
+        totalAttempts
+        correctAttempts
+        attemptAccuracy
+      }
     }
   }
 `;

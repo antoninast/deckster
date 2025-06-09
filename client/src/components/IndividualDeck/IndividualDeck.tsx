@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { FaCog, FaBookOpen, FaFileImport, FaLock } from "react-icons/fa";
-import { MdPublic } from "react-icons/md";
+import { MdLeaderboard, MdPublic } from "react-icons/md";
 import { GrTrash } from "react-icons/gr";
 import { CardDeck } from "../../interfaces/CardDeck";
 import "./IndividualDeck.css";
@@ -25,8 +26,17 @@ const IndividualDeck = ({
     getProficiencyClass,
     handleVisibility,
 }: Props) => {
-    return (
-        <div className="deck card">
+  const [showLeaderBoard, setShowLeaderBoard] = useState(false);
+
+  const handleLeaderBoard = (isFront: boolean) => {
+    setShowLeaderBoard(isFront);
+  }
+  return (
+    <div className="deck-wrapper" onMouseLeave={() => setShowLeaderBoard(false)}>
+      <div
+        className={`deck ${showLeaderBoard ? 'flipped' : ''}`}
+      >  
+        <div className={`deck-front ${showLeaderBoard ? 'show-leader-board' : ''}`}>
           <div className="card-header">
             <h3 className="card-title">{deck.name}</h3>
             {user?._id === deck?.user?._id && (
@@ -79,7 +89,6 @@ const IndividualDeck = ({
                 </div>
               </div> : null
             }
-
             {user?._id !== deck.user._id ?
               <div className="deck-stat">
                 <span className="deck-stat-label stat-creator">Created by:</span>
@@ -106,6 +115,16 @@ const IndividualDeck = ({
               <FaBookOpen className="btn-icon" />
               Study
             </button>
+            {deck.isPublic ?          
+              <button
+                onClick={() => handleLeaderBoard(true)}
+                type="button"
+                className="deck-action-btn btn-leader-board"
+              >
+                <MdLeaderboard className="btn-icon"/>
+                Rankings
+              </button> : null
+            }
             {user?._id === deck?.user?._id ?
               <button
                 onClick={() => handleImportFlashcard(deck._id)}
@@ -118,7 +137,34 @@ const IndividualDeck = ({
             }
           </div>
         </div>
-    )
+        <div className="deck-back">
+          <div className="card-header">
+            <h3 className="card-title">Leader Board</h3>
+          </div>
+          <div className="leader-board-details">
+            {deck?.leaderBoard?.length ? (
+              <div className="leader-board">
+                <div className="leader-board-header">
+                  <span>🏅 Rank</span>
+                  <span>👤 Username</span>
+                  <span>🎯 Accuracy</span>
+                </div>
+                {deck.leaderBoard.map((row, index) => (
+                  <div className="leader-board-row" key={row.username + index}>
+                    <span>{index + 1}</span>
+                    <span>{row.username}</span>
+                    <span>{row.attemptAccuracy.toFixed(1)}%</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <h5>This deck hasn't been studied by any users yet.</h5>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default IndividualDeck;

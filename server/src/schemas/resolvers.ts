@@ -93,9 +93,101 @@ const resolvers = {
       { isPublic }: { isPublic?: boolean }
     ): Promise<ICardDeck[]> => {
       const query = isPublic === true ? { isPublic: true } : {};
-      return await CardDeck.find(query)
+      const decks = await CardDeck.find(query)
         .populate("userId", "_id username")
         .populate("numberOfCards");
+
+      const deckIds = decks.map(deck => deck._id);
+      const topUsersByDeck = await StudyAttempt.aggregate([
+        {
+          $match: {
+            deckId: { $in: deckIds },
+          },
+        },
+        {
+          $group: {
+            _id: { deckId: "$deckId", userId: "$userId" },
+            totalAttempts: { $sum: 1 },
+            correctAttempts: {
+              $sum: { $cond: ["$isCorrect", 1, 0] },
+            },
+          },
+        },
+        {
+          $addFields: {
+            attemptAccuracy: {
+              $cond: [
+                { $eq: ["$totalAttempts", 0] },
+                0,
+                {
+                  $multiply: [
+                    { $divide: ["$correctAttempts", "$totalAttempts"] },
+                    100,
+                  ],
+                },
+              ],
+            },
+          },
+        },
+        // Join user data
+        {
+          $lookup: {
+            from: "profiles", // or "users", depending on your model
+            localField: "_id.userId",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        {
+          $unwind: "$user", // Unwrap single user object
+        },
+        {
+          $group: {
+            _id: "$_id.deckId",
+            users: {
+              $push: {
+                username: "$user.username",
+                userId: "$_id.userId", // keep it if you want both
+                totalAttempts: "$totalAttempts",
+                correctAttempts: "$correctAttempts",
+                attemptAccuracy: "$attemptAccuracy",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            topUsers: {
+              $slice: [
+                {
+                  $sortArray: {
+                    input: "$users",
+                    sortBy: { attemptAccuracy: -1 },
+                  },
+                },
+                5,
+              ],
+            },
+          },
+        },
+      ]);
+
+
+      // 3. Build a map of topUsers by deckId
+      const topUsersMap = new Map<string, any>();
+      topUsersByDeck.forEach((entry) => {
+        topUsersMap.set(entry._id.toString(), entry.topUsers);
+      });
+
+      // 4. Attach topUsers to each deck
+      return decks.map((deck: any) => {
+        const topUsers = topUsersMap.get(deck._id.toString()) || [];
+        console.log('top users map ======> ', deck._id, topUsers);
+        return {
+          ...deck.toObject(),
+          leaderBoard: topUsers,
+        };
+      });
     },
 
     cardDecksByUser: async (

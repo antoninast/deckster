@@ -1,5 +1,13 @@
 import { Schema, model, Document, Types } from "mongoose";
 
+export interface ILeaderBoard extends Document {
+  userId?: Types.ObjectId;
+  username: string;
+  totalAttempts: number;
+  correctAttempts: number;
+  attemptAccuracy: number;
+}
+
 export interface ICardDeck extends Document {
   name: string;
   lastReview: Date | null;
@@ -7,7 +15,8 @@ export interface ICardDeck extends Document {
   categoryName: string;
   userId: Types.ObjectId;
   isPublic: boolean;
-  numberOfCards?: number; // Add this to interface
+  numberOfCards?: number;
+  leaderBoard?: ILeaderBoard[];
 }
 
 const cardDeckSchema = new Schema<ICardDeck>(
