@@ -37,7 +37,6 @@ yarn-error.log*
 .yarn-integrity
 
 # Package locks
-package-lock.json
 yarn.lock
 
 # Vite
