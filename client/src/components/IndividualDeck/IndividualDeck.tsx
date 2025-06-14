@@ -145,9 +145,9 @@ const IndividualDeck = ({
             {deck?.leaderBoard?.length ? (
               <div className="leader-board">
                 <div className="leader-board-header">
-                  <span>🏅 Rank</span>
-                  <span>👤 Username</span>
-                  <span>🎯 Accuracy</span>
+                  <span>Rank</span>
+                  <span>Username</span>
+                  <span>Accuracy</span>
                 </div>
                 {deck.leaderBoard.map((row, index) => (
                   <div className="leader-board-row" key={row.username + index}>
