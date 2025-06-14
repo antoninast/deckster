@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import CSVImport from "../components/CSVImport/CSVImport";
 import { ADD_MULTIPLE_FLASHCARDS, ADD_CARD_DECK } from "../utils/mutations";
 import {
@@ -12,11 +12,13 @@ import { FaCheckCircle } from "react-icons/fa";
 import auth from "../utils/auth";
 import "./ImportPage.css";
 import ManualImport from "../components/ManualImport/ManualImport";
+import { CardDeck } from "../interfaces/CardDeck";
 
 const ImportPage: React.FC = () => {
   const { deckId } = useParams<{ deckId: string }>();
   const navigate = useNavigate();
 
+  const { data: userDecks } = useQuery(QUERY_MY_DECKS);
   const [addMultipleFlashcards] = useMutation(ADD_MULTIPLE_FLASHCARDS);
   const [addCardDeck] = useMutation(ADD_CARD_DECK);
 
@@ -24,6 +26,7 @@ const ImportPage: React.FC = () => {
   const [importSuccess, setImportSuccess] = useState(false);
   const [importedCount, setImportedCount] = useState(0);
   const [createdDeckId, setCreatedDeckId] = useState<string | null>(null);
+  const [isDeckNameDuplicate, setIsDeckNameDuplicate] = useState(false);
 
   // Show deck creation form when no deckId is provided
   const [showDeckForm, setShowDeckForm] = useState(!deckId);
@@ -32,6 +35,11 @@ const ImportPage: React.FC = () => {
     categoryName: "",
     isPublic: false,
   });
+
+  const handleDeckNameInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDeckFormData({ ...deckFormData, name: e.target.value });
+    setIsDeckNameDuplicate(false);
+  }
 
   const handleDeckFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +55,12 @@ const ImportPage: React.FC = () => {
       if (!user?.data?._id) {
         alert("You must be logged in to create a deck");
         navigate("/login");
+        return;
+      }
+
+      const duplicatedDeck = userDecks?.myCardDecks.find((deck: CardDeck) => deck.name === deckFormData.name)
+      if (duplicatedDeck) {
+        setIsDeckNameDuplicate(true);
         return;
       }
 
@@ -221,11 +235,11 @@ const ImportPage: React.FC = () => {
                 type="text"
                 placeholder="e.g., Spanish Vocabulary"
                 value={deckFormData.name}
-                onChange={(e) =>
-                  setDeckFormData({ ...deckFormData, name: e.target.value })
-                }
+                className={isDeckNameDuplicate ? 'duplicated-name' : ''}
+                onChange={(e) => handleDeckNameInputChange(e)}
                 required
               />
+              {isDeckNameDuplicate ? <p className="error-message">You already have a deck with this name.</p> : null}
             </div>
             <div className="form-group">
               <label htmlFor="categoryName">Category</label>

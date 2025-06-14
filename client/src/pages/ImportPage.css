@@ -192,6 +192,10 @@
     color: var(--gray-text);
 }
 
+.form-group input[type="text"].duplicated-name {
+    border-color: red;
+}
+
 /* Animations */
 @keyframes successPulse {
     0% {
